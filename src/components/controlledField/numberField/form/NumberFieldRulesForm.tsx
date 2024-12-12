@@ -18,7 +18,7 @@ import {
   NumberFieldValidationRules,
 } from '../type/NumberFieldValidationRules';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../../enum/FieldType';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';
 
 interface NumberFieldRulesFormProps {
@@ -29,6 +29,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
   const { updatedElement } = useDesigner();
+
   const form = useForm<NumberFieldValidationRules>({
     mode: 'onBlur',
     defaultValues: {
@@ -54,21 +55,30 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   const onSubmit = (data: NumberFieldValidationRules) => {
     const ruleUpdated: NumberFieldValidationRulesWithMessage = {
       required: data.required ? 'Filed is required' : false,
-      max: data.max
-        ? { value: data.max, message: `Cannot exceed ${data.max}` }
-        : undefined,
-      min: data.min
-        ? { value: data.min, message: `Must be at least ${data.min}` }
-        : undefined,
+      max:
+        data.max || data.max === 0
+          ? { value: data.max, message: `Cannot exceed ${data.max}` }
+          : undefined,
+      min:
+        data.min || data.min === 0
+          ? { value: data.min, message: `Must be at least ${data.min}` }
+          : undefined,
     };
 
     const formFieldConfigUpdated: FormFieldConfigType = {
       ...formFieldConfig,
       rules: ruleUpdated,
     };
-    updatedElement(formFieldConfigUpdated);
+
+    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.RuleForm);
   };
 
+  useEffect(() => {
+    return () => {
+      const data = form.getValues();
+      onSubmit(data);
+    };
+  }, []);
   if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) {
     return null;
   }
@@ -102,7 +112,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
           name="min"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Min Length</FormLabel>
+              <FormLabel>Min Value</FormLabel>
               <FormControl>
                 <NumericFormat
                   value={field.value}
@@ -130,7 +140,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
           name="max"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Max Length</FormLabel>
+              <FormLabel>Max Value</FormLabel>
               <FormControl>
                 <NumericFormat
                   value={field.value}

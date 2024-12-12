@@ -18,7 +18,7 @@ import {
   TextFieldValidationRulesWithMessage,
 } from '../type/TextFieldValidationRules';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../../enum/FieldType';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';
 
 interface TextFieldRulesFormProps {
@@ -65,8 +65,15 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
       ...formFieldConfig,
       rules: ruleUpdated,
     };
-    updatedElement(formFieldConfigUpdated);
+    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.RuleForm);
   };
+
+  useEffect(() => {
+    return () => {
+      const data = form.getValues();
+      onSubmit(data);
+    };
+  }, []);
 
   if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) {
     return null;

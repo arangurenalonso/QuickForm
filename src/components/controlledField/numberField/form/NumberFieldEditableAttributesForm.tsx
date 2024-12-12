@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -14,7 +14,7 @@ import NumberFieldEditableProps from '../type/NumberFieldEditableProps';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/components/ui/switch';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../../enum/FieldType';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';
 
 interface NumberFieldEditableAttributesFormProps {
@@ -46,14 +46,22 @@ const NumberFieldEditableAttributesForm: React.FC<
     }
   }, [formFieldConfig, form]);
 
-  const onSubmit = (data: NumberFieldEditableProps) => {
-    const formFieldConfigUpdated: FormFieldConfigType = {
-      ...formFieldConfig,
-      properties: data,
+  const onSubmit = useCallback(
+    (data: NumberFieldEditableProps) => {
+      const formFieldConfigUpdated: FormFieldConfigType = {
+        ...formFieldConfig,
+        properties: data,
+      };
+      updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.EditableForm);
+    },
+    [formFieldConfig, updatedElement]
+  );
+  useEffect(() => {
+    return () => {
+      const data = form.getValues();
+      onSubmit(data);
     };
-    updatedElement(formFieldConfigUpdated);
-  };
-
+  }, []);
   if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) {
     return null;
   }

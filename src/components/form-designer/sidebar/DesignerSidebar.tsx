@@ -7,8 +7,12 @@ function DesignerSidebar() {
 
   return (
     <aside
-      className="w-full flex flex-col flex-grow gap-2 
-        border-l-2 border-muted p-4 bg-background overflow-y-auto h-full"
+      className="
+                w-full  h-full
+                p-4 
+                overflow-hidden
+                border-l-2 border-muted  bg-background
+                "
     >
       {!selectedElement && <FormElementSidebar />}
       {selectedElement && <PropertiesFormSidebar />}

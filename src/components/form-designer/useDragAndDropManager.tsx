@@ -20,8 +20,6 @@ const useDragAndDropManager = () => {
       const isDraggingDesignerBtnElement =
         active.data?.current?.isDesignerBtnElement;
       if (isDraggingDesignerBtnElement) {
-        console.log('isDraggingDesignerBtnElement');
-
         handleAddNewElement(active, over);
       }
 
@@ -41,7 +39,6 @@ const useDragAndDropManager = () => {
     //First scenario drop a sidebar item the designer Area
     const isDroppingOverDesignerArea = over.data?.current?.isDesignerDropArea;
     if (isDroppingOverDesignerArea) {
-      console.log('isDroppingOverDesignerArea');
       addElements(elements.length, newElement);
     }
 
@@ -58,11 +55,9 @@ const useDragAndDropManager = () => {
         throw new Error('Element not found');
       }
       if (over.data?.current?.isTopHalfDesignerElement) {
-        console.log('isDroppingOverDesignerElement TopHalf');
         addElements(overElementIndex, newElement);
       }
       if (over.data?.current?.isBottomHalfDesignerElement) {
-        console.log('isDroppingOverDesignerElement BottomHalf');
         addElements(overElementIndex + 1, newElement);
       }
     }

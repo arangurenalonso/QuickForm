@@ -1,4 +1,6 @@
 import FormBuilder from '@/components/form-designer/FormBuilder';
+import NavbarDesigner from '@/components/form-designer/navbar/NavbarDesigner';
+import VerticalGrowContainer from '@/components/template/VerticalGrowContainer';
 
 async function BuilderPage({
   params,
@@ -10,7 +12,11 @@ async function BuilderPage({
   const { id } = params;
   console.log('id', id);
 
-  return <FormBuilder />;
+  return (
+    <VerticalGrowContainer topElement={<NavbarDesigner />}>
+      <FormBuilder />
+    </VerticalGrowContainer>
+  );
 }
 
 export default BuilderPage;

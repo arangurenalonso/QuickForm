@@ -52,7 +52,7 @@ const TextFieldComponent: React.FC<
       {/* Input Container */}
       <div
         className={cn(
-          'flex items-center border rounded-md px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-primary',
+          'flex items-center border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-primary',
           error
             ? 'border-destructive focus-within:ring-destructive'
             : 'border-input',
@@ -85,7 +85,7 @@ const TextFieldComponent: React.FC<
           placeholder={placeholder}
           disabled={disabled}
           ref={inputRef}
-          className="flex-1 bg-transparent placeholder:text-muted-foreground"
+          className="flex-1  placeholder:text-muted-foreground"
         />
       </div>
 

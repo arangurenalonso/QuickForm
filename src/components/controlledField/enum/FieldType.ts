@@ -5,6 +5,11 @@ export enum FieldTypeEnum {
   InputTypeText = 'InputTypeText',
   InputTypeNumber = 'InputTypeNumber',
 }
+export enum UpdatedTypeEnum {
+  EditableForm = 'EditableForm',
+  RuleForm = 'RuleForm',
+}
+
 export type FieldType =
   // | FieldTypeEnum.LineBreak
   // | FieldTypeEnum.Array

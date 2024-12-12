@@ -45,13 +45,14 @@ const FormBuilder = () => {
             className="
               col-span-12 md:col-span-8 
               bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)]
+              overflow-auto
           "
           >
             <Designer />
           </div>
           <div
             className="
-              col-span-12 md:col-span-4 
+              col-span-12 md:col-span-4 overflow-auto bg-red-800 
             "
           >
             <DesignerSidebar />

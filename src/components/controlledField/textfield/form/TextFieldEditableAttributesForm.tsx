@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import TextFieldEditableProps from '../type/TextFieldEditableProps';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../../enum/FieldType';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';
 
 interface TextFieldEditableAttributesFormProps {
@@ -45,14 +45,18 @@ const TextFieldEditableAttributesForm: React.FC<
       ...formFieldConfig,
       properties: data,
     };
-    updatedElement(formFieldConfigUpdated);
+    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.EditableForm);
   };
 
+  useEffect(() => {
+    return () => {
+      const data = form.getValues();
+      onSubmit(data);
+    };
+  }, []);
   if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) {
     return null;
   }
-  // onSubmit={handleSubmit(onSubmit)}
-  // onBlur={handleSubmit(onSubmit)}
   return (
     <Form {...form}>
       <div onBlur={form.handleSubmit(onSubmit)} className="space-y-4">

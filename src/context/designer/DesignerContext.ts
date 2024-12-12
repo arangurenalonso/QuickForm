@@ -1,3 +1,4 @@
+import { UpdatedTypeEnum } from '@/components/controlledField/enum/FieldType';
 import { FormFieldConfigType } from '@/components/controlledField/enum/FormFieldConfigType';
 import { createContext } from 'react';
 
@@ -7,7 +8,7 @@ type DesignerContextType = {
   addElements: (index: number, element: FormFieldConfigType) => void;
   removeElement: (id: string) => void;
   handleSelectedElement: (element: FormFieldConfigType | null) => void;
-  updatedElement: (element: FormFieldConfigType) => void;
+  updatedElement: (element: FormFieldConfigType, type: UpdatedTypeEnum) => void;
   // setElements: Dispatch<SetStateAction<FormFieldConfigType[]>>;
   updatePosition: (
     draggedElementId: string,

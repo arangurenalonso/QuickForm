@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import NumberFieldEditableProps from './type/NumberFieldEditableProps';
 interface NumberFieldComponentProps {
   inputRef?: React.Ref<HTMLInputElement>;
-  value?: string | number;
-  onChange?: (value?: string) => void;
+  value?: number;
+  onChange?: (value?: number) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined;
   error?: boolean;
   errorMessage?: React.ReactNode;
@@ -54,7 +54,7 @@ const NumberFieldComponent: React.FC<
       {/* Input Container */}
       <div
         className={cn(
-          'flex items-center border rounded-md px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-primary',
+          'flex items-center border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-primary',
           error
             ? 'border-destructive focus-within:ring-destructive'
             : 'border-input',
@@ -79,7 +79,7 @@ const NumberFieldComponent: React.FC<
           value={value}
           onValueChange={(values) => {
             if (onChange) {
-              onChange(values.value);
+              onChange(values.floatValue);
             }
           }}
           onBlur={onBlur}

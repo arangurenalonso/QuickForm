@@ -3,6 +3,7 @@
 import { FormFieldConfigType } from '@/components/controlledField/enum/FormFieldConfigType';
 import { useState } from 'react';
 import { DesignerContext } from './DesignerContext';
+import { UpdatedTypeEnum } from '@/components/controlledField/enum/FieldType';
 
 export default function DesignerContextProvider({
   children,
@@ -26,14 +27,46 @@ export default function DesignerContextProvider({
     });
   };
 
-  const updatedElement = (updatedElement: FormFieldConfigType) => {
+  const updatedElement = (
+    updatedElement: FormFieldConfigType,
+    type: UpdatedTypeEnum
+  ) => {
     setElements((prev) => {
       const newElements = [...prev];
       const index = newElements.findIndex(
         (element) => element.id === updatedElement.id
       );
-      newElements[index] = updatedElement;
+      if (type === UpdatedTypeEnum.EditableForm) {
+        newElements[index] = {
+          ...newElements[index],
+          properties: updatedElement.properties,
+        };
+      }
+      if (type === UpdatedTypeEnum.RuleForm) {
+        newElements[index] = {
+          ...newElements[index],
+          rules: updatedElement.rules,
+        };
+      }
       return newElements;
+    });
+
+    setSelectedElement((prev) => {
+      if (prev) {
+        if (type === UpdatedTypeEnum.EditableForm) {
+          return {
+            ...prev,
+            properties: updatedElement.properties,
+          };
+        }
+        if (type === UpdatedTypeEnum.RuleForm) {
+          return {
+            ...prev,
+            rules: updatedElement.rules,
+          };
+        }
+      }
+      return null;
     });
   };
   const handleSelectedElement = (element: FormFieldConfigType | null) => {
