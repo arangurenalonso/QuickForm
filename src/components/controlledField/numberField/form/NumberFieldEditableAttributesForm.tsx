@@ -269,13 +269,17 @@ const NumberFieldEditableAttributesForm: React.FC<
           name="allowNegative"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Allow Negative</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={(checked) => setValue(field.name, !!checked)}
-                />
-              </FormControl>
+              <div className=" flex gap-2 items-center ">
+                <FormLabel>Allow Negative</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={(checked) =>
+                      setValue(field.name, !!checked)
+                    }
+                  />
+                </FormControl>
+              </div>
               <FormDescription>
                 Whether the field allows negative numbers.
               </FormDescription>

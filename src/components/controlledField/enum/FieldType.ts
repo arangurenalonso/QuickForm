@@ -15,6 +15,21 @@ export type FieldType =
   // | FieldTypeEnum.Array
   // | FieldTypeEnum.Select
   FieldTypeEnum.InputTypeText | FieldTypeEnum.InputTypeNumber;
+// TextArea="TextArea",
+// | FieldTypeEnum.Select
+// DatePicker="DatePicker",
+// Checkbox="Checkbox",
+// Radio="Radio",
+// Switch="Switch",
+// Upload="Upload",
+
+/**
+ * Title
+ * Subtitle
+ * paragraph
+ * Separator
+ * SpacerField
+ */
 
 // DatePicker="DatePicker",
 // TimePicker="TimePicker",
@@ -30,7 +45,6 @@ export type FieldType =
 // TextArea="TextArea",
 // AutoComplete="AutoComplete",
 // Cascader="Cascader",
-// InputNumber="InputNumber",
 // TreeSelect="TreeSelect",
 // Transfer="Transfer",
 // Tag="Tag",
