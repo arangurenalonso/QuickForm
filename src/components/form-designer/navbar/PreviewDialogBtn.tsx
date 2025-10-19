@@ -14,7 +14,7 @@ import { MdPreview } from 'react-icons/md';
 const PreviewDialogBtn = () => {
   const { elements } = useDesigner();
   const { watch, control, handleSubmit, reset } = useForm({
-    mode: 'onBlur',
+    mode: 'onTouched',
   });
 
   useEffect(() => {

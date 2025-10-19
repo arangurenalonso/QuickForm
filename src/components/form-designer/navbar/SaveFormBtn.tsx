@@ -11,6 +11,7 @@ const SaveFormBtn = () => {
   const [loading, startTransition] = useTransition();
   const updateFormContent = async () => {
     try {
+      console.log('elements', elements);
       const jsonElements = JSON.stringify(elements);
       console.log('jsonElements', jsonElements);
 
