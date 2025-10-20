@@ -17,6 +17,11 @@ export const createAuthSlice: ImmerStateCreator<AuthSlice> = (set) => ({
       state.token = token;
     });
   },
+  setAccessToken: (token: string) => {
+    set((state) => {
+      state.token = token;
+    });
+  },
 
   signOut: () => {
     set((state) => {

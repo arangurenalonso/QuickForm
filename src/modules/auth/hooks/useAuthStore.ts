@@ -1,53 +1,66 @@
 // src/modules/auth/hooks/useAuthStore.ts
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBoundStore } from '@/store';
-import { authClient } from '../services/auth.service';
+import { authService } from '../services/auth.service';
+import { isOk } from '@/common/types/result';
+// import { useRouter } from 'next/navigation';
 
 export default function useAuthStore() {
-  const signIn = useBoundStore((s) => s.signIn);
-  const signOut = useBoundStore((s) => s.signOut);
+  const { isAuthenticated, user, token, setAccessToken } =
+    useBoundStore.getState();
 
-  const isAuthenticated = useBoundStore((s) => s.isAuthenticated);
-  const user = useBoundStore((s) => s.user);
-  const token = useBoundStore((s) => s.token);
+  // const signOut = useBoundStore((s) => s.signOut);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const signInProcess = useCallback(
     async (email: string, password: string) => {
-      setErrorMessage(null);
-      const res = await authClient.signInAction(email, password);
-      if (!res.ok || !res.accessToken || !res.user) {
-        setErrorMessage(res?.message ?? 'Invalid credentials');
-        return false;
+      restoreState();
+      const res = await authService.login({ email, password });
+      if (!isOk(res)) {
+        console.log('Login error:', res?.error);
+        setErrorMessage(res.error.message || 'Login failed');
+        return;
       }
-      signIn({ user: res.user, token: res.accessToken });
-      return true;
+      restoreState();
+      setAccessToken(res.value);
+      // signIn({ user: res.user, token: res.accessToken });
+      // router.replace('/');
+      return;
     },
-    [signIn]
+    [setAccessToken]
   );
 
-  const refreshProcess = useCallback(async () => {
-    const res = await authClient.refreshAction();
-    if (res.ok && res.accessToken) {
-      // actualiza access token en zustand
-      useBoundStore.setState({ token: res.accessToken });
-      return true;
-    }
-    return false;
-  }, []);
+  const restoreState = () => {
+    setErrorMessage(null);
+  };
 
-  const signOutProcess = useCallback(async () => {
-    await authClient.signOutAction();
-    signOut();
-  }, [signOut]);
+  // const refreshProcess = useCallback(async () => {
+  //   const res = await authClient.refreshAction();
+  //   if (res.ok && res.accessToken) {
+  //     // actualiza access token en zustand
+  //     useBoundStore.setState({ token: res.accessToken });
+  //     return true;
+  //   }
+  //   return false;
+  // }, []);
+
+  // const signOutProcess = useCallback(async () => {
+  //   await authClient.signOutAction();
+  //   signOut();
+  // }, [signOut]);
+
+  useEffect(() => {
+    console.log('Token changed:', token);
+    meProcess();
+  }, [token]);
 
   const meProcess = useCallback(async () => {
-    if (!token) return { ok: false, user: null };
-    const res = await authClient.meAction(token);
-    return res;
+    // if (!token) return { ok: false, user: null };
+    // const res = await authClient.meAction(token);
+    // return res;
   }, [token]);
 
   return useMemo(
@@ -57,9 +70,9 @@ export default function useAuthStore() {
       token,
       errorMessage,
       signInProcess,
-      refreshProcess,
-      signOutProcess,
-      meProcess,
+      // refreshProcess,
+      // signOutProcess,
+      // meProcess,
     }),
     [
       isAuthenticated,
@@ -67,9 +80,9 @@ export default function useAuthStore() {
       token,
       errorMessage,
       signInProcess,
-      refreshProcess,
-      signOutProcess,
-      meProcess,
+      // refreshProcess,
+      // signOutProcess,
+      // meProcess,
     ]
   );
 }

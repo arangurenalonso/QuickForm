@@ -1,55 +1,117 @@
 // src/common/http/error-map.ts
-import { isAxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
+import { isBackendErrorPayload, BackendErrorItem } from './error.result';
 
-// src/modules/auth/types/auth.errors.ts
 export type AuthErrorKind =
   | 'InvalidCredentials'
   | 'Unauthorized'
+  | 'NotFound'
+  | 'Validation'
+  | 'RateLimited'
   | 'Network'
-  | 'Server'
   | 'Timeout'
+  | 'Canceled'
+  | 'Server'
   | 'BadRequest'
   | 'Unknown';
 
 export type AuthError = {
   kind: AuthErrorKind;
-  message?: string;
-  status?: number;
-  details?: unknown;
+  message: string;
+  details?: BackendErrorItem[];
 };
+
+// === Helpers ===
+function isCanceled(e: unknown): boolean {
+  return axios.isCancel(e) || (isAxiosError(e) && e.code === 'ERR_CANCELED');
+}
+function isTimeout(e: unknown): boolean {
+  return isAxiosError(e) && e.code === 'ECONNABORTED';
+}
+
+// function mapFieldErrors(
+//   p?: BackendErrorPayload
+// ): Record<string, string> | undefined {
+//   if (!p?.errors?.length) return undefined;
+//   const map = new Map<string, string[]>();
+//   for (const err of p.errors) {
+//     const key = err.propertyName || '_';
+//     const arr = map.get(key) ?? [];
+//     arr.push(err.description);
+//     map.set(key, arr);
+//   }
+//   const out: Record<string, string> = {};
+//   for (const [k, v] of map) out[k] = v.join('\n');
+//   return out;
+// }
 
 export function mapAxiosToAuthError(e: unknown): AuthError {
   if (!isAxiosError(e)) {
     return { kind: 'Unknown', message: 'Unexpected error' };
-  } // Sin respuesta del server (caída de red / CORS / DNS)
+  }
+
+  if (isCanceled(e)) {
+    return { kind: 'Canceled', message: 'Request was canceled' };
+  }
+
+  if (isTimeout(e)) {
+    return { kind: 'Timeout', message: 'Request timeout' };
+  }
 
   if (!e.response) {
-    if (e.code === 'ECONNABORTED')
-      return { kind: 'Timeout', message: 'Request timeout' };
     return { kind: 'Network', message: e.message };
   }
 
-  const { status, data } = e.response;
-  const message = (data as any)?.message ?? e.message;
+  const status = e.response.status;
+  const data = e.response.data;
+  const payload = isBackendErrorPayload(data) ? data : undefined;
 
-  if (status === 400)
-    return { kind: 'BadRequest', message, status, details: data };
-  if (status === 401) {
-    // Puedes distinguir 401 de credenciales vs token expirado si tu API lo indica
-    return {
-      kind: 'InvalidCredentials',
-      message: message ?? 'Invalid credentials',
-      status,
-      details: data,
-    };
+  const message = payload?.message || 'Unknown error';
+
+  const details = payload ? payload.errors : undefined;
+
+  switch (status) {
+    case 400:
+      return {
+        kind: 'BadRequest',
+        message,
+        details,
+      };
+
+    case 401:
+      return {
+        kind: 'InvalidCredentials',
+        message: message ?? 'Unauthorized',
+        details,
+      };
+
+    case 403:
+      return { kind: 'Unauthorized', message: message ?? 'Forbidden', details };
+
+    case 404:
+      return { kind: 'NotFound', message: message ?? 'Not found', details };
+
+    case 409:
+      return { kind: 'BadRequest', message: message ?? 'Conflict', details };
+
+    case 422:
+      return {
+        kind: 'Validation',
+        message: message ?? 'Validation error',
+        details,
+      };
+
+    case 429:
+      return {
+        kind: 'RateLimited',
+        message: message ?? 'Too many requests',
+        details,
+      };
+
+    default:
+      if (status >= 500) {
+        return { kind: 'Server', message: message ?? 'Server error', details };
+      }
+      return { kind: 'Unknown', message, details };
   }
-  if (status >= 500)
-    return {
-      kind: 'Server',
-      message: message ?? 'Server error',
-      status,
-      details: data,
-    };
-
-  return { kind: 'Unknown', message, status, details: data };
 }
