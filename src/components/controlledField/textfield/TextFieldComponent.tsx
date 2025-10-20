@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Input } from '@/components/ui/input'; // Ajusta la ruta según tu estructura de Shadcn
-import { cn } from '@/lib/utils'; // Si usas una utilidad de concatenación de clases
+import { cn } from '@/common/libs/utils'; // Si usas una utilidad de concatenación de clases
 import { FiAlertCircle } from 'react-icons/fi'; // Ícono por defecto de React Icons
 import { Label } from '@/components/ui/label';
 import TextFieldEditableProps from './type/TextFieldEditableProps';

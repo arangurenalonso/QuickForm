@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/common/libs/utils';
 import useDesigner from '@/hooks/useDesigner';
 import { useDroppable } from '@dnd-kit/core';
 import useDragAndDropManager from './useDragAndDropManager';

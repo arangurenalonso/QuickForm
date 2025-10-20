@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/common/libs/utils';
 import { FiAlertCircle } from 'react-icons/fi';
 import { Label } from '@/components/ui/label';
 import { NumericFormat } from 'react-number-format';

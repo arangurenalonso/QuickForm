@@ -1,5 +1,11 @@
+import { LoginView } from '@/modules/auth/containers/LoginView';
+
 async function BuilderPage() {
-  return <>aaaa</>;
+  return (
+    <>
+      <LoginView />
+    </>
+  );
 }
 
 export default BuilderPage;

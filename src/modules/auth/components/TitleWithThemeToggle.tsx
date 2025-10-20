@@ -1,4 +1,4 @@
-import ThemeSwitcher from '@/components/navbar/ThemeSwitcher';
+import ThemeSwitcher from '@/modules/ui/components/ThemeSwitcher';
 
 type TitleWithThemeToggleProp = {
   title: string;

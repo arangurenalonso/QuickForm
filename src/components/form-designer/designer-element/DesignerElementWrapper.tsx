@@ -1,7 +1,7 @@
 import { FormFieldConfigType } from '@/components/controlledField/enum/FormFieldConfigType';
 import useDesigner from '@/hooks/useDesigner';
 import { useDraggable } from '@dnd-kit/core';
-import { cn } from '@/lib/utils';
+import { cn } from '@/common/libs/utils';
 import HoverDesignerElementWrapper from './HoverDesignerElementWrapper';
 
 type DesignerElementWrapperProps = {

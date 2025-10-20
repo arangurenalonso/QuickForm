@@ -1,8 +1,8 @@
 // src/modules/auth/containers/LoginView.tsx
 'use client';
 
-import { LoginForm } from '../components/LoginForm';
-import TitleWithThemeToggle from '../views/TitleWithThemeToggle';
+import LoginForm from '../components/LoginForm';
+import TitleWithThemeToggle from '../components/TitleWithThemeToggle';
 
 export function LoginView() {
   return (

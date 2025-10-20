@@ -4,7 +4,7 @@ import useDesigner from '@/hooks/useDesigner';
 import { useDroppable } from '@dnd-kit/core';
 import { useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
-import { cn } from '@/lib/utils';
+import { cn } from '@/common/libs/utils';
 
 type HoverStateProps = {
   isHover: boolean;
