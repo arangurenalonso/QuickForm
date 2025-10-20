@@ -13,10 +13,8 @@ const TitleWithThemeToggle = ({
     <>
       {/* Optional welcome heading */}
       {showWellCome && (
-        <h4 className="mb-2 text-center text-2xl font-semibold">Welcome</h4>
+        <h1 className="mb-2 text-center text-xl font-semibold">Welcome</h1>
       )}
-
-      {/* Title + theme toggle */}
       <div className="flex items-center justify-between">
         <h5 className="text-xl font-semibold mb-2">{title}</h5>
         <ThemeSwitcher />

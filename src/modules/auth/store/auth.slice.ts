@@ -10,19 +10,17 @@ export type AuthSlice = AuthActions & AuthModel;
 export const createAuthSlice: ImmerStateCreator<AuthSlice> = (set) => ({
   ...createAuthInitialState(),
 
-  signIn: ({ user, token }) => {
+  signIn: ({ user }) => {
     set((state) => {
-      state.isAuthenticated = true;
       state.user = user;
-      state.token = token;
     });
   },
   setAccessToken: (token: string) => {
     set((state) => {
       state.token = token;
+      state.isAuthenticated = true;
     });
   },
-
   signOut: () => {
     set((state) => {
       const init = createAuthInitialState();

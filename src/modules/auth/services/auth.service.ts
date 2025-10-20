@@ -1,9 +1,9 @@
 import { api } from '@/common/libs/axios/http.client';
-import { LoginRequest } from './auth.service.type';
 import { AuthError, mapAxiosToAuthError } from '@/common/libs/axios/error-map';
 import { err } from '@/common/types/result';
 import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
+import { LoginRequest } from '../types/auth.types';
 
 export const authService = {
   async login(payload: LoginRequest): Promise<Result<string, AuthError>> {
