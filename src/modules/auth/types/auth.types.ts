@@ -4,7 +4,8 @@ export type AuthUser = {
   name?: string | null;
 };
 
-// src/modules/auth/types/auth.dto.ts
+export type LoginRequest = { email: string; password: string };
+
 export type ApiUser = { id: string; email: string; name: string | null };
 
 export type LoginResponseBody = {
@@ -24,3 +25,4 @@ export type MeResponseBody = {
 export type RefreshResponse = {
   accessToken: string; // devuelto por /auth/refresh (refresh en cookie httpOnly)
 };
+
