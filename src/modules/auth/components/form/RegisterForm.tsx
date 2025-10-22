@@ -18,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import AuthFormLayout from './AuthFormLayout';
 
 // const alphaNameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü' -]+$/;
 const RegisterSchema = z
@@ -72,6 +71,7 @@ const RegisterForm = () => {
 
   // Submit handler
   const onSubmit = async (data: RegisterFormInputs) => {
+    console.log('RegisterForm - onSubmit data:', data);
     // NOTE: keep same payload shape you already use
     // await registerProcess({
     //   firstName: data.firstName,

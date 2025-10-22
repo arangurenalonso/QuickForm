@@ -26,7 +26,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     console.log('LoginForm - errorMessage:', errorMessage);
-  }, [errorMessage]);
+  }, []);
 
   const form = useForm<LoginFormInputs>({
     defaultValues: { email: '', password: '' },

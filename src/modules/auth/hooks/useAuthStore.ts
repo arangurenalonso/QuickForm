@@ -7,12 +7,12 @@ import { isOk } from '@/common/types/result';
 // import { useRouter } from 'next/navigation';
 
 export default function useAuthStore() {
+  // const isAuthenticated = useBoundStore((state) => state.isAuthenticated);
+  // const user = useBoundStore((state) => state.user);
+  // const token = useBoundStore((state) => state.token);
+  // const setAccessToken = useBoundStore((state) => state.setAccessToken);
   const { isAuthenticated, user, token, setAccessToken } =
     useBoundStore.getState();
-
-  useEffect(() => {
-    console.log('Auth Store - isAuthenticated:', isAuthenticated);
-  }, []);
   // const signOut = useBoundStore((s) => s.signOut);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -56,14 +56,14 @@ export default function useAuthStore() {
 
   useEffect(() => {
     console.log('Token changed:', token);
-    meProcess();
+    // meProcess();
   }, [token]);
 
-  const meProcess = useCallback(async () => {
-    // if (!token) return { ok: false, user: null };
-    // const res = await authClient.meAction(token);
-    // return res;
-  }, [token]);
+  // const meProcess = useCallback(async () => {
+  //   // if (!token) return { ok: false, user: null };
+  //   // const res = await authClient.meAction(token);
+  //   // return res;
+  // }, [token]);
 
   return useMemo(
     () => ({

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import NextToploader from 'nextjs-toploader';
 import DesignerContextProvider from '@/context/designer/DesignerProvider';
 import ClientProviders from '@/components/ClientProviders';
 import HydrationGate from '@/common/components/HydrationGate';
@@ -19,7 +18,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <HydrationGate>
-          <NextToploader />
           <DesignerContextProvider>
             <ClientProviders>
               <div className="w-screen h-screen">{children}</div>

@@ -16,21 +16,22 @@ export default function ClientProviders({
     setMounted(true); // Only render the ThemeProvider after mounting
   }, []);
 
-  if (!mounted) {
-    return <>{children}</>; // Render without theme provider initially (avoids mismatch)
-  }
   return (
     <>
-      <NextToploader />
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-      </ThemeProvider>
-      <Toaster />
+      {mounted && (
+        <>
+          <NextToploader />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster />
+        </>
+      )}
     </>
   );
 }
