@@ -4,9 +4,17 @@ type AuthFormLayoutProps = {
 
 const AuthFormLayout = ({ children }: AuthFormLayoutProps) => {
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border bg-background p-6 shadow-sm">
+    <div
+      className="
+        mx-auto w-full max-w-md
+        rounded-none border-0
+        md:rounded-2xl md:border md:border-border
+        bg-background p-6 md:shadow-sm
+      "
+    >
       {children}
     </div>
   );
 };
+
 export default AuthFormLayout;

@@ -1,4 +1,3 @@
-// src/modules/auth/hooks/useAuthStore.ts
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,6 +10,9 @@ export default function useAuthStore() {
   const { isAuthenticated, user, token, setAccessToken } =
     useBoundStore.getState();
 
+  useEffect(() => {
+    console.log('Auth Store - isAuthenticated:', isAuthenticated);
+  }, []);
   // const signOut = useBoundStore((s) => s.signOut);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

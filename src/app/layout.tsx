@@ -3,6 +3,7 @@ import './globals.css';
 import NextToploader from 'nextjs-toploader';
 import DesignerContextProvider from '@/context/designer/DesignerProvider';
 import ClientProviders from '@/components/ClientProviders';
+import HydrationGate from '@/common/components/HydrationGate';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,12 +18,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextToploader />
-        <DesignerContextProvider>
-          <ClientProviders>
-            <div className="w-screen h-screen">{children}</div>
-          </ClientProviders>
-        </DesignerContextProvider>
+        <HydrationGate>
+          <NextToploader />
+          <DesignerContextProvider>
+            <ClientProviders>
+              <div className="w-screen h-screen">{children}</div>
+            </ClientProviders>
+          </DesignerContextProvider>
+        </HydrationGate>
       </body>
     </html>
   );
