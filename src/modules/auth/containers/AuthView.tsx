@@ -1,7 +1,7 @@
 'use client';
 
 import { CustomLink } from '@/common/components/atoms/CustomLink';
-import AuthFormLayout from '../components/form/AuthFormLayout';
+import AuthFormLayout from '../components/layout/AuthFormLayout';
 import LoginForm from '../components/form/LoginForm';
 import RegisterForm from '../components/form/RegisterForm';
 import TitleWithThemeToggle from '../components/TitleWithThemeToggle';
@@ -68,7 +68,7 @@ const LoginView = ({ action }: LoginViewProps) => {
 
   return (
     <AuthFormLayout>
-      <TitleWithThemeToggle title={view.title} showWellCome />
+      <TitleWithThemeToggle title={view.title} />
       {view.helperText && <HelperText>{view.helperText}</HelperText>}
 
       {view.node}
