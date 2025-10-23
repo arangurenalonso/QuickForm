@@ -10,6 +10,7 @@ const AuthFormLayout = ({ children }: AuthFormLayoutProps) => {
         rounded-none border-0
         md:rounded-2xl md:border md:border-border
         bg-background p-6 md:shadow-sm
+        flex flex-col gap-2
       "
     >
       {children}

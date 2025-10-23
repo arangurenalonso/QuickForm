@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type LoginFormInputs = {
   email: string;
@@ -23,10 +23,6 @@ type LoginFormInputs = {
 const LoginForm = () => {
   const { signInProcess, errorMessage } = useAuthStore();
   const [showPwd, setShowPwd] = useState(false);
-
-  useEffect(() => {
-    console.log('LoginForm - errorMessage:', errorMessage);
-  }, []);
 
   const form = useForm<LoginFormInputs>({
     defaultValues: { email: '', password: '' },

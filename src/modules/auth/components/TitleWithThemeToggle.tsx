@@ -16,7 +16,7 @@ const TitleWithThemeToggle = ({
         <h1 className="mb-2 text-center text-xl font-semibold">Welcome</h1>
       )}
       <div className="flex items-center justify-between">
-        <h5 className="text-xl font-semibold mb-2">{title}</h5>
+        <h5 className="text-xl font-semibold ">{title}</h5>
         <ThemeSwitcher />
       </div>
     </>
