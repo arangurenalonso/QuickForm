@@ -1,3 +1,5 @@
+'use client';
+
 import { ImmerStateCreator } from '@/store/type';
 import { createModalInitialState } from './modal.initial';
 import { ModalActions } from './modal.actions';

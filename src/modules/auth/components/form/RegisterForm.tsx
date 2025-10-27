@@ -1,15 +1,10 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-// import clsx from 'clsx';
-// import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-// import { Separator } from '@/components/ui/separator';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -18,69 +13,46 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
-// const alphaNameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü' -]+$/;
-const RegisterSchema = z
-  .object({
-    // firstName: z
-    //   .string()
-    //   .trim()
-    //   .min(1, 'Name is required')
-    //   .regex(alphaNameRegex, 'Only letters, spaces, hyphens, and apostrophes'),
-    // lastName: z
-    //   .string()
-    //   .trim()
-    //   .min(1, 'LastName is required')
-    //   .regex(alphaNameRegex, 'Only letters, spaces, hyphens, and apostrophes'),
-    email: z
-      .string()
-      .trim()
-      .min(1, 'Email is required')
-      .email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+import useAuthStore from '../../hooks/useAuthStore';
+import { useBoundStore } from '@/store';
+import { makePasswordRules, toRHFValidate } from '../../types/auth.types';
+import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
 
 type RegisterFormInputs = {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 const RegisterForm = () => {
-  //   const { registerProcess, errorMessage } = useAuthStore();
+  const { signUpProcess, errorMessage } = useAuthStore();
+  const { openModal } = useBoundStore.getState();
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const form = useForm<RegisterFormInputs>({
-    resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      //   firstName: '',
-      //   lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
     mode: 'onBlur',
   });
+  const password = useWatch({ control: form.control, name: 'password' }) ?? '';
 
-  // Submit handler
   const onSubmit = async (data: RegisterFormInputs) => {
-    console.log('RegisterForm - onSubmit data:', data);
-    // NOTE: keep same payload shape you already use
-    // await registerProcess({
-    //   firstName: data.firstName,
-    //   lastName: data.lastName,
-    //   email: data.email,
-    //   password: data.password,
-    //   confirmPassword: data.confirmPassword,
-    //   // timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    // });
+    const result = await signUpProcess(
+      data.email,
+      data.password,
+      data.confirmPassword
+    );
+    if (result) {
+      openModal({
+        id: 'verify-email',
+        title: 'Usuario creado',
+        content: <div dangerouslySetInnerHTML={{ __html: result.message }} />,
+        acceptToClose: true,
+      });
+    }
   };
 
   return (
@@ -90,6 +62,7 @@ const RegisterForm = () => {
         <FormField
           control={form.control}
           name="email"
+          rules={{}}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -105,11 +78,14 @@ const RegisterForm = () => {
             </FormItem>
           )}
         />
-
         {/* Password */}
         <FormField
           control={form.control}
           name="password"
+          rules={{
+            required: 'Password is required',
+            validate: toRHFValidate(makePasswordRules(8, '¡¿ñÑ')),
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
@@ -137,15 +113,23 @@ const RegisterForm = () => {
                   )}
                 </Button>
               </div>
-              <FormMessage />
+              <InputRulesChecklist
+                value={password}
+                rules={makePasswordRules(8, '¡¿ñÑ')}
+              />
+
+              {/* <FormMessage /> */}
             </FormItem>
           )}
         />
-
-        {/* Confirm Password */}
         <FormField
           control={form.control}
           name="confirmPassword"
+          rules={{
+            required: 'Please confirm your password',
+            validate: (v) =>
+              v === form.getValues('password') || 'Passwords do not match',
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>

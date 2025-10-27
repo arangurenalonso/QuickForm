@@ -1,3 +1,4 @@
+'use client';
 import { ImmerStateCreator } from '@/store/type';
 import { ThemeActions } from './theme.actions';
 import { ThemeModel } from './theme.model';

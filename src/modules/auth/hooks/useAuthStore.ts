@@ -4,16 +4,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBoundStore } from '@/store';
 import { authService } from '../services/auth.service';
 import { isOk } from '@/common/types/result';
+import { ResultResponse } from '@/common/types/resultResponse';
 // import { useRouter } from 'next/navigation';
 
 export default function useAuthStore() {
-  // const isAuthenticated = useBoundStore((state) => state.isAuthenticated);
-  // const user = useBoundStore((state) => state.user);
-  // const token = useBoundStore((state) => state.token);
-  // const setAccessToken = useBoundStore((state) => state.setAccessToken);
-  const { isAuthenticated, user, token, setAccessToken } =
-    useBoundStore.getState();
-  // const signOut = useBoundStore((s) => s.signOut);
+  const isAuthenticated = useBoundStore((state) => state.isAuthenticated);
+  const user = useBoundStore((state) => state.user);
+  const token = useBoundStore((state) => state.token);
+  const setAccessToken = useBoundStore((state) => state.setAccessToken);
+  // const router = useRouter();
+
+  // const { isAuthenticated, user, token, setAccessToken } =
+  //   useBoundStore.getState();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -33,6 +35,29 @@ export default function useAuthStore() {
       return;
     },
     [setAccessToken]
+  );
+
+  const signUpProcess = useCallback(
+    async (
+      email: string,
+      password: string,
+      confirmPassword: string
+    ): Promise<ResultResponse | undefined> => {
+      restoreState();
+      const res = await authService.register({
+        email,
+        password,
+        confirmPassword,
+      });
+      if (!isOk(res)) {
+        console.log('Register error:', res?.error);
+        setErrorMessage(res.error.message || 'Register failed');
+        return;
+      }
+      restoreState();
+      return res.value;
+    },
+    []
   );
 
   const restoreState = () => {
@@ -72,6 +97,7 @@ export default function useAuthStore() {
       token,
       errorMessage,
       signInProcess,
+      signUpProcess,
       // refreshProcess,
       // signOutProcess,
       // meProcess,
@@ -82,6 +108,7 @@ export default function useAuthStore() {
       token,
       errorMessage,
       signInProcess,
+      signUpProcess,
       // refreshProcess,
       // signOutProcess,
       // meProcess,

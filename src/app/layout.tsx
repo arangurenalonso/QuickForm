@@ -3,6 +3,7 @@ import './globals.css';
 import DesignerContextProvider from '@/context/designer/DesignerProvider';
 import ClientProviders from '@/components/ClientProviders';
 import HydrationGate from '@/common/components/HydrationGate';
+import ModalHost from '@/modules/ui/components/ModalHost';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,6 +22,7 @@ export default function RootLayout({
           <DesignerContextProvider>
             <ClientProviders>
               <div className="w-screen h-screen">{children}</div>
+              <ModalHost />
             </ClientProviders>
           </DesignerContextProvider>
         </HydrationGate>

@@ -1,5 +1,4 @@
 'use client';
-
 import { ImmerStateCreator } from '@/store/type';
 import { createModalSlice } from './modal/modal.slice';
 import { createThemeSlice } from './theme/theme.slice';

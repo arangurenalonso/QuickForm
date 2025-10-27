@@ -3,7 +3,8 @@ import { AuthError, mapAxiosToAuthError } from '@/common/libs/axios/error-map';
 import { err } from '@/common/types/result';
 import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
-import { LoginRequest } from '../types/auth.types';
+import { LoginRequest, RegisterRequest } from '../types/auth.types';
+import { ResultResponse } from '@/common/types/resultResponse';
 
 export const authService = {
   async login(payload: LoginRequest): Promise<Result<string, AuthError>> {
@@ -14,6 +15,21 @@ export const authService = {
       return err(mapAxiosToAuthError(e));
     }
   },
+
+  async register(
+    payload: RegisterRequest
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<ResultResponse>(
+        '/auth/register',
+        payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
   // async refresh(): Promise<RefreshResponse> {
   //   const { data } = await api.auth.post<RefreshResponse>('/auth/refresh');
   //   return data;
