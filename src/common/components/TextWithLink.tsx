@@ -14,6 +14,7 @@ type TextWithLinkProps = {
   asButton?: boolean; // render as shadcn button
   prefetch?: boolean; // control Next prefetching (default true)
   className?: string;
+  invertUnderline?: boolean; // pass to CustomLink
 };
 
 const TextWithLink = ({
@@ -23,6 +24,7 @@ const TextWithLink = ({
   asButton = false,
   prefetch = true,
   className,
+  invertUnderline = false,
 }: TextWithLinkProps) => {
   return (
     <p className={cn('text-center text-muted-foreground', className)}>
@@ -34,7 +36,12 @@ const TextWithLink = ({
           </Link>
         </Button>
       ) : (
-        <CustomLink href={href} prefetch={prefetch} linkText={linkText} />
+        <CustomLink
+          href={href}
+          prefetch={prefetch}
+          linkText={linkText}
+          invertUnderline={invertUnderline}
+        />
       )}
     </p>
   );

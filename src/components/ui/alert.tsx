@@ -9,8 +9,17 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: 'bg-background text-foreground',
-        destructive:
+        error:
           'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
+        success:
+          'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400 dark:border-green-500/40 ' +
+          '[&>svg]:text-green-600 dark:[&>svg]:text-green-400',
+        info:
+          'border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400 dark:border-blue-500/40 ' +
+          '[&>svg]:text-blue-600 dark:[&>svg]:text-blue-400',
+        warning:
+          'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400 dark:border-amber-500/40 ' +
+          '[&>svg]:text-amber-600 dark:[&>svg]:text-amber-400',
       },
     },
     defaultVariants: {

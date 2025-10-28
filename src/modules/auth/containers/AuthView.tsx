@@ -9,6 +9,8 @@ import { ActionAuthViewEnum } from '../enum/auth.enum';
 import TextWithLink from '@/common/components/TextWithLink';
 import ForgotPasswordForm from '../components/form/ForgotPasswordForm';
 import HelperText from '@/common/components/atoms/HelperText';
+import EmailConfirmation from '../components/form/EmailConfirmation';
+import { Separator } from '@/components/ui/separator';
 
 type LoginViewProps = {
   action: ActionAuthViewEnum;
@@ -17,10 +19,12 @@ type SecondaryActionLinkProps = {
   mainText: React.ReactNode;
   linkText: string | null | undefined;
   href: string;
+  invertUnderline: boolean;
 };
 type AuxiliaryLinkType = {
   linkText: string | null | undefined;
   href: string;
+  invertUnderline: boolean;
 };
 
 const VIEW_MAP: Record<
@@ -40,10 +44,12 @@ const VIEW_MAP: Record<
       mainText: "Don't have an account?",
       linkText: 'Sign up',
       href: '/auth/register',
+      invertUnderline: true,
     },
     auxiliaryLink: {
       linkText: 'Forgot your password?',
       href: '/auth/forgot-password',
+      invertUnderline: false,
     },
   },
   [ActionAuthViewEnum.REGISTER]: {
@@ -53,6 +59,7 @@ const VIEW_MAP: Record<
       mainText: 'Already have an account?',
       linkText: 'Sign in',
       href: '/auth/login',
+      invertUnderline: false,
     },
   },
   [ActionAuthViewEnum.FORGOT_PASSWORD]: {
@@ -60,6 +67,16 @@ const VIEW_MAP: Record<
     node: <ForgotPasswordForm />,
     helperText:
       'Please enter your email address to receive a password reset link.',
+    secondaryActionLink: {
+      mainText: '',
+      linkText: 'Already have the reset code',
+      href: '/auth/reset-password',
+      invertUnderline: true,
+    },
+  },
+  [ActionAuthViewEnum.EMAIL_CONFIRMATION]: {
+    title: 'Confirm your email',
+    node: <EmailConfirmation />,
   },
 };
 
@@ -69,13 +86,14 @@ const LoginView = ({ action }: LoginViewProps) => {
   return (
     <AuthFormLayout>
       <TitleWithThemeToggle title={view.title} />
+      <Separator className="my-6" />
       {view.helperText && <HelperText>{view.helperText}</HelperText>}
-
       {view.node}
       {view.auxiliaryLink && (
         <CustomLink
           href={view.auxiliaryLink.href}
           linkText={view.auxiliaryLink.linkText!}
+          invertUnderline={view.auxiliaryLink.invertUnderline}
         />
       )}
       {view.secondaryActionLink && (
@@ -83,6 +101,7 @@ const LoginView = ({ action }: LoginViewProps) => {
           mainText={view.secondaryActionLink.mainText}
           linkText={view.secondaryActionLink.linkText!}
           href={view.secondaryActionLink.href!}
+          invertUnderline={view.secondaryActionLink.invertUnderline}
         />
       )}
     </AuthFormLayout>
