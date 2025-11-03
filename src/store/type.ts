@@ -5,8 +5,8 @@ export type ImmerStateCreator<T> = StateCreator<
   BoundState,
   [
     ['zustand/immer', never],
-    ['zustand/persist', unknown],
-    ['zustand/devtools', never]
+    ['zustand/persist', unknown]
+    // ['zustand/devtools', never]
   ],
   [],
   T

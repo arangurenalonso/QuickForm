@@ -70,10 +70,15 @@ const VIEW_MAP: Record<
     helperText:
       'Please enter your email address to receive a password reset link.',
     secondaryActionLink: {
-      mainText: '',
-      linkText: 'Already have the reset code',
+      mainText: 'Already have the reset code?',
+      linkText: 'Reset Password',
       href: '/auth/reset-password',
       invertUnderline: true,
+    },
+    auxiliaryLink: {
+      linkText: 'Back to Sign in',
+      href: '/auth/login',
+      invertUnderline: false,
     },
   },
   [ActionAuthViewEnum.EMAIL_CONFIRMATION]: {
