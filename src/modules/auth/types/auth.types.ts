@@ -8,10 +8,17 @@ export type AuthUser = {
 };
 
 export type LoginRequest = { email: string; password: string };
+
 export type RegisterRequest = {
   email: string;
   password: string;
   confirmPassword: string;
+};
+export type ResendVerifyEmailRequest = { email: string };
+
+export type EmailConfirmationRequest = {
+  email: string;
+  verificationCode: string;
 };
 
 export type ApiUser = { id: string; email: string; name: string | null };
@@ -24,7 +31,6 @@ export type LoginResponseBody = {
   refreshToken?: string; // si tu .NET lo manda en body
 };
 
-// Para /me
 export type MeResponseBody = {
   ok: boolean;
   user: ApiUser | null;

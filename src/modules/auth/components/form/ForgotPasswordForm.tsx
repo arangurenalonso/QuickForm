@@ -80,20 +80,6 @@ const ForgotPasswordForm = () => {
             ? 'Sending Email...'
             : 'Get new password'}
         </Button>
-
-        {/* {!!errorMessage?.length && (
-            <>
-              <Separator className="my-2" />
-              <Alert variant="destructive">
-                <AlertTitle>Something went wrong</AlertTitle>
-                <AlertDescription className="space-y-1">
-                  {errorMessage.map((e: string, i: number) => (
-                    <div key={i}>- {e}</div>
-                  ))}
-                </AlertDescription>
-              </Alert>
-            </>
-          )} */}
       </form>
     </Form>
   );

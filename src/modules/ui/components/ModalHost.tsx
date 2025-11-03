@@ -16,9 +16,6 @@ export default function ModalHost() {
   const modals = useBoundStore((s) => s.modals);
   const closeModal = useBoundStore((s) => s.closeModal);
 
-  //   const { modals, closeModal } = useBoundStore.getState();
-  console.log('modals', { modals });
-
   if (!modals?.length) return null;
 
   return (
@@ -28,24 +25,15 @@ export default function ModalHost() {
           key={m.id}
           open={m.isOpen !== false}
           onOpenChange={(next) => {
-            if (!next && m.acceptToClose === false) return;
             if (!next) closeModal(m.id);
           }}
         >
-          <DialogContent
-            onInteractOutside={(e) => {
-              if (m.acceptToClose === false) e.preventDefault();
-            }}
-            onEscapeKeyDown={(e) => {
-              if (m.acceptToClose === false) e.preventDefault();
-            }}
-            className="sm:max-w-md"
-          >
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>{m.title}</DialogTitle>
-              <DialogDescription className="sr-only">
-                Ventana modal
-              </DialogDescription>
+              {m.titleDescription && (
+                <DialogDescription>{m.titleDescription}</DialogDescription>
+              )}
             </DialogHeader>
 
             <div className="space-y-3">{m.content}</div>
@@ -53,7 +41,7 @@ export default function ModalHost() {
             <DialogFooter className="sm:justify-end gap-2">
               {m.actions ?? (
                 <Button variant="secondary" onClick={() => closeModal(m.id)}>
-                  Cerrar
+                  Close
                 </Button>
               )}
             </DialogFooter>

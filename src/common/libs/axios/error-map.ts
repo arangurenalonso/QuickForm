@@ -1,49 +1,11 @@
 // src/common/http/error-map.ts
-import axios, { isAxiosError } from 'axios';
-import { isBackendErrorPayload, BackendErrorItem } from './error.result';
-
-export type AuthErrorKind =
-  | 'InvalidCredentials'
-  | 'Unauthorized'
-  | 'NotFound'
-  | 'Validation'
-  | 'RateLimited'
-  | 'Network'
-  | 'Timeout'
-  | 'Canceled'
-  | 'Server'
-  | 'BadRequest'
-  | 'Unknown';
-
-export type AuthError = {
-  kind: AuthErrorKind;
-  message: string;
-  details?: BackendErrorItem[];
-};
-
-// === Helpers ===
-function isCanceled(e: unknown): boolean {
-  return axios.isCancel(e) || (isAxiosError(e) && e.code === 'ERR_CANCELED');
-}
-function isTimeout(e: unknown): boolean {
-  return isAxiosError(e) && e.code === 'ECONNABORTED';
-}
-
-// function mapFieldErrors(
-//   p?: BackendErrorPayload
-// ): Record<string, string> | undefined {
-//   if (!p?.errors?.length) return undefined;
-//   const map = new Map<string, string[]>();
-//   for (const err of p.errors) {
-//     const key = err.propertyName || '_';
-//     const arr = map.get(key) ?? [];
-//     arr.push(err.description);
-//     map.set(key, arr);
-//   }
-//   const out: Record<string, string> = {};
-//   for (const [k, v] of map) out[k] = v.join('\n');
-//   return out;
-// }
+import { isAxiosError } from 'axios';
+import {
+  isBackendQuickFormErrorPayload,
+  isCanceled,
+  isTimeout,
+} from './type/error.helper';
+import { AuthError } from './type/error.type';
 
 export function mapAxiosToAuthError(e: unknown): AuthError {
   if (!isAxiosError(e)) {
@@ -64,7 +26,7 @@ export function mapAxiosToAuthError(e: unknown): AuthError {
 
   const status = e.response.status;
   const data = e.response.data;
-  const payload = isBackendErrorPayload(data) ? data : undefined;
+  const payload = isBackendQuickFormErrorPayload(data) ? data : undefined;
 
   const message = payload?.message || 'Unknown error';
 

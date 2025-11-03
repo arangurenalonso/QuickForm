@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 
 type LoginFormInputs = {
   email: string;
@@ -21,7 +22,7 @@ type LoginFormInputs = {
 };
 
 const LoginForm = () => {
-  const { signInProcess, errorMessage } = useAuthStore();
+  const { signInProcess, error, clearError } = useAuthStore();
   const [showPwd, setShowPwd] = useState(false);
 
   const form = useForm<LoginFormInputs>({
@@ -32,10 +33,15 @@ const LoginForm = () => {
     await signInProcess(data.email, data.password);
   };
 
+  AuthErrorModalWatcher({
+    error,
+    id: 'login-error-modal',
+    onClose: clearError,
+  });
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email */}
         <FormField
           control={form.control}
           name="email"
@@ -55,7 +61,6 @@ const LoginForm = () => {
           )}
         />
 
-        {/* Password */}
         <FormField
           control={form.control}
           name="password"
@@ -98,20 +103,6 @@ const LoginForm = () => {
         >
           {form.formState.isSubmitting ? 'Logging in…' : 'Login'}
         </Button>
-
-        {/* {!!errorMessage?.length && (
-            <>
-              <Separator className="my-2" />
-              <Alert variant="destructive">
-                <AlertTitle>Something went wrong</AlertTitle>
-                <AlertDescription className="space-y-1">
-                  {errorMessage.map((e: string, i: number) => (
-                    <div key={i}>- {e}</div>
-                  ))}
-                </AlertDescription>
-              </Alert>
-            </>
-          )} */}
       </form>
     </Form>
   );

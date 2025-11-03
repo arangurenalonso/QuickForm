@@ -1,34 +1,28 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useBoundStore } from '@/store';
 import { authService } from '../services/auth.service';
 import { isOk } from '@/common/types/result';
 import { ResultResponse } from '@/common/types/resultResponse';
-// import { useRouter } from 'next/navigation';
+import { AuthError } from '@/common/libs/axios/type/error.type';
 
 export default function useAuthStore() {
   const isAuthenticated = useBoundStore((state) => state.isAuthenticated);
   const user = useBoundStore((state) => state.user);
   const token = useBoundStore((state) => state.token);
   const setAccessToken = useBoundStore((state) => state.setAccessToken);
-  // const router = useRouter();
 
-  // const { isAuthenticated, user, token, setAccessToken } =
-  //   useBoundStore.getState();
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [error, setError] = useState<AuthError | null>(null);
 
   const signInProcess = useCallback(
     async (email: string, password: string) => {
-      restoreState();
+      clearError();
       const res = await authService.login({ email, password });
       if (!isOk(res)) {
-        console.log('Login error:', res?.error);
-        setErrorMessage(res.error.message || 'Login failed');
+        setError(res.error);
         return;
       }
-      restoreState();
       setAccessToken(res.value);
       // signIn({ user: res.user, token: res.accessToken });
       // router.replace('/');
@@ -43,26 +37,54 @@ export default function useAuthStore() {
       password: string,
       confirmPassword: string
     ): Promise<ResultResponse | undefined> => {
-      restoreState();
+      clearError();
       const res = await authService.register({
         email,
         password,
         confirmPassword,
       });
       if (!isOk(res)) {
-        console.log('Register error:', res?.error);
-        setErrorMessage(res.error.message || 'Register failed');
+        setError(res.error);
         return;
       }
-      restoreState();
+      return res.value;
+    },
+    []
+  );
+  const resendVerificationEmailProcess = useCallback(
+    async (email: string): Promise<ResultResponse | undefined> => {
+      clearError();
+      const res = await authService.resendEmailConfirmation({
+        email,
+      });
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
       return res.value;
     },
     []
   );
 
-  const restoreState = () => {
-    setErrorMessage(null);
-  };
+  const emailConfirmationProcess = useCallback(
+    async (email: string, verificationCode: string) => {
+      clearError();
+      const res = await authService.emailConfirmation({
+        email,
+        verificationCode,
+      });
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      setAccessToken(res.value);
+    },
+    []
+  );
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
   // const refreshProcess = useCallback(async () => {
   //   const res = await authClient.refreshAction();
@@ -79,11 +101,6 @@ export default function useAuthStore() {
   //   signOut();
   // }, [signOut]);
 
-  useEffect(() => {
-    console.log('Token changed:', token);
-    // meProcess();
-  }, [token]);
-
   // const meProcess = useCallback(async () => {
   //   // if (!token) return { ok: false, user: null };
   //   // const res = await authClient.meAction(token);
@@ -95,9 +112,12 @@ export default function useAuthStore() {
       isAuthenticated,
       user,
       token,
-      errorMessage,
+      error,
       signInProcess,
       signUpProcess,
+      clearError,
+      resendVerificationEmailProcess,
+      emailConfirmationProcess,
       // refreshProcess,
       // signOutProcess,
       // meProcess,
@@ -106,9 +126,11 @@ export default function useAuthStore() {
       isAuthenticated,
       user,
       token,
-      errorMessage,
+      error,
       signInProcess,
       signUpProcess,
+      resendVerificationEmailProcess,
+      clearError,
       // refreshProcess,
       // signOutProcess,
       // meProcess,

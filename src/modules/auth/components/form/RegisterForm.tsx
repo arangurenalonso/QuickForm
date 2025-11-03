@@ -17,6 +17,8 @@ import useAuthStore from '../../hooks/useAuthStore';
 import { useBoundStore } from '@/store';
 import { makePasswordRules, toRHFValidate } from '../../types/auth.types';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
+import CustomAlert from '@/common/components/atoms/CustomAlert';
+import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 
 type RegisterFormInputs = {
   email: string;
@@ -24,7 +26,7 @@ type RegisterFormInputs = {
   confirmPassword: string;
 };
 const RegisterForm = () => {
-  const { signUpProcess, errorMessage } = useAuthStore();
+  const { signUpProcess, error, clearError } = useAuthStore();
   const { openModal } = useBoundStore.getState();
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -39,6 +41,11 @@ const RegisterForm = () => {
   });
   const password = useWatch({ control: form.control, name: 'password' }) ?? '';
 
+  AuthErrorModalWatcher({
+    error,
+    id: 'register-error-modal',
+    onClose: clearError,
+  });
   const onSubmit = async (data: RegisterFormInputs) => {
     const result = await signUpProcess(
       data.email,
@@ -47,10 +54,15 @@ const RegisterForm = () => {
     );
     if (result) {
       openModal({
-        id: 'verify-email',
-        title: 'Usuario creado',
-        content: <div dangerouslySetInnerHTML={{ __html: result.message }} />,
-        acceptToClose: true,
+        id: 'Successful-Registration-Modal',
+        title: 'User created successfully',
+        content: (
+          <CustomAlert
+            variant="success"
+            message={result.message}
+            redirectUrl={result.redirectUrl}
+          />
+        ),
       });
     }
   };
@@ -58,7 +70,6 @@ const RegisterForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email */}
         <FormField
           control={form.control}
           name="email"
@@ -78,7 +89,6 @@ const RegisterForm = () => {
             </FormItem>
           )}
         />
-        {/* Password */}
         <FormField
           control={form.control}
           name="password"

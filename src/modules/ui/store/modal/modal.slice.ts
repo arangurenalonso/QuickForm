@@ -7,7 +7,7 @@ import { ModalModel } from './modal.model';
 
 export type ModalSlice = ModalModel & ModalActions;
 
-export const createModalSlice: ImmerStateCreator<ModalSlice> = (set) => ({
+export const createModalSlice: ImmerStateCreator<ModalSlice> = (set, get) => ({
   ...createModalInitialState(),
 
   openModal: (m) =>
@@ -15,10 +15,14 @@ export const createModalSlice: ImmerStateCreator<ModalSlice> = (set) => ({
       state.modals.push({ ...m, isOpen: true });
     }),
 
-  closeModal: (id) =>
+  closeModal: (id) => {
+    const modal = get().modals.find((x) => x.id === id);
+    const onClose = modal?.onClose;
     set((state) => {
       state.modals = state.modals.filter((x) => x.id !== id);
-    }),
+    });
+    onClose?.();
+  },
 
   closeAllModals: () =>
     set((state) => {

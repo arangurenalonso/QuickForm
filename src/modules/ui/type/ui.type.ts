@@ -1,8 +1,9 @@
 export type ModalItem = {
   id: string;
-  title: string;
+  title: string | React.ReactNode;
+  titleDescription?: string | React.ReactNode;
   isOpen: boolean;
   content?: React.ReactNode;
-  acceptToClose?: boolean;
   actions?: React.ReactNode;
+  onClose?: () => void;
 };

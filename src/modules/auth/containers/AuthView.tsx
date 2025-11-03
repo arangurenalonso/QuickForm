@@ -9,8 +9,9 @@ import { ActionAuthViewEnum } from '../enum/auth.enum';
 import TextWithLink from '@/common/components/TextWithLink';
 import ForgotPasswordForm from '../components/form/ForgotPasswordForm';
 import HelperText from '@/common/components/atoms/HelperText';
-import EmailConfirmation from '../components/form/EmailConfirmation';
+import EmailConfirmation from '../components/form/EmailConfirmationForm';
 import { Separator } from '@/components/ui/separator';
+import ResendVerifyEmailForm from '../components/form/ResendVerifyEmailForm';
 
 type LoginViewProps = {
   action: ActionAuthViewEnum;
@@ -77,6 +78,17 @@ const VIEW_MAP: Record<
   [ActionAuthViewEnum.EMAIL_CONFIRMATION]: {
     title: 'Confirm your email',
     node: <EmailConfirmation />,
+  },
+  [ActionAuthViewEnum.RESENT_VERIFICATION]: {
+    title: 'Resend verification email',
+    helperText: 'Enter your email address to receive a new verification email.',
+    node: <ResendVerifyEmailForm />,
+    secondaryActionLink: {
+      mainText: 'Already verified?',
+      linkText: 'Sign in',
+      href: '/auth/login',
+      invertUnderline: false,
+    },
   },
 };
 
