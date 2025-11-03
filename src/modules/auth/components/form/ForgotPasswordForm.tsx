@@ -13,8 +13,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
+import useAuthStore from '../../hooks/useAuthStore';
+import CustomAlert from '@/common/components/atoms/CustomAlert';
+import { useBoundStore } from '@/store';
 
-const RegisterSchema = z.object({
+const ForgotPasswordSchema = z.object({
   email: z
     .string()
     .trim()
@@ -22,37 +26,47 @@ const RegisterSchema = z.object({
     .email('Invalid email address'),
 });
 
-type RegisterFormInputs = {
+type ForgotPasswordFormInputs = {
   email: string;
 };
 const ForgotPasswordForm = () => {
-  //   const { registerProcess, errorMessage } = useAuthStore();
+  const { forgotPasswordProcess, error, clearError } = useAuthStore();
+  AuthErrorModalWatcher({
+    error,
+    id: 'email-confirmation-error-modal',
+    onClose: clearError,
+  });
+  const { openModal } = useBoundStore.getState();
 
-  const form = useForm<RegisterFormInputs>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<ForgotPasswordFormInputs>({
+    resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
       email: '',
     },
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: RegisterFormInputs) => {
-    console.log('RegisterForm - onSubmit data:', data);
-    // NOTE: keep same payload shape you already use
-    // await registerProcess({
-    //   firstName: data.firstName,
-    //   lastName: data.lastName,
-    //   email: data.email,
-    //   password: data.password,
-    //   confirmPassword: data.confirmPassword,
-    //   // timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    // });
+  const onSubmit = async (data: ForgotPasswordFormInputs) => {
+    const result = await forgotPasswordProcess(data.email);
+
+    if (result) {
+      openModal({
+        id: 'resend-verification-success-modal',
+        title: 'Verification Email Sent',
+        content: (
+          <CustomAlert
+            variant="success"
+            message={result.message}
+            redirectUrl={result.redirectUrl}
+          />
+        ),
+      });
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email */}
         <FormField
           control={form.control}
           name="email"

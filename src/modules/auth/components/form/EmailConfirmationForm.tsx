@@ -20,7 +20,7 @@ type EmailConfirmationFormInputs = {
   verificationCode: string;
 };
 
-export default function EmailConfirmation() {
+export default function EmailConfirmationForm() {
   const { emailConfirmationProcess, error, clearError } = useAuthStore();
   AuthErrorModalWatcher({
     error,

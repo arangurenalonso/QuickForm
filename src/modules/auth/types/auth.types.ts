@@ -15,6 +15,7 @@ export type RegisterRequest = {
   confirmPassword: string;
 };
 export type ResendVerifyEmailRequest = { email: string };
+export type ForgotPasswordRequest = { email: string };
 
 export type EmailConfirmationRequest = {
   email: string;

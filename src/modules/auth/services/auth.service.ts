@@ -5,9 +5,11 @@ import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
 import {
   EmailConfirmationRequest,
+  ForgotPasswordRequest,
   LoginRequest,
   RegisterRequest,
   ResendVerifyEmailRequest,
+  ResetPasswordRequest,
 } from '../types/auth.types';
 import { ResultResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
@@ -59,6 +61,34 @@ export const authService = {
         payload
       );
       return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async forgotPassword(
+    payload: ForgotPasswordRequest
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<ResultResponse>(
+        '/auth/forgot-password',
+        payload
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async resetPassword(
+    payload: ResetPasswordRequest
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<ResultResponse>(
+        '/auth/reset-password',
+        payload
+      );
+      return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }

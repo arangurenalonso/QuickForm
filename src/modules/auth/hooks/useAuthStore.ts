@@ -66,6 +66,44 @@ export default function useAuthStore() {
     []
   );
 
+  const forgotPasswordProcess = useCallback(
+    async (email: string): Promise<ResultResponse | undefined> => {
+      clearError();
+      const res = await authService.forgotPassword({
+        email,
+      });
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      return res.value;
+    },
+    []
+  );
+
+  const resetPasswordProcess = useCallback(
+    async (
+      email: string,
+      verificationCode: string,
+      password: string,
+      confirmPassword: string
+    ): Promise<ResultResponse | undefined> => {
+      clearError();
+      const res = await authService.resetPassword({
+        email,
+        verificationCode,
+        password,
+        confirmPassword,
+      });
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      return res.value;
+    },
+    []
+  );
+
   const emailConfirmationProcess = useCallback(
     async (email: string, verificationCode: string) => {
       clearError();
@@ -118,6 +156,8 @@ export default function useAuthStore() {
       clearError,
       resendVerificationEmailProcess,
       emailConfirmationProcess,
+      forgotPasswordProcess,
+      resetPasswordProcess,
       // refreshProcess,
       // signOutProcess,
       // meProcess,
@@ -131,6 +171,9 @@ export default function useAuthStore() {
       signUpProcess,
       resendVerificationEmailProcess,
       clearError,
+      emailConfirmationProcess,
+      forgotPasswordProcess,
+      resetPasswordProcess,
       // refreshProcess,
       // signOutProcess,
       // meProcess,
