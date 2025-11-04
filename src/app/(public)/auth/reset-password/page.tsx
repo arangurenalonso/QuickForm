@@ -1,3 +1,4 @@
+'use client';
 import LoginView from '@/modules/auth/containers/AuthView';
 import { ActionAuthViewEnum } from '@/modules/auth/enum/auth.enum';
 
