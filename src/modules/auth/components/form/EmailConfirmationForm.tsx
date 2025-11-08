@@ -9,9 +9,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from '@/common/libs/ui/form';
+import { Input } from '@/common/libs/ui/input';
+import { Button } from '@/common/libs/ui/button';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams } from 'next/navigation';
 

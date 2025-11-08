@@ -21,6 +21,12 @@ export type EmailConfirmationRequest = {
   email: string;
   verificationCode: string;
 };
+export type ResetPasswordRequest = {
+  email: string;
+  verificationCode: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export type ApiUser = { id: string; email: string; name: string | null };
 

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import { cn } from '@/common/libs/utils';
 import { useDraggable } from '@dnd-kit/core';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert } from '@/components/ui/alert';
+import { Alert } from '@/common/libs/ui/alert';
 import { cn } from '@/common/libs/utils';
 import { AuthError } from '@/common/libs/axios/type/error.type';
 import { KIND_UI } from './auth-error.type';

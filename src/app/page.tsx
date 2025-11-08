@@ -1,6 +1,6 @@
 'use client';
 
-import FormBuilder from '@/components/form-designer/FormBuilder';
+import FormBuilder from '@/modules/formbuilder/components/form-designer/FormBuilder';
 
 export default function Home() {
   return (

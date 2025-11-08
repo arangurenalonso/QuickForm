@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import { SidebarBtnDrag } from './SidebarBtnElement';
 
 const SidebarBtnDragOverlay = ({ icon: Icon, label }: SidebarBtnDrag) => {

@@ -1,5 +1,5 @@
-import { UpdatedTypeEnum } from '@/components/controlledField/enum/FieldType';
-import { FormFieldConfigType } from '@/components/controlledField/enum/FormFieldConfigType';
+import { UpdatedTypeEnum } from '@/modules/formbuilder/components/controlledField/enum/FieldType';
+import { FormFieldConfigType } from '@/modules/formbuilder/components/controlledField/enum/FormFieldConfigType';
 import { createContext } from 'react';
 
 type DesignerContextType = {

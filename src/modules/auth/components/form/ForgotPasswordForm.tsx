@@ -1,8 +1,8 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/common/libs/ui/input';
+import { Button } from '@/common/libs/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -12,7 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/common/libs/ui/form';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import useAuthStore from '../../hooks/useAuthStore';
 import CustomAlert from '@/common/components/atoms/CustomAlert';

@@ -1,7 +1,11 @@
-import FormBuilder from '@/components/form-designer/FormBuilder';
-import NavbarDesigner from '@/components/form-designer/navbar/NavbarDesigner';
-import VerticalGrowContainer from '@/components/template/VerticalGrowContainer';
+import NavbarDesigner from '@/modules/formbuilder/components/form-designer/navbar/NavbarDesigner';
+import VerticalGrowContainer from '@/modules/formbuilder/components/template/VerticalGrowContainer';
+import dynamic from 'next/dynamic';
 
+const DynamicHeavyComponents = dynamic(
+  () => import('@/modules/formbuilder/components/form-designer/FormBuilder'),
+  { loading: () => <div>Chart…</div>, ssr: false }
+);
 async function BuilderPage({
   params,
 }: {
@@ -14,7 +18,7 @@ async function BuilderPage({
 
   return (
     <VerticalGrowContainer topElement={<NavbarDesigner />}>
-      <FormBuilder />
+      <DynamicHeavyComponents />
     </VerticalGrowContainer>
   );
 }

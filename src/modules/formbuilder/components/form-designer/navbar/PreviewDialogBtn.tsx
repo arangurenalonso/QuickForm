@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
   DialogDescription,
-} from '@/components/ui/dialog';
+} from '@/common/libs/ui/dialog';
 import useDesigner from '@/hooks/useDesigner';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';

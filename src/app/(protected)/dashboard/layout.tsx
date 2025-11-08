@@ -1,5 +1,5 @@
-import Navbar from '@/components/navbar/Navbar';
-import VerticalGrowContainer from '@/components/template/VerticalGrowContainer';
+import Navbar from '@/modules/formbuilder/components/navbar/Navbar';
+import VerticalGrowContainer from '@/modules/formbuilder/components/template/VerticalGrowContainer';
 
 export default function Layout({
   children,

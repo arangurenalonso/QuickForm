@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from './Logo';
-import ThemeSwitcher from '../../modules/ui/components/ThemeSwitcher';
+import ThemeSwitcher from '@/modules/ui/components/ThemeSwitcher';
 
 const Navbar = () => {
   return (

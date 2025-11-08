@@ -1,6 +1,6 @@
 import { AuthError } from '@/common/libs/axios/type/error.type';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/common/libs/ui/button';
+import { Badge } from '@/common/libs/ui/badge';
 import Link from 'next/link';
 
 type AuthErrorAlertBodyProps = {

@@ -1,10 +1,10 @@
-import { FormFieldConfigType } from '@/components/controlledField/enum/FormFieldConfigType';
-import { Button } from '@/components/ui/button';
 import useDesigner from '@/hooks/useDesigner';
 import { useDroppable } from '@dnd-kit/core';
 import { useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
 import { cn } from '@/common/libs/utils';
+import { Button } from 'react-day-picker';
+import { FormFieldConfigType } from '../../controlledField/enum/FormFieldConfigType';
 
 type HoverStateProps = {
   isHover: boolean;
@@ -55,7 +55,7 @@ const HoverDesignerElementWrapper = ({
           <div className="absolute right-0 h-full">
             <Button
               className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500 "
-              variant="outline"
+              // variant="outline"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

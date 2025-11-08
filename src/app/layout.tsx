@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import DesignerContextProvider from '@/context/designer/DesignerProvider';
-import ClientProviders from '@/components/ClientProviders';
 import HydrationGate from '@/common/components/HydrationGate';
 import ModalHost from '@/modules/ui/components/ModalHost';
+import ClientProviders from '@/modules/formbuilder/components/ClientProviders';
 
 export const metadata: Metadata = {
   title: 'Create Next App',

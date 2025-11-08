@@ -8,8 +8,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from '@/common/libs/ui/dialog';
+import { Button } from '@/common/libs/ui/button';
 import { useBoundStore } from '@/store';
 
 export default function ModalHost() {

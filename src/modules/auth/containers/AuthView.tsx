@@ -9,7 +9,7 @@ import { ActionAuthViewEnum } from '../enum/auth.enum';
 import TextWithLink from '@/common/components/TextWithLink';
 import ForgotPasswordForm from '../components/form/ForgotPasswordForm';
 import HelperText from '@/common/components/atoms/HelperText';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/common/libs/ui/separator';
 import ResendVerifyEmailForm from '../components/form/ResendVerifyEmailForm';
 import EmailConfirmationForm from '../components/form/EmailConfirmationForm';
 import ResetPasswordForm from '../components/form/ResetPasswordForm';

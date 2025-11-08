@@ -3,8 +3,8 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/common/libs/ui/input';
+import { Button } from '@/common/libs/ui/button';
 import {
   Form,
   FormControl,
@@ -12,7 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/common/libs/ui/form';
 import useAuthStore from '../../hooks/useAuthStore';
 import { useBoundStore } from '@/store';
 import { makePasswordRules, toRHFValidate } from '../../types/auth.types';

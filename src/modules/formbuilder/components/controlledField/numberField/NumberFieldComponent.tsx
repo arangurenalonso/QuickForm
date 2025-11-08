@@ -1,26 +1,26 @@
 'use client';
 import React from 'react';
-import { Input } from '@/components/ui/input'; // Ajusta la ruta según tu estructura de Shadcn
-import { cn } from '@/common/libs/utils'; // Si usas una utilidad de concatenación de clases
-import { FiAlertCircle } from 'react-icons/fi'; // Ícono por defecto de React Icons
-import { Label } from '@/components/ui/label';
-import TextFieldEditableProps from './type/TextFieldEditableProps';
-
-interface TextFieldComponentProps {
+import { cn } from '@/common/libs/utils';
+import { FiAlertCircle } from 'react-icons/fi';
+import { Label } from '@/common/libs/ui/label';
+import { NumericFormat } from 'react-number-format';
+import { Input } from '@/common/libs/ui/input';
+import NumberFieldEditableProps from './type/NumberFieldEditableProps';
+interface NumberFieldComponentProps {
   inputRef?: React.Ref<HTMLInputElement>;
-  value?: string;
-  onChange?: (value?: string) => void;
+  value?: number;
+  onChange?: (value?: number) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined;
   error?: boolean;
   errorMessage?: React.ReactNode;
   disabled?: boolean;
 }
 
-const TextFieldComponent: React.FC<
-  TextFieldComponentProps & TextFieldEditableProps
+const NumberFieldComponent: React.FC<
+  NumberFieldComponentProps & NumberFieldEditableProps
 > = ({
   label,
-  value = '',
+  value,
   onChange,
   onBlur,
   name,
@@ -32,21 +32,23 @@ const TextFieldComponent: React.FC<
   icon: Icon,
   helperText,
   informationText,
+  prefix,
+  suffix,
+  decimalScale = 2,
+  allowNegative = true,
 }) => {
   return (
     <div className="space-y-2">
       {/* Label */}
       {label && (
-        <>
-          <Label htmlFor={name} className="text-sm font-medium ">
-            {label}
-            {informationText && (
-              <p className="text-xs text-muted-foreground ">
-                {informationText}
-              </p>
-            )}
-          </Label>
-        </>
+        <Label htmlFor={name} className="text-sm font-medium">
+          {label}
+          {informationText && (
+            <span className="ml-2 text-xs text-muted-foreground">
+              {informationText}
+            </span>
+          )}
+        </Label>
       )}
 
       {/* Input Container */}
@@ -70,22 +72,28 @@ const TextFieldComponent: React.FC<
           />
         )}
 
-        {/* Input */}
-        <Input
+        {/* Number Input */}
+        <NumericFormat
           id={name}
           name={name}
-          type="text"
           value={value}
-          onChange={(e) => {
+          onValueChange={(values) => {
             if (onChange) {
-              onChange(e.target.value);
+              onChange(values.floatValue);
             }
           }}
           onBlur={onBlur}
           placeholder={placeholder}
+          prefix={prefix}
           disabled={disabled}
-          ref={inputRef}
-          className="flex-1  placeholder:text-muted-foreground"
+          getInputRef={inputRef}
+          className="flex-1 bg-transparent placeholder:text-muted-foreground"
+          allowNegative={allowNegative}
+          decimalScale={decimalScale}
+          fixedDecimalScale
+          suffix={suffix}
+          thousandSeparator=","
+          customInput={Input}
         />
       </div>
 
@@ -105,4 +113,4 @@ const TextFieldComponent: React.FC<
   );
 };
 
-export default TextFieldComponent;
+export default NumberFieldComponent;

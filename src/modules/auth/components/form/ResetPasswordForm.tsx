@@ -9,10 +9,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/common/libs/ui/form';
 import { Eye, EyeOff } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/common/libs/ui/input';
+import { Button } from '@/common/libs/ui/button';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams } from 'next/navigation';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';

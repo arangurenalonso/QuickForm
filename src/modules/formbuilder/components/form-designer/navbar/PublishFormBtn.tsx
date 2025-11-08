@@ -8,11 +8,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/common/libs/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import { FaIcons } from 'react-icons/fa';
 import { MdOutlinePublish } from 'react-icons/md';
 

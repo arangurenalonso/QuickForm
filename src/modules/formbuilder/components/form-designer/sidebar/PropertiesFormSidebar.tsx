@@ -1,6 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/common/libs/ui/button';
+import { Separator } from '@/common/libs/ui/separator';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/common/libs/ui/tabs';
 import useDesigner from '@/hooks/useDesigner';
 import { AiOutlineClose } from 'react-icons/ai';
 

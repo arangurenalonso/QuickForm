@@ -8,11 +8,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/common/libs/ui/form';
+import { Input } from '@/common/libs/ui/input';
 import NumberFieldEditableProps from '../type/NumberFieldEditableProps';
 import { NumericFormat } from 'react-number-format';
-import { Switch } from '@/components/ui/switch';
+import { Switch } from '@/common/libs/ui/switch';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';

@@ -8,8 +8,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/common/libs/ui/form';
+import { Input } from '@/common/libs/ui/input';
 import TextFieldEditableProps from '../type/TextFieldEditableProps';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';

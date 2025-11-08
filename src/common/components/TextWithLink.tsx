@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import { cn } from '@/common/libs/utils';
 import { CustomLink } from './atoms/CustomLink';
 

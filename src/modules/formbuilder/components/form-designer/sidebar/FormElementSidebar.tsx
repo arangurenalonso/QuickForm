@@ -1,4 +1,4 @@
-import { FormElements } from '@/components/controlledField/FormElements';
+import { FormElements } from '../../controlledField/FormElements';
 import SidebarBtnElement from './SidebarBtnElement';
 
 const FormElementSidebar = () => {

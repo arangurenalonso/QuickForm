@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/common/libs/ui/button';
 import { FaSpinner } from 'react-icons/fa';
 import { useToast } from '@/hooks/use-toast';
 import useDesigner from '@/hooks/useDesigner';

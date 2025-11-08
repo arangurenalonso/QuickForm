@@ -8,67 +8,63 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
+} from '@/common/libs/ui/form';
+// import { Input } from '@/common/libs/ui/input';
+import { Switch } from '@/common/libs/ui/switch';
+import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import {
-  NumberFieldValidationRulesWithMessage,
-  NumberFieldValidationRules,
-} from '../type/NumberFieldValidationRules';
+  TextFieldValidationRules,
+  TextFieldValidationRulesWithMessage,
+} from '../type/TextFieldValidationRules';
 import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/hooks/useDesigner';
 
-interface NumberFieldRulesFormProps {
+interface TextFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
 }
 
-const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
+const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
   const { updatedElement } = useDesigner();
 
-  const form = useForm<NumberFieldValidationRules>({
+  const form = useForm<TextFieldValidationRules>({
     mode: 'onBlur',
     defaultValues: {
       required: false,
-      max: undefined,
-      min: undefined,
+      maxLength: undefined,
+      minLength: undefined,
     },
   });
 
-  const { control, handleSubmit, setValue } = form;
-
   useEffect(() => {
-    if (formFieldConfig?.type === FieldTypeEnum.InputTypeNumber) {
-      const value: NumberFieldValidationRules = {
+    if (formFieldConfig?.type === FieldTypeEnum.InputTypeText) {
+      const value: TextFieldValidationRules = {
         required: formFieldConfig.rules.required as boolean,
-        max: formFieldConfig.rules.max?.value,
-        min: formFieldConfig.rules.min?.value,
+        maxLength: formFieldConfig.rules.maxLength?.value,
+        minLength: formFieldConfig.rules.minLength?.value,
       };
       form.reset(value);
     }
   }, [formFieldConfig, form]);
 
-  const onSubmit = (data: NumberFieldValidationRules) => {
-    const ruleUpdated: NumberFieldValidationRulesWithMessage = {
+  const onSubmit = (data: TextFieldValidationRules) => {
+    const ruleUpdated: TextFieldValidationRulesWithMessage = {
       required: data.required ? 'Filed is required' : false,
-      max:
-        data.max || data.max === 0
-          ? { value: data.max, message: `Cannot exceed ${data.max}` }
-          : undefined,
-      min:
-        data.min || data.min === 0
-          ? { value: data.min, message: `Must be at least ${data.min}` }
-          : undefined,
+      maxLength: data.maxLength
+        ? { value: data.maxLength, message: `Max lenght ${data.maxLength}` }
+        : undefined,
+      minLength: data.minLength
+        ? { value: data.minLength, message: `Min length ${data.minLength}` }
+        : undefined,
     };
 
     const formFieldConfigUpdated: FormFieldConfigType = {
       ...formFieldConfig,
       rules: ruleUpdated,
     };
-
     updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.RuleForm);
   };
 
@@ -78,14 +74,16 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
       onSubmit(data);
     };
   }, []);
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) {
+
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) {
     return null;
   }
+
   return (
     <Form {...form}>
-      <div onBlur={handleSubmit(onSubmit)} className="space-y-4">
+      <div onBlur={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
-          control={control}
+          control={form.control}
           name="required"
           render={({ field }) => (
             <FormItem>
@@ -98,32 +96,33 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
               <FormControl>
                 <Switch
                   checked={field.value}
-                  onCheckedChange={(checked) => setValue(field.name, !!checked)}
+                  onCheckedChange={(checked) =>
+                    form.setValue(field.name, !!checked)
+                  }
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
-          control={control}
-          name="min"
+          control={form.control}
+          name="minLength"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Min Value</FormLabel>
+              <FormLabel>Min Length</FormLabel>
               <FormControl>
                 <NumericFormat
                   value={field.value}
                   name={field.name}
                   disabled={field.disabled}
                   getInputRef={field.ref}
-                  placeholder="Enter min value"
+                  placeholder="Enter minimum length"
                   onValueChange={(values) => {
-                    setValue(field.name, values.floatValue);
+                    form.setValue(field.name, values.floatValue);
                   }}
                   className="flex-1 bg-transparent placeholder:text-muted-foreground"
-                  allowNegative={true}
+                  allowNegative={false}
                   customInput={Input}
                 />
               </FormControl>
@@ -135,11 +134,11 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
           )}
         />
         <FormField
-          control={control}
-          name="max"
+          control={form.control}
+          name="maxLength"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Max Value</FormLabel>
+              <FormLabel>Max Length</FormLabel>
               <FormControl>
                 <NumericFormat
                   value={field.value}
@@ -147,12 +146,12 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
                   disabled={field.disabled}
                   onBlur={field.onBlur}
                   getInputRef={field.ref}
-                  placeholder="Enter max value"
+                  placeholder="Enter maximon length"
                   onValueChange={(values) => {
-                    setValue(field.name, values.floatValue);
+                    form.setValue(field.name, values.floatValue);
                   }}
                   className="flex-1 bg-transparent placeholder:text-muted-foreground"
-                  allowNegative={true}
+                  allowNegative={false}
                   customInput={Input}
                 />
               </FormControl>
@@ -168,4 +167,4 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   );
 };
 
-export default NumberFieldRulesForm;
+export default TextFieldRulesForm;
