@@ -5,6 +5,7 @@ import FormCardSkeleton from '../components/dashboard/formCard/FormCardSkeleton'
 import CardStatsWrapper from '../components/dashboard/stats/CardStatsWrapper';
 import StatsCards from '../components/dashboard/stats/StatsCards';
 import CreateFormBtn from '../components/dashboard/btn/CreateFormBtn';
+import FormCreateCard from '../components/dashboard/formCard/FormCreateCard';
 
 const FormDashboardView = () => {
   return (
@@ -17,6 +18,7 @@ const FormDashboardView = () => {
       <Separator className="my-6" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <CreateFormBtn />
+        <FormCreateCard />
         <Suspense
           fallback={[1, 2, 3, 4].map((el) => (
             <FormCardSkeleton key={el} />
