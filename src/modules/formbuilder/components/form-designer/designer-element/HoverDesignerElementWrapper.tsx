@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
 import { cn } from '@/common/libs/utils';
-import { Button } from 'react-day-picker';
+import { Button } from '@/common/libs/ui/button';
 import { FormFieldConfigType } from '../../controlledField/enum/FormFieldConfigType';
 
 type HoverStateProps = {
