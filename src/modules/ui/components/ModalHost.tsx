@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/common/libs/ui/dialog';
-import { Button } from '@/common/libs/ui/button';
 import { useBoundStore } from '@/store';
 
 export default function ModalHost() {
@@ -38,13 +37,11 @@ export default function ModalHost() {
 
             <div className="space-y-3">{m.content}</div>
 
-            <DialogFooter className="sm:justify-end gap-2">
-              {m.actions ?? (
-                <Button variant="secondary" onClick={() => closeModal(m.id)}>
-                  Close
-                </Button>
-              )}
-            </DialogFooter>
+            {m.actions ?? (
+              <DialogFooter className="sm:justify-end gap-2">
+                {m.actions}
+              </DialogFooter>
+            )}
           </DialogContent>
         </Dialog>
       ))}

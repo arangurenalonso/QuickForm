@@ -14,3 +14,5 @@ export type formStatsType = {
   bounceRate: number;
   visits: number;
 };
+
+export type CreateFormRequest = { name: string; description?: string };

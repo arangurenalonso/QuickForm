@@ -21,6 +21,7 @@ export const createModalSlice: ImmerStateCreator<ModalSlice> = (set, get) => ({
     set((state) => {
       state.modals = state.modals.filter((x) => x.id !== id);
     });
+
     onClose?.();
   },
 
