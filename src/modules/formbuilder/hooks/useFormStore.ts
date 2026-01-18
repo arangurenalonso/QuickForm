@@ -26,6 +26,15 @@ export default function useFormStore() {
     },
     []
   );
+  const getFormaProcess = useCallback(async () => {
+    clearError();
+    const res = await formService.getForms();
+    if (!isOk(res)) {
+      setError(res.error);
+      return;
+    }
+    return res.value;
+  }, []);
 
   const clearError = useCallback(() => {
     setError(null);
@@ -35,6 +44,7 @@ export default function useFormStore() {
     () => ({
       error,
       createFormProcess,
+      getFormaProcess,
       clearError,
     }),
     [error, createFormProcess, clearError]

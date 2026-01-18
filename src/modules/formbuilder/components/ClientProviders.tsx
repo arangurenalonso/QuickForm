@@ -3,7 +3,7 @@
 import { ThemeProvider } from 'next-themes';
 import NextToploader from 'nextjs-toploader';
 import { useState, useEffect } from 'react';
-import { Toaster } from 'sonner';
+import { Toaster } from '@/common/libs/ui/toaster';
 
 export default function ClientProviders({
   children,

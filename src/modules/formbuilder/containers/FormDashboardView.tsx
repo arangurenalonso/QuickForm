@@ -8,7 +8,6 @@ import {
   TabsContent,
 } from '@/common/libs/ui/tabs';
 import FormCards from '../components/dashboard/formCard/FormCards';
-import FormCardSkeleton from '../components/dashboard/formCard/FormCardSkeleton';
 import CardStatsWrapper from '../components/dashboard/stats/CardStatsWrapper';
 import StatsCards from '../components/dashboard/stats/StatsCards';
 import FormCreateCard from '../components/dashboard/formCard/FormCreateCard';
@@ -31,13 +30,13 @@ const FormDashboardView = () => {
         <TabsContent value="forms" className="mt-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <FormCreateCard />
-            <Suspense
+            <FormCards />
+            {/* <Suspense
               fallback={[1, 2, 3, 4].map((el) => (
                 <FormCardSkeleton key={el} />
               ))}
             >
-              <FormCards />
-            </Suspense>
+            </Suspense> */}
           </div>
         </TabsContent>
       </Tabs>
