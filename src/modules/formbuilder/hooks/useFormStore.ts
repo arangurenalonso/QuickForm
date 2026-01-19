@@ -47,6 +47,6 @@ export default function useFormStore() {
       getFormaProcess,
       clearError,
     }),
-    [error, createFormProcess, clearError]
+    [error, createFormProcess, getFormaProcess, clearError]
   );
 }

@@ -5,18 +5,18 @@ export type formType = {
   name: string;
   description?: string;
   createdAt: string;
-  status: FormStatusType<FormAction>;
+  status: FormStatusType<FORM_ACTION>;
   // visits: number;
   // submissions: number;
 };
 
-export enum FormAction {
-  FormPause = 'FormPause',
-  ViewResponses = 'ViewResponses',
-  FormResume = 'FormResume',
-  FormPublish = 'FormPublish',
-  FormEdit = 'FormEdit',
-  FormClose = 'FormClose',
+export enum FORM_ACTION {
+  Pause = 'FormPause',
+  ViewSubmissions = 'ViewSubmissions',
+  Resume = 'FormResume',
+  Publish = 'FormPublish',
+  Edit = 'FormEdit',
+  Close = 'FormClose',
 }
 
 export type formStatsType = {

@@ -31,12 +31,6 @@ const FormDashboardView = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <FormCreateCard />
             <FormCards />
-            {/* <Suspense
-              fallback={[1, 2, 3, 4].map((el) => (
-                <FormCardSkeleton key={el} />
-              ))}
-            >
-            </Suspense> */}
           </div>
         </TabsContent>
       </Tabs>
