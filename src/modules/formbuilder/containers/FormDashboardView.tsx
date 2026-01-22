@@ -7,10 +7,10 @@ import {
   TabsTrigger,
   TabsContent,
 } from '@/common/libs/ui/tabs';
-import FormCards from '../components/dashboard/formCard/FormCards';
-import CardStatsWrapper from '../components/dashboard/stats/CardStatsWrapper';
-import StatsCards from '../components/dashboard/stats/StatsCards';
-import FormCreateCard from '../components/dashboard/formCard/FormCreateCard';
+import FormCards from '../dashboard/formCard/FormCards';
+import FormCreateCard from '../dashboard/formCard/FormCreateCard';
+import CardStatsWrapper from '../dashboard/stats/CardStatsWrapper';
+import StatsCards from '../dashboard/stats/StatsCards';
 
 const FormDashboardView = () => {
   return (

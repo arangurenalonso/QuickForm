@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import DesignerContextProvider from '@/context/designer/DesignerProvider';
 import HydrationGate from '@/common/components/HydrationGate';
 import ModalHost from '@/modules/ui/components/ModalHost';
 import ClientProviders from '@/modules/formbuilder/components/ClientProviders';
@@ -19,12 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <HydrationGate>
-          <DesignerContextProvider>
-            <ClientProviders>
-              <div className="w-screen h-screen">{children}</div>
-              <ModalHost />
-            </ClientProviders>
-          </DesignerContextProvider>
+          <ClientProviders>
+            <div className="w-full h-dvh ">{children}</div>
+            <ModalHost />
+          </ClientProviders>
         </HydrationGate>
       </body>
     </html>

@@ -1,12 +1,11 @@
 'use client';
-
-import FormBuilder from '@/modules/formbuilder/components/form-designer/FormBuilder';
+import FormBuilderView from '@/modules/formbuilder/form-designer/containers/FormBuilderView';
 
 export default function Home() {
   return (
-    <div className="max-w-[900px] mx-auto h-full ">
+    <div className="max-w-[900px] mx-auto h-full  ">
       aaa
-      <FormBuilder />
+      <FormBuilderView />
     </div>
   );
 }

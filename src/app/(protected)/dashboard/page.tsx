@@ -1,7 +1,11 @@
 import FormDashboardView from '@/modules/formbuilder/containers/FormDashboardView';
 
 async function BuilderPage() {
-  return <FormDashboardView />;
+  return (
+    <div className="p-5">
+      <FormDashboardView />
+    </div>
+  );
 }
 
 export default BuilderPage;
