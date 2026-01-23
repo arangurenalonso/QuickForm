@@ -38,8 +38,9 @@ function DragOverlayWrapper() {
     );
   }
   const isDesignerElement = draggedItem?.data?.current?.isDesignerElement;
+
   if (isDesignerElement) {
-    const elementId = draggedItem?.data?.current?.elementId;
+    const elementId = String(draggedItem.id);
     const element = elements.find((element) => element.id === elementId);
     if (!element) {
       node = <div>Element not found</div>;

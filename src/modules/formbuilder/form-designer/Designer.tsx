@@ -4,22 +4,24 @@ import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner
 import { useDroppable } from '@dnd-kit/core';
 import useDragAndDropManager from './hook/useDragAndDropManager';
 import DesignerElementWrapper from './designer-element/DesignerElementWrapper';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 const Designer = () => {
   const { elements, handleSelectedElement } = useDesigner();
   useDragAndDropManager();
+
   const droppable = useDroppable({
     id: 'designer-drop-area',
-    data: {
-      isDesignerDropArea: true,
-    },
+    data: { isDesignerDropArea: true },
   });
+
   return (
     <div
       className="p-4 w-full h-full"
-      onClick={() => {
-        handleSelectedElement(null);
-      }}
+      onClick={() => handleSelectedElement(null)}
     >
       <div
         ref={droppable.setNodeRef}
@@ -29,25 +31,27 @@ const Designer = () => {
         )}
       >
         {!droppable.isOver && elements.length === 0 && (
-          <p
-            className="text-3xl text-muted-foreground flex flex-grow 
-           items-center font-bold"
-          >
+          <p className="text-3xl text-muted-foreground flex flex-grow items-center font-bold">
             Drop here
           </p>
         )}
-        {droppable.isOver && elements.length == 0 && (
+
+        {droppable.isOver && elements.length === 0 && (
           <div className="p-4 w-full">
             <div className="h-[120px] rounded-md bg-primary/20"></div>
           </div>
         )}
+
         {elements.length > 0 && (
           <div className="flex flex-col w-full gap-2 p-4">
-            {elements.map((element) => {
-              return (
+            <SortableContext
+              items={elements.map((e) => e.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {elements.map((element) => (
                 <DesignerElementWrapper key={element.id} element={element} />
-              );
-            })}
+              ))}
+            </SortableContext>
           </div>
         )}
       </div>

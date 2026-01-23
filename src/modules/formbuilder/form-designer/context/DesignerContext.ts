@@ -9,11 +9,6 @@ type DesignerContextType = {
   removeElement: (id: string) => void;
   handleSelectedElement: (element: FormFieldConfigType | null) => void;
   updatedElement: (element: FormFieldConfigType, type: UpdatedTypeEnum) => void;
-  // setElements: Dispatch<SetStateAction<FormFieldConfigType[]>>;
-  updatePosition: (
-    draggedElementId: string,
-    overElementId: string,
-    isAbove: boolean
-  ) => void;
+  updatePosition: (draggedElementId: string, overElementId: string) => void;
 };
 export const DesignerContext = createContext<DesignerContextType | null>(null);

@@ -9,23 +9,31 @@ const useDragAndDropManager = () => {
   useDndMonitor({
     onDragEnd(event) {
       const { active, over } = event;
-      /**
-       * active: Element that we are dragging
-       * over: Element that we are dragging over
-       */
-      if (!active || !over) {
-        return;
-      }
+
+      if (!active || !over) return;
 
       const isDraggingDesignerBtnElement =
         active.data?.current?.isDesignerBtnElement;
+
       if (isDraggingDesignerBtnElement) {
         handleAddNewElement(active, over);
+        return;
       }
 
       const isDraggingDesignerElement = active.data?.current?.isDesignerElement;
+
       if (isDraggingDesignerElement) {
-        handleEditPositionElement(active, over);
+        // ✅ sortable ids son element.id
+        const activeId = String(active.id);
+        const overId = String(over.id);
+
+        // ✅ evita no-op / bugs
+        if (!activeId || !overId || activeId === overId) return;
+
+        // Si suelta sobre el área vacía, no hacemos nada
+        if (overId === 'designer-drop-area') return;
+
+        updatePosition(activeId, overId);
       }
     },
   });
@@ -33,50 +41,39 @@ const useDragAndDropManager = () => {
   const handleAddNewElement = (active: Active, over: Over) => {
     const type = active.data?.current?.type as FieldTypeEnum;
     const newElement = generateFieldElement(type);
-    if (!newElement) {
-      return;
-    }
-    //First scenario drop a sidebar item the designer Area
-    const isDroppingOverDesignerArea = over.data?.current?.isDesignerDropArea;
+    if (!newElement) return;
+
+    // ✅ Drop en el área: append
+    const isDroppingOverDesignerArea = over.id === 'designer-drop-area';
     if (isDroppingOverDesignerArea) {
       addElements(elements.length, newElement);
+      return;
     }
 
-    //Second scenario drop a sidebar item to the designer Area over a element
-    const isDroppingOverDesignerElement =
-      over.data?.current?.isTopHalfDesignerElement ||
-      over.data?.current?.isBottomHalfDesignerElement;
-
-    if (isDroppingOverDesignerElement) {
-      const overElementIndex = elements.findIndex(
-        (element) => element.id === over.data?.current?.elementId
-      );
-      if (overElementIndex === -1) {
-        throw new Error('Element not found');
-      }
-      if (over.data?.current?.isTopHalfDesignerElement) {
-        addElements(overElementIndex, newElement);
-      }
-      if (over.data?.current?.isBottomHalfDesignerElement) {
-        addElements(overElementIndex + 1, newElement);
-      }
+    // ✅ Drop sobre un elemento: insert arriba/abajo según posición del puntero
+    const overId = String(over.id);
+    const overElementIndex = elements.findIndex((e) => e.id === overId);
+    if (overElementIndex === -1) {
+      // fallback: append
+      addElements(elements.length, newElement);
+      return;
     }
-  };
 
-  const handleEditPositionElement = (active: Active, over: Over) => {
-    const isDroppingOverDesignerElement =
-      over.data?.current?.isTopHalfDesignerElement ||
-      over.data?.current?.isBottomHalfDesignerElement;
+    const activeRect = active.rect.current.translated;
+    const overRect = over.rect;
 
-    if (isDroppingOverDesignerElement) {
-      const activeId = active.data?.current?.elementId;
-      const overId = over.data?.current?.elementId;
-      updatePosition(
-        activeId,
-        overId,
-        over.data?.current?.isTopHalfDesignerElement
-      );
+    // Si no tenemos rects, insert "antes" por default
+    if (!activeRect || !overRect) {
+      addElements(overElementIndex, newElement);
+      return;
     }
+
+    const activeCenterY = activeRect.top + activeRect.height / 2;
+    const overCenterY = overRect.top + overRect.height / 2;
+
+    const insertIndex =
+      activeCenterY < overCenterY ? overElementIndex : overElementIndex + 1;
+    addElements(insertIndex, newElement);
   };
 
   return {};

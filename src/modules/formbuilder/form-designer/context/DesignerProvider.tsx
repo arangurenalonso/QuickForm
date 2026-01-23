@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { DesignerContext } from './DesignerContext';
 import { UpdatedTypeEnum } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FieldType';
 import { FormFieldConfigType } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FormFieldConfigType';
+import { arrayMove } from '@dnd-kit/sortable';
 
 export default function DesignerContextProvider({
   children,
@@ -21,10 +22,9 @@ export default function DesignerContextProvider({
       return newElements;
     });
   };
+
   const removeElement = (id: string) => {
-    setElements((prev) => {
-      return prev.filter((element) => element.id !== id);
-    });
+    setElements((prev) => prev.filter((element) => element.id !== id));
   };
 
   const updatedElement = (
@@ -36,78 +36,64 @@ export default function DesignerContextProvider({
       const index = newElements.findIndex(
         (element) => element.id === updatedElement.id
       );
+
+      // ✅ guard
+      if (index === -1) return prev;
+
       if (type === UpdatedTypeEnum.EditableForm) {
         newElements[index] = {
           ...newElements[index],
           properties: updatedElement.properties,
         };
       }
+
       if (type === UpdatedTypeEnum.RuleForm) {
         newElements[index] = {
           ...newElements[index],
           rules: updatedElement.rules,
         };
       }
+
       return newElements;
     });
 
     setSelectedElement((prev) => {
-      if (prev) {
-        if (type === UpdatedTypeEnum.EditableForm) {
-          return {
-            ...prev,
-            properties: updatedElement.properties,
-          };
-        }
-        if (type === UpdatedTypeEnum.RuleForm) {
-          return {
-            ...prev,
-            rules: updatedElement.rules,
-          };
-        }
+      if (!prev) return null;
+
+      if (prev.id !== updatedElement.id) {
+        // ✅ si estás editando otro elemento, no lo mates
+        return prev;
       }
-      return null;
+
+      if (type === UpdatedTypeEnum.EditableForm) {
+        return { ...prev, properties: updatedElement.properties };
+      }
+
+      if (type === UpdatedTypeEnum.RuleForm) {
+        return { ...prev, rules: updatedElement.rules };
+      }
+
+      return prev;
     });
   };
+
   const handleSelectedElement = (element: FormFieldConfigType | null) => {
     setSelectedElement(element);
   };
-  const updatePosition = (
-    draggedElementId: string,
-    overElementId: string,
-    isAbove: boolean
-  ) => {
+
+  // ✅ Reorden robusto (sin bug de índices)
+  const updatePosition = (draggedElementId: string, overElementId: string) => {
     setElements((prevElements) => {
-      // Find the indices of the dragged element and the target element
-      const activeElementIndex = prevElements.findIndex(
-        (element) => element.id === draggedElementId
-      );
-      const overElementIndex = prevElements.findIndex(
-        (element) => element.id === overElementId
-      );
+      const oldIndex = prevElements.findIndex((e) => e.id === draggedElementId);
+      const newIndex = prevElements.findIndex((e) => e.id === overElementId);
 
-      // Validate that both elements exist
-      if (activeElementIndex === -1 || overElementIndex === -1) {
-        throw new Error('Element not found');
-      }
+      if (oldIndex === -1 || newIndex === -1) return prevElements;
+      if (oldIndex === newIndex) return prevElements;
 
-      // Extract the dragged element
-      const activeElement = prevElements[activeElementIndex];
-
-      // Create a new array without the dragged element
-      const newPositionElements = prevElements.filter(
-        (element) => element.id !== draggedElementId
-      );
-
-      // Calculate the new position of the dragged element
-      const newPosition = isAbove ? overElementIndex : overElementIndex + 1;
-
-      // Insert the dragged element into the new position
-      newPositionElements.splice(newPosition, 0, activeElement);
-
-      return newPositionElements;
+      return arrayMove(prevElements, oldIndex, newIndex);
     });
   };
+
   return (
     <DesignerContext.Provider
       value={{
