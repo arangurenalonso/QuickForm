@@ -27,7 +27,7 @@ interface NumberFieldRulesFormProps {
 const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
-  const { updatedElement } = useDesigner();
+  const { updateField } = useDesigner();
 
   const form = useForm<NumberFieldValidationRules>({
     mode: 'onBlur',
@@ -64,12 +64,11 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
           : undefined,
     };
 
-    const formFieldConfigUpdated: FormFieldConfigType = {
+    const updated: FormFieldConfigType = {
       ...formFieldConfig,
       rules: ruleUpdated,
     };
-
-    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.RuleForm);
+    updateField(updated, UpdatedTypeEnum.RuleForm);
   };
 
   useEffect(() => {
@@ -77,10 +76,11 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
       const data = form.getValues();
       onSubmit(data);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) {
-    return null;
-  }
+
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) return null;
+
   return (
     <Form {...form}>
       <div onBlur={handleSubmit(onSubmit)} className="space-y-4">
@@ -134,6 +134,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="max"

@@ -32,7 +32,8 @@ const TextFieldEditableAttributesForm: React.FC<
       informationText: '',
     },
   });
-  const { updatedElement } = useDesigner();
+
+  const { updateField } = useDesigner();
 
   useEffect(() => {
     if (formFieldConfig?.type === FieldTypeEnum.InputTypeText) {
@@ -41,11 +42,11 @@ const TextFieldEditableAttributesForm: React.FC<
   }, [formFieldConfig, form]);
 
   const onSubmit = (data: TextFieldEditableProps) => {
-    const formFieldConfigUpdated: FormFieldConfigType = {
+    const updated: FormFieldConfigType = {
       ...formFieldConfig,
       properties: data,
     };
-    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.EditableForm);
+    updateField(updated, UpdatedTypeEnum.EditableForm);
   };
 
   useEffect(() => {
@@ -54,9 +55,9 @@ const TextFieldEditableAttributesForm: React.FC<
       onSubmit(data);
     };
   }, []);
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) {
-    return null;
-  }
+
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) return null;
+
   return (
     <Form {...form}>
       <div onBlur={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -70,9 +71,7 @@ const TextFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter your name"
                 />
@@ -85,6 +84,7 @@ const TextFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="label"
@@ -95,9 +95,7 @@ const TextFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter label"
                 />
@@ -109,6 +107,7 @@ const TextFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="placeholder"
@@ -119,9 +118,7 @@ const TextFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter placeholder"
                 />
@@ -131,6 +128,7 @@ const TextFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="helperText"
@@ -141,9 +139,7 @@ const TextFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter helper text"
                 />
@@ -156,6 +152,7 @@ const TextFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="informationText"
@@ -166,9 +163,7 @@ const TextFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter information text"
                 />

@@ -20,12 +20,3 @@ const FormBuilderView = ({ id }: FormBuilderContainerProps) => {
 };
 
 export default FormBuilderView;
-
-//  <div className="flex flex-1 min-h-0 w-full flex-col  ">
-//       <DesignerContextProvider>
-//         <NavbarDesigner />
-//         <div className="flex-1 min-h-0 w-full p-5 bg-green-950">
-//           <FormBuilder id={id} />
-//         </div>
-//       </DesignerContextProvider>
-//     </div>

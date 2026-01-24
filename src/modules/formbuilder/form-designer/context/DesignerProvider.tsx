@@ -1,111 +1,199 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState, useEffect, ReactNode } from 'react';
 import { DesignerContext } from './DesignerContext';
 import { UpdatedTypeEnum } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FieldType';
 import { FormFieldConfigType } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FormFieldConfigType';
+import { SectionType, SelectedFieldType } from './designer-context.type';
 import { arrayMove } from '@dnd-kit/sortable';
+
+const createSection = (title?: string): SectionType => {
+  // id simple; ideal: crypto.randomUUID() si lo tienes disponible
+  const id =
+    typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `section_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+  return {
+    id,
+    title: title?.trim() || 'New section',
+    fields: [],
+  };
+};
 
 export default function DesignerContextProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const [elements, setElements] = useState<FormFieldConfigType[]>([]);
-  const [selectedElement, setSelectedElement] =
-    useState<FormFieldConfigType | null>(null);
+  const [sections, setSections] = useState<SectionType[]>([]);
+  const [activeSectionId, setActiveSectionId] = useState<string>('');
 
-  const addElements = (index: number, element: FormFieldConfigType) => {
-    setElements((prev) => {
-      const newElements = [...prev];
-      newElements.splice(index, 0, element);
-      return newElements;
+  useEffect(() => {
+    if (sections.length === 0) {
+      addSection('Section 1');
+    }
+  }, []);
+
+  const [selectedField, setSelectedField] = useState<SelectedFieldType>(null);
+
+  const setActiveSection = (sectionId: string) => {
+    setActiveSectionId(sectionId);
+    setSelectedField(null);
+  };
+
+  const addSection = (title?: string) => {
+    const newSection = createSection(title);
+
+    setSections((prev) => [...prev, newSection]);
+    setActiveSectionId(newSection.id);
+    setSelectedField(null);
+  };
+
+  const removeSection = (sectionId: string) => {
+    setSections((prev) => {
+      const next = prev.filter((s) => s.id !== sectionId);
+
+      if (next.length === 0) {
+        const fallback = createSection('Section 1');
+        setActiveSectionId(fallback.id);
+        setSelectedField(null);
+        return [fallback];
+      }
+
+      if (activeSectionId === sectionId) {
+        setActiveSectionId(next[0].id);
+        setSelectedField(null);
+      }
+
+      setSelectedField((prevSel) => {
+        if (!prevSel) return null;
+        return prevSel.sectionId === sectionId ? null : prevSel;
+      });
+
+      return next;
     });
   };
 
-  const removeElement = (id: string) => {
-    setElements((prev) => prev.filter((element) => element.id !== id));
+  const renameSection = (sectionId: string, title: string) => {
+    setSections((prev) =>
+      prev.map((s) => (s.id === sectionId ? { ...s, title } : s))
+    );
   };
 
-  const updatedElement = (
-    updatedElement: FormFieldConfigType,
+  const handleSelectedField = (payload: SelectedFieldType) => {
+    setSelectedField(payload);
+  };
+
+  const addElement = (
+    sectionId: string,
+    index: number,
+    element: FormFieldConfigType
+  ) => {
+    setSections((prev) =>
+      prev.map((s) => {
+        if (s.id !== sectionId) return s;
+
+        const nextFields = [...s.fields];
+        const safeIndex = Math.max(0, Math.min(index, nextFields.length));
+        nextFields.splice(safeIndex, 0, element);
+
+        return { ...s, fields: nextFields };
+      })
+    );
+  };
+
+  const removeField = (sectionId: string, fieldId: string) => {
+    setSections((prev) =>
+      prev.map((s) => {
+        if (s.id !== sectionId) return s;
+        return { ...s, fields: s.fields.filter((f) => f.id !== fieldId) };
+      })
+    );
+
+    setSelectedField((prevSel) => {
+      if (!prevSel) return null;
+      if (prevSel.sectionId === sectionId && prevSel.fieldId === fieldId)
+        return null;
+      return prevSel;
+    });
+  };
+
+  const updateField = (
+    updatedField: FormFieldConfigType,
     type: UpdatedTypeEnum
   ) => {
-    setElements((prev) => {
-      const newElements = [...prev];
-      const index = newElements.findIndex(
-        (element) => element.id === updatedElement.id
-      );
+    setSections((prev) =>
+      prev.map((s) => {
+        if (s.id !== activeSectionId) return s;
+        const idx = s.fields.findIndex((f) => f.id === updatedField.id);
 
-      // ✅ guard
-      if (index === -1) return prev;
+        if (idx === -1) return s;
 
-      if (type === UpdatedTypeEnum.EditableForm) {
-        newElements[index] = {
-          ...newElements[index],
-          properties: updatedElement.properties,
-        };
-      }
+        const nextFields = [...s.fields];
 
-      if (type === UpdatedTypeEnum.RuleForm) {
-        newElements[index] = {
-          ...newElements[index],
-          rules: updatedElement.rules,
-        };
-      }
+        if (type === UpdatedTypeEnum.EditableForm) {
+          nextFields[idx] = {
+            ...nextFields[idx],
+            properties: updatedField.properties,
+          };
+        }
 
-      return newElements;
-    });
+        if (type === UpdatedTypeEnum.RuleForm) {
+          nextFields[idx] = {
+            ...nextFields[idx],
+            rules: updatedField.rules,
+          };
+        }
 
-    setSelectedElement((prev) => {
-      if (!prev) return null;
-
-      if (prev.id !== updatedElement.id) {
-        // ✅ si estás editando otro elemento, no lo mates
-        return prev;
-      }
-
-      if (type === UpdatedTypeEnum.EditableForm) {
-        return { ...prev, properties: updatedElement.properties };
-      }
-
-      if (type === UpdatedTypeEnum.RuleForm) {
-        return { ...prev, rules: updatedElement.rules };
-      }
-
-      return prev;
-    });
+        return { ...s, fields: nextFields };
+      })
+    );
   };
 
-  const handleSelectedElement = (element: FormFieldConfigType | null) => {
-    setSelectedElement(element);
+  const reorderFieldInSection = (
+    sectionId: string,
+    activeFieldId: string,
+    overFieldId: string
+  ) => {
+    if (activeFieldId === overFieldId) return;
+
+    setSections((prev) =>
+      prev.map((s) => {
+        if (s.id !== sectionId) return s;
+
+        const oldIndex = s.fields.findIndex((f) => f.id === activeFieldId);
+        const newIndex = s.fields.findIndex((f) => f.id === overFieldId);
+
+        if (oldIndex === -1 || newIndex === -1) return s;
+        if (oldIndex === newIndex) return s;
+
+        return { ...s, fields: arrayMove(s.fields, oldIndex, newIndex) };
+      })
+    );
   };
 
-  // ✅ Reorden robusto (sin bug de índices)
-  const updatePosition = (draggedElementId: string, overElementId: string) => {
-    setElements((prevElements) => {
-      const oldIndex = prevElements.findIndex((e) => e.id === draggedElementId);
-      const newIndex = prevElements.findIndex((e) => e.id === overElementId);
+  const value = useMemo(
+    () => ({
+      sections,
+      activeSectionId,
+      setActiveSection,
+      addSection,
+      removeSection,
+      renameSection,
 
-      if (oldIndex === -1 || newIndex === -1) return prevElements;
-      if (oldIndex === newIndex) return prevElements;
-
-      return arrayMove(prevElements, oldIndex, newIndex);
-    });
-  };
+      selectedField,
+      handleSelectedField,
+      addElement,
+      removeField,
+      updateField,
+      reorderFieldInSection,
+    }),
+    [sections, activeSectionId, selectedField]
+  );
 
   return (
-    <DesignerContext.Provider
-      value={{
-        elements,
-        selectedElement,
-        addElements,
-        removeElement,
-        updatedElement,
-        handleSelectedElement,
-        updatePosition,
-      }}
-    >
+    <DesignerContext.Provider value={value}>
       {children}
     </DesignerContext.Provider>
   );

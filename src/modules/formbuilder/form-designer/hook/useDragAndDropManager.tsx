@@ -4,14 +4,17 @@ import { FieldTypeEnum } from '../component/controlledField/enum/FieldType';
 import { generateFieldElement } from '../component/controlledField/generateFieldElement';
 
 const useDragAndDropManager = () => {
-  const { elements, addElements, updatePosition } = useDesigner();
+  const { sections, activeSectionId, addElement, reorderFieldInSection } =
+    useDesigner();
+
+  const activeSection = sections.find((s) => s.id === activeSectionId);
 
   useDndMonitor({
     onDragEnd(event) {
       const { active, over } = event;
-
       if (!active || !over) return;
 
+      // 1) Sidebar -> agregar field a sección activa
       const isDraggingDesignerBtnElement =
         active.data?.current?.isDesignerBtnElement;
 
@@ -20,60 +23,62 @@ const useDragAndDropManager = () => {
         return;
       }
 
-      const isDraggingDesignerElement = active.data?.current?.isDesignerElement;
+      // 2) Reorder field dentro de la sección activa
+      const isDraggingDesignerField = active.data?.current?.isDesignerField;
 
-      if (isDraggingDesignerElement) {
-        // ✅ sortable ids son element.id
-        const activeId = String(active.id);
+      if (isDraggingDesignerField) {
+        const activeFieldId = String(active.id);
         const overId = String(over.id);
 
-        // ✅ evita no-op / bugs
-        if (!activeId || !overId || activeId === overId) return;
+        if (!activeFieldId || !overId) return;
+        if (activeFieldId === overId) return;
 
-        // Si suelta sobre el área vacía, no hacemos nada
+        // Si suelta en el área vacía, no reordenamos
         if (overId === 'designer-drop-area') return;
 
-        updatePosition(activeId, overId);
+        // Solo reorder si el over es otro field
+        reorderFieldInSection(activeSectionId, activeFieldId, overId);
       }
     },
   });
 
   const handleAddNewElement = (active: Active, over: Over) => {
-    const type = active.data?.current?.type as FieldTypeEnum;
-    const newElement = generateFieldElement(type);
-    if (!newElement) return;
+    if (!activeSection) return;
 
-    // ✅ Drop en el área: append
-    const isDroppingOverDesignerArea = over.id === 'designer-drop-area';
-    if (isDroppingOverDesignerArea) {
-      addElements(elements.length, newElement);
+    const type = active.data?.current?.type as FieldTypeEnum;
+
+    const newField = generateFieldElement(type);
+    if (!newField) return;
+
+    // Drop en el área => append
+    if (String(over.id) === 'designer-drop-area') {
+      addElement(activeSectionId, activeSection.fields.length, newField);
       return;
     }
 
-    // ✅ Drop sobre un elemento: insert arriba/abajo según posición del puntero
-    const overId = String(over.id);
-    const overElementIndex = elements.findIndex((e) => e.id === overId);
-    if (overElementIndex === -1) {
-      // fallback: append
-      addElements(elements.length, newElement);
+    // Drop sobre un field => insert arriba/abajo
+    const overFieldId = String(over.id);
+    const overIndex = activeSection.fields.findIndex(
+      (f) => f.id === overFieldId
+    );
+    if (overIndex === -1) {
+      addElement(activeSectionId, activeSection.fields.length, newField);
       return;
     }
 
     const activeRect = active.rect.current.translated;
     const overRect = over.rect;
 
-    // Si no tenemos rects, insert "antes" por default
     if (!activeRect || !overRect) {
-      addElements(overElementIndex, newElement);
+      addElement(activeSectionId, overIndex, newField);
       return;
     }
 
     const activeCenterY = activeRect.top + activeRect.height / 2;
     const overCenterY = overRect.top + overRect.height / 2;
 
-    const insertIndex =
-      activeCenterY < overCenterY ? overElementIndex : overElementIndex + 1;
-    addElements(insertIndex, newElement);
+    const insertIndex = activeCenterY < overCenterY ? overIndex : overIndex + 1;
+    addElement(activeSectionId, insertIndex, newField);
   };
 
   return {};

@@ -7,15 +7,22 @@ import { HiSaveAs } from 'react-icons/hi';
 
 const SaveFormBtn = () => {
   const { toast } = useToast();
-  const { elements } = useDesigner();
+  const { sections } = useDesigner();
   const [loading, startTransition] = useTransition();
+
   const updateFormContent = async () => {
     try {
-      console.log('elements', elements);
-      const jsonElements = JSON.stringify(elements);
-      console.log('jsonElements', jsonElements);
+      // ✅ recomendado: guardar un objeto, no solo el array
+      const payload = {
+        sections,
+      };
 
-      // await UpdateFormContent(id, jsonElements);
+      const json = JSON.stringify(payload);
+      console.log('save payload:', payload);
+      console.log('save json:', json);
+
+      // await UpdateFormContent(id, json);
+
       toast({
         title: 'Success',
         description: 'Your form has been saved',
@@ -23,7 +30,7 @@ const SaveFormBtn = () => {
     } catch (error) {
       toast({
         title: 'Error',
-        description: `Something went wrong, please try again later ${error}`,
+        description: `Something went wrong, please try again later ${String(error)}`,
         variant: 'destructive',
       });
     }

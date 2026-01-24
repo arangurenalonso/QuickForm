@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/common/libs/ui/form';
-// import { Input } from '@/common/libs/ui/input';
 import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
@@ -28,7 +27,7 @@ interface TextFieldRulesFormProps {
 const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
-  const { updatedElement } = useDesigner();
+  const { updateField } = useDesigner();
 
   const form = useForm<TextFieldValidationRules>({
     mode: 'onBlur',
@@ -53,19 +52,22 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   const onSubmit = (data: TextFieldValidationRules) => {
     const ruleUpdated: TextFieldValidationRulesWithMessage = {
       required: data.required ? 'Filed is required' : false,
-      maxLength: data.maxLength
-        ? { value: data.maxLength, message: `Max lenght ${data.maxLength}` }
-        : undefined,
-      minLength: data.minLength
-        ? { value: data.minLength, message: `Min length ${data.minLength}` }
-        : undefined,
+      maxLength:
+        data.maxLength || data.maxLength === 0
+          ? { value: data.maxLength, message: `Max lenght ${data.maxLength}` }
+          : undefined,
+      minLength:
+        data.minLength || data.minLength === 0
+          ? { value: data.minLength, message: `Min length ${data.minLength}` }
+          : undefined,
     };
 
-    const formFieldConfigUpdated: FormFieldConfigType = {
+    const updated: FormFieldConfigType = {
       ...formFieldConfig,
       rules: ruleUpdated,
     };
-    updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.RuleForm);
+
+    updateField(updated, UpdatedTypeEnum.RuleForm);
   };
 
   useEffect(() => {
@@ -75,9 +77,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
     };
   }, []);
 
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) {
-    return null;
-  }
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeText) return null;
 
   return (
     <Form {...form}>
@@ -105,6 +105,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="minLength"
@@ -133,6 +134,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="maxLength"

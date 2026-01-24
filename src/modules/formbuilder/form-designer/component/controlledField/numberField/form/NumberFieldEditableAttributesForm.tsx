@@ -38,8 +38,10 @@ const NumberFieldEditableAttributesForm: React.FC<
       allowNegative: true,
     },
   });
+
   const { control, handleSubmit, setValue } = form;
-  const { updatedElement } = useDesigner();
+  const { updateField } = useDesigner(); // ✅ nuevo
+
   useEffect(() => {
     if (formFieldConfig?.type === FieldTypeEnum.InputTypeNumber) {
       form.reset(formFieldConfig.properties);
@@ -48,23 +50,25 @@ const NumberFieldEditableAttributesForm: React.FC<
 
   const onSubmit = useCallback(
     (data: NumberFieldEditableProps) => {
-      const formFieldConfigUpdated: FormFieldConfigType = {
+      const updated: FormFieldConfigType = {
         ...formFieldConfig,
         properties: data,
       };
-      updatedElement(formFieldConfigUpdated, UpdatedTypeEnum.EditableForm);
+      updateField(updated, UpdatedTypeEnum.EditableForm);
     },
-    [formFieldConfig, updatedElement]
+    [formFieldConfig, updateField]
   );
+
   useEffect(() => {
     return () => {
       const data = form.getValues();
       onSubmit(data);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) {
-    return null;
-  }
+
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) return null;
+
   return (
     <Form {...form}>
       <div onBlur={handleSubmit(onSubmit)} className="space-y-4">
@@ -78,9 +82,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter your name"
                 />
@@ -93,6 +95,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="label"
@@ -103,9 +106,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter label"
                 />
@@ -117,6 +118,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="placeholder"
@@ -127,9 +129,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter placeholder"
                 />
@@ -139,6 +139,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="helperText"
@@ -149,9 +150,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter helper text"
                 />
@@ -164,6 +163,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="informationText"
@@ -174,9 +174,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter information text"
                 />
@@ -188,6 +186,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="prefix"
@@ -198,9 +197,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter prefix"
                 />
@@ -212,6 +209,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="suffix"
@@ -222,9 +220,7 @@ const NumberFieldEditableAttributesForm: React.FC<
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.currentTarget.blur();
-                    }
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                   placeholder="Enter suffix"
                 />
@@ -236,6 +232,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="decimalScale"
@@ -264,6 +261,7 @@ const NumberFieldEditableAttributesForm: React.FC<
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="allowNegative"

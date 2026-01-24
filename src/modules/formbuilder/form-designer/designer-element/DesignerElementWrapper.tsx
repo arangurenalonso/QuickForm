@@ -7,20 +7,26 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 
 type DesignerElementWrapperProps = {
+  sectionId: string;
   element: FormFieldConfigType;
 };
 
-const DesignerElementWrapper = ({ element }: DesignerElementWrapperProps) => {
+const DesignerElementWrapper = ({
+  sectionId,
+  element,
+}: DesignerElementWrapperProps) => {
   const { properties, render } = element;
   const { Component } = render;
-  const { handleSelectedElement } = useDesigner();
+
+  const { handleSelectedField } = useDesigner();
 
   const sortable = useSortable({
-    id: element.id,
+    id: element.id, // id del field
     data: {
       type: element.type,
-      elementId: element.id,
-      isDesignerElement: true,
+      sectionId,
+      fieldId: element.id,
+      isDesignerField: true,
     },
   });
 
@@ -29,7 +35,6 @@ const DesignerElementWrapper = ({ element }: DesignerElementWrapperProps) => {
     transition: sortable.transition,
   };
 
-  // ✅ Si está arrastrando, sortable maneja el "ghosting" bien
   return (
     <div
       ref={sortable.setNodeRef}
@@ -38,13 +43,12 @@ const DesignerElementWrapper = ({ element }: DesignerElementWrapperProps) => {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleSelectedElement(element);
+        handleSelectedField({ sectionId, fieldId: element.id });
       }}
     >
-      <HoverDesignerElementWrapper element={element}>
+      <HoverDesignerElementWrapper sectionId={sectionId} element={element}>
         {({ isHover }) => (
           <div className="relative">
-            {/* ✅ Drag handle (solo este arrastra) */}
             {isHover && (
               <button
                 ref={sortable.setActivatorNodeRef}
@@ -52,7 +56,6 @@ const DesignerElementWrapper = ({ element }: DesignerElementWrapperProps) => {
                 {...sortable.listeners}
                 className="absolute left-2 top-2 z-20 rounded-md border bg-background/80 p-1 hover:bg-background"
                 onClick={(e) => {
-                  // ✅ no seleccionar al intentar arrastrar
                   e.preventDefault();
                   e.stopPropagation();
                 }}

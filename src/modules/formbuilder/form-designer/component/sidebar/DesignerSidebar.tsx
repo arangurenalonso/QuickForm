@@ -3,19 +3,19 @@ import FormElementSidebar from './FormElementSidebar';
 import PropertiesFormSidebar from './PropertiesFormSidebar';
 
 function DesignerSidebar() {
-  const { selectedElement } = useDesigner();
+  const { selectedField } = useDesigner();
 
   return (
     <aside
       className="
-                w-full  h-full
-                p-4 
-                overflow-hidden
-                border-l-2 border-muted  bg-background
-                "
+        w-full  h-full
+        p-4 
+        overflow-hidden
+        border-l-2 border-muted  bg-background
+      "
     >
-      {!selectedElement && <FormElementSidebar />}
-      {selectedElement && <PropertiesFormSidebar />}
+      {!selectedField && <FormElementSidebar />}
+      {selectedField && <PropertiesFormSidebar />}
     </aside>
   );
 }

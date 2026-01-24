@@ -9,16 +9,18 @@ type HoverStateProps = {
 };
 
 type HoverDesignerElementWrapperProps = {
+  sectionId: string;
   element: FormFieldConfigType;
   children: (args: HoverStateProps) => JSX.Element;
 };
 
 const HoverDesignerElementWrapper = ({
+  sectionId,
   element,
   children,
 }: HoverDesignerElementWrapperProps) => {
   const [isHover, setIsHover] = useState<boolean>(false);
-  const { removeElement } = useDesigner();
+  const { removeField } = useDesigner();
 
   return (
     <div
@@ -34,7 +36,7 @@ const HoverDesignerElementWrapper = ({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                removeElement(element.id);
+                removeField(sectionId, element.id);
               }}
             >
               <BiSolidTrash className="h-6 w-6" />

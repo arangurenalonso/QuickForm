@@ -59,7 +59,6 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
 
       closeModal(modalId);
     } catch (error) {
-      console.log(error);
       toast({
         title: 'Error',
         description: `Something went wrong, please try again later ${error}`,
