@@ -102,6 +102,13 @@ export default function DesignerContextProvider({
     index: number,
     element: FormFieldConfigType
   ) => {
+    console.log(
+      'Adding element to section:',
+      sectionId,
+      'at index:',
+      index,
+      element
+    );
     setSections((prev) =>
       prev.map((s) => {
         if (s.id !== sectionId) return s;

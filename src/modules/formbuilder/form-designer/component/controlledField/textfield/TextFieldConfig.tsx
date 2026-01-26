@@ -22,7 +22,7 @@ export const TextFieldConfig = (): FormFieldConfigType => {
       informationText: 'Default TextField information text',
     },
     rules: {
-      required: false,
+      required: undefined,
       maxLength: undefined,
       minLength: undefined,
     },

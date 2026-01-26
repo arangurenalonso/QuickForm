@@ -27,7 +27,7 @@ export const NumberFieldConfig = (): FormFieldConfigType => {
       allowNegative: true,
     },
     rules: {
-      required: false,
+      required: undefined,
       max: undefined,
       min: undefined,
     },

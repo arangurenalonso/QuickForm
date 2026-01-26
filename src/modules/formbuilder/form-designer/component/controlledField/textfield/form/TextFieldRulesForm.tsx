@@ -57,8 +57,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   // Cargar valores desde config
   useEffect(() => {
     if (formFieldConfig?.type !== FieldTypeEnum.InputTypeText) return;
-
-    form.reset({
+    const resetValue = {
       required: !!formFieldConfig.rules.required?.value,
       requiredMessage:
         formFieldConfig.rules.required?.message ?? DEFAULTS.requiredMessage,
@@ -70,7 +69,8 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
       maxLength: formFieldConfig.rules.maxLength?.value,
       maxLengthMessage:
         formFieldConfig.rules.maxLength?.message ?? DEFAULTS.maxLengthMessage,
-    });
+    };
+    form.reset(resetValue);
   }, [formFieldConfig, form]);
 
   const onSubmit = (data: TextFieldRulesFormValues) => {
@@ -86,7 +86,6 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
         data.minLength || data.minLength === 0
           ? {
               value: data.minLength,
-              // ✅ guardamos el template tal cual (con {min}) o si prefieres guardamos el ya resuelto
               message:
                 data.minLengthMessage.trim() || DEFAULTS.minLengthMessage,
             }

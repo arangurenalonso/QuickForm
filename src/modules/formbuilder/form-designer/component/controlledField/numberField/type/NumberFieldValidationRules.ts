@@ -2,9 +2,9 @@ import { WithMessages } from '../../common/enum/rule.type';
 
 // 1) Base (valores simples → form / UI)
 export interface NumberFieldValidationRulesBase {
-  required?: boolean;
-  max?: number;
-  min?: number;
+  required?: boolean | null | undefined;
+  max?: number | null | undefined;
+  min?: number | null | undefined;
 }
 
 // 2) Tipos finales

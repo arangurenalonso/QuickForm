@@ -56,7 +56,6 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
 
   const { control, handleSubmit } = form;
 
-  // Load from config
   useEffect(() => {
     if (formFieldConfig?.type !== FieldTypeEnum.InputTypeNumber) return;
 
