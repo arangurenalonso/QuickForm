@@ -1,11 +1,11 @@
-import { FormFieldConfigType } from '../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../enum/FieldType';
 import NumberFieldEditableAttributesForm from './form/NumberFieldEditableAttributesForm';
 import NumberFieldRulesForm from './form/NumberFieldRulesForm';
 import NumberFieldComponent from './NumberFieldComponent';
 import NumberFieldControlled from './NumberFieldControlled';
 import { v4 as uuidv4 } from 'uuid';
 import { MdNumbers } from 'react-icons/md';
+import { FieldTypeEnum } from '../common/enum/FieldType';
+import { FormFieldConfigType } from '../common/enum/FormFieldConfigType';
 
 export const NumberFieldConfig = (): FormFieldConfigType => {
   const id = uuidv4();

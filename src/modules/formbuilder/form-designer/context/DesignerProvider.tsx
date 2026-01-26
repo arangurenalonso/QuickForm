@@ -2,10 +2,10 @@
 
 import { useMemo, useState, useEffect, ReactNode } from 'react';
 import { DesignerContext } from './DesignerContext';
-import { UpdatedTypeEnum } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FieldType';
-import { FormFieldConfigType } from '@/modules/formbuilder/form-designer/component/controlledField/enum/FormFieldConfigType';
 import { SectionType, SelectedFieldType } from './designer-context.type';
 import { arrayMove } from '@dnd-kit/sortable';
+import { UpdatedTypeEnum } from '../component/controlledField/common/enum/FieldType';
+import { FormFieldConfigType } from '../component/controlledField/common/enum/FormFieldConfigType';
 
 const createSection = (title?: string): SectionType => {
   // id simple; ideal: crypto.randomUUID() si lo tienes disponible
@@ -17,6 +17,7 @@ const createSection = (title?: string): SectionType => {
   return {
     id,
     title: title?.trim() || 'New section',
+    description: '',
     fields: [],
   };
 };
@@ -75,9 +76,20 @@ export default function DesignerContextProvider({
     });
   };
 
-  const renameSection = (sectionId: string, title: string) => {
+  const updateSectionMeta = (
+    sectionId: string,
+    payload: { title?: string; description?: string }
+  ) => {
     setSections((prev) =>
-      prev.map((s) => (s.id === sectionId ? { ...s, title } : s))
+      prev.map((s) =>
+        s.id === sectionId
+          ? {
+              ...s,
+              title: payload.title ?? s.title,
+              description: payload.description ?? s.description,
+            }
+          : s
+      )
     );
   };
 
@@ -180,7 +192,7 @@ export default function DesignerContextProvider({
       setActiveSection,
       addSection,
       removeSection,
-      renameSection,
+      updateSectionMeta,
 
       selectedField,
       handleSelectedField,

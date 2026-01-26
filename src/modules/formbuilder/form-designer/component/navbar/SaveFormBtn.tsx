@@ -12,10 +12,17 @@ const SaveFormBtn = () => {
 
   const updateFormContent = async () => {
     try {
-      // ✅ recomendado: guardar un objeto, no solo el array
-      const payload = {
-        sections,
-      };
+      const payload = sections.map((section) => ({
+        id: section.id,
+        title: section.title,
+        description: section.description,
+        question: section.fields.map((field) => ({
+          id: field.id,
+          type: field.type,
+          properties: field.properties,
+          rules: field.rules,
+        })),
+      }));
 
       const json = JSON.stringify(payload);
       console.log('save payload:', payload);

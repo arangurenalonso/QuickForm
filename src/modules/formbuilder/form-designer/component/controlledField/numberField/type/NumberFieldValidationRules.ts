@@ -1,11 +1,14 @@
-export interface NumberFieldValidationRules {
-  required: boolean;
+import { WithMessages } from '../../common/enum/rule.type';
+
+// 1) Base (valores simples → form / UI)
+export interface NumberFieldValidationRulesBase {
+  required?: boolean;
   max?: number;
   min?: number;
 }
 
-export interface NumberFieldValidationRulesWithMessage {
-  required: string | boolean;
-  max?: { value: number; message: string };
-  min?: { value: number; message: string };
-}
+// 2) Tipos finales
+export type NumberFieldValidationRules = NumberFieldValidationRulesBase;
+
+export type NumberFieldValidationRulesWithMessage =
+  WithMessages<NumberFieldValidationRulesBase>;

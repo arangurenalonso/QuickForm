@@ -2,8 +2,8 @@ import { Active, DragOverlay, useDndMonitor } from '@dnd-kit/core';
 import React, { useMemo, useState } from 'react';
 import SidebarBtnDragOverlay from './component/sidebar/SidebarBtnDragOverlay';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
-import { FieldTypeEnum } from './component/controlledField/enum/FieldType';
 import { FormElements } from './component/controlledField/FormElements';
+import { FieldTypeEnum } from './component/controlledField/common/enum/FieldType';
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);

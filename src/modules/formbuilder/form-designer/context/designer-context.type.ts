@@ -1,4 +1,4 @@
-import { FormFieldConfigType } from '../component/controlledField/enum/FormFieldConfigType';
+import { FormFieldConfigType } from '../component/controlledField/common/enum/FormFieldConfigType';
 
 export type SelectedFieldType = {
   sectionId: string;
@@ -8,5 +8,6 @@ export type SelectedFieldType = {
 export type SectionType = {
   id: string;
   title: string;
+  description?: string;
   fields: FormFieldConfigType[];
 };

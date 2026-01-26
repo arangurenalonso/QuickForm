@@ -1,10 +1,9 @@
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
 import { cn } from '@/common/libs/utils';
 import HoverDesignerElementWrapper from './HoverDesignerElementWrapper';
-import { FormFieldConfigType } from '../component/controlledField/enum/FormFieldConfigType';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from 'lucide-react';
+import { FormFieldConfigType } from '../component/controlledField/common/enum/FormFieldConfigType';
 
 type DesignerElementWrapperProps = {
   sectionId: string;
@@ -21,7 +20,7 @@ const DesignerElementWrapper = ({
   const { handleSelectedField } = useDesigner();
 
   const sortable = useSortable({
-    id: element.id, // id del field
+    id: element.id,
     data: {
       type: element.type,
       sectionId,
@@ -46,26 +45,13 @@ const DesignerElementWrapper = ({
         handleSelectedField({ sectionId, fieldId: element.id });
       }}
     >
-      <HoverDesignerElementWrapper sectionId={sectionId} element={element}>
+      <HoverDesignerElementWrapper
+        sectionId={sectionId}
+        element={element}
+        sortable={sortable}
+      >
         {({ isHover }) => (
           <div className="relative">
-            {isHover && (
-              <button
-                ref={sortable.setActivatorNodeRef}
-                {...sortable.attributes}
-                {...sortable.listeners}
-                className="absolute left-2 top-2 z-20 rounded-md border bg-background/80 p-1 hover:bg-background"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-label="Drag"
-                type="button"
-              >
-                <GripVertical className="h-4 w-4" />
-              </button>
-            )}
-
             <div
               className={cn(
                 'w-full rounded-md bg-accent/40 px-4 py-2 pointer-events-none opacity-100',

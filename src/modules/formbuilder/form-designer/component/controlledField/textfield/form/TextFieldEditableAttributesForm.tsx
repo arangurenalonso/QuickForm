@@ -11,9 +11,9 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import TextFieldEditableProps from '../type/TextFieldEditableProps';
-import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
+import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 
 interface TextFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;

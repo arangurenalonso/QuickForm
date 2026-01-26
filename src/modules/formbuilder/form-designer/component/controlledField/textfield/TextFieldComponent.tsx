@@ -1,9 +1,15 @@
 'use client';
+
 import React from 'react';
-import { Input } from '@/common/libs/ui/input'; // Ajusta la ruta según tu estructura de Shadcn
-import { cn } from '@/common/libs/utils'; // Si usas una utilidad de concatenación de clases
-import { FiAlertCircle } from 'react-icons/fi'; // Ícono por defecto de React Icons
-import { Label } from '@/common/libs/ui/label';
+import { Input } from '@/common/libs/ui/input';
+import { cn } from '@/common/libs/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/common/libs/ui/tooltip';
+import { Info, AlertCircle } from 'lucide-react';
 import TextFieldEditableProps from './type/TextFieldEditableProps';
 
 interface TextFieldComponentProps {
@@ -35,72 +41,92 @@ const TextFieldComponent: React.FC<
 }) => {
   return (
     <div className="space-y-2">
-      {/* Label */}
-      {label && (
-        <>
-          <Label htmlFor={name} className="text-sm font-medium ">
-            {label}
-            {informationText && (
-              <p className="text-xs text-muted-foreground ">
-                {informationText}
-              </p>
-            )}
-          </Label>
-        </>
+      {/* Label row + info tooltip */}
+      {(label || informationText) && (
+        <div className="flex items-center gap-2">
+          {label && (
+            <label htmlFor={name} className="text-sm font-medium leading-none">
+              {label}
+            </label>
+          )}
+
+          {informationText && (
+            <TooltipProvider delayDuration={150}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={(e) => e.preventDefault()}
+                    aria-label="Information"
+                  >
+                    <Info className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[280px] text-sm">
+                  {informationText}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
       )}
 
-      {/* Input Container */}
+      {/* Control */}
       <div
         className={cn(
-          'flex items-center border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-primary',
+          'flex items-center gap-2 rounded-md border bg-background px-3 py-2',
+          'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
           error
             ? 'border-destructive focus-within:ring-destructive'
             : 'border-input',
-          disabled ? 'bg-muted pointer-events-none opacity-50' : ''
+          disabled && 'opacity-60 cursor-not-allowed'
         )}
       >
-        {/* Icon */}
         {Icon && (
           <Icon
             className={cn(
-              'mr-2 text-muted-foreground',
-              error ? 'text-destructive' : ''
+              'h-5 w-5 text-muted-foreground',
+              error && 'text-destructive'
             )}
             size={20}
           />
         )}
 
-        {/* Input */}
         <Input
           id={name}
           name={name}
           type="text"
           value={value}
-          onChange={(e) => {
-            if (onChange) {
-              onChange(e.target.value);
-            }
-          }}
+          onChange={(e) => onChange?.(e.target.value)}
           onBlur={onBlur}
           placeholder={placeholder}
           disabled={disabled}
           ref={inputRef}
-          className="flex-1  placeholder:text-muted-foreground"
+          className={cn(
+            // ✅ evita doble borde y mantiene estética shadcn
+            'h-auto border-0 p-0 shadow-none focus-visible:ring-0',
+            'flex-1 bg-transparent placeholder:text-muted-foreground',
+            disabled && 'pointer-events-none'
+          )}
         />
       </div>
-
-      {/* Helper Text */}
-      {helperText && !error && (
-        <p className="text-xs text-muted-foreground">{helperText}</p>
-      )}
-
-      {/* Error Message */}
-      {error && errorMessage && (
-        <p className="flex items-center text-xs text-destructive">
-          <FiAlertCircle className="mr-1" size={16} />
-          {errorMessage}
-        </p>
-      )}
+      <p
+        className={cn(
+          'min-h-[1rem] text-xs',
+          error
+            ? 'flex items-center gap-2 text-destructive'
+            : 'text-muted-foreground'
+        )}
+      >
+        {error ? (
+          <>
+            <AlertCircle className="h-4 w-4" /> {errorMessage}
+          </>
+        ) : (
+          helperText || '\u00A0'
+        )}
+      </p>
     </div>
   );
 };

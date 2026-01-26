@@ -1,11 +1,18 @@
 'use client';
+
 import React from 'react';
 import { cn } from '@/common/libs/utils';
-import { FiAlertCircle } from 'react-icons/fi';
-import { Label } from '@/common/libs/ui/label';
 import { NumericFormat } from 'react-number-format';
 import { Input } from '@/common/libs/ui/input';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/common/libs/ui/tooltip';
+import { Info, AlertCircle } from 'lucide-react';
 import NumberFieldEditableProps from './type/NumberFieldEditableProps';
+
 interface NumberFieldComponentProps {
   inputRef?: React.Ref<HTMLInputElement>;
   value?: number;
@@ -39,76 +46,94 @@ const NumberFieldComponent: React.FC<
 }) => {
   return (
     <div className="space-y-2">
-      {/* Label */}
-      {label && (
-        <Label htmlFor={name} className="text-sm font-medium">
-          {label}
-          {informationText && (
-            <span className="ml-2 text-xs text-muted-foreground">
-              {informationText}
-            </span>
+      {(label || informationText) && (
+        <div className="flex items-center gap-2">
+          {label && (
+            <label htmlFor={name} className="text-sm font-medium">
+              {label}
+            </label>
           )}
-        </Label>
+
+          {informationText && (
+            <TooltipProvider delayDuration={150}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={(e) => e.preventDefault()}
+                    aria-label="Information"
+                  >
+                    <Info className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[280px] text-sm">
+                  {informationText}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
       )}
 
-      {/* Input Container */}
       <div
         className={cn(
-          'flex items-center border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-primary',
+          'flex items-center gap-2 rounded-md border bg-background px-3 py-2',
+          'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
           error
             ? 'border-destructive focus-within:ring-destructive'
             : 'border-input',
-          disabled ? 'bg-muted pointer-events-none opacity-50' : ''
+          disabled && 'opacity-60 cursor-not-allowed'
         )}
       >
-        {/* Icon */}
         {Icon && (
           <Icon
             className={cn(
-              'mr-2 text-muted-foreground',
-              error ? 'text-destructive' : ''
+              'h-5 w-5 text-muted-foreground',
+              error && 'text-destructive'
             )}
-            size={20}
           />
         )}
 
-        {/* Number Input */}
         <NumericFormat
           id={name}
           name={name}
           value={value}
-          onValueChange={(values) => {
-            if (onChange) {
-              onChange(values.floatValue);
-            }
-          }}
+          onValueChange={(values) => onChange?.(values.floatValue)}
           onBlur={onBlur}
           placeholder={placeholder}
           prefix={prefix}
-          disabled={disabled}
-          getInputRef={inputRef}
-          className="flex-1 bg-transparent placeholder:text-muted-foreground"
+          suffix={suffix}
           allowNegative={allowNegative}
           decimalScale={decimalScale}
           fixedDecimalScale
-          suffix={suffix}
           thousandSeparator=","
+          disabled={disabled}
+          getInputRef={inputRef}
           customInput={Input}
+          className={cn(
+            'h-auto border-0 p-0 shadow-none focus-visible:ring-0',
+            'flex-1 bg-transparent placeholder:text-muted-foreground',
+            disabled && 'pointer-events-none'
+          )}
         />
       </div>
-
-      {/* Helper Text */}
-      {helperText && !error && (
-        <p className="text-xs text-muted-foreground">{helperText}</p>
-      )}
-
-      {/* Error Message */}
-      {error && errorMessage && (
-        <p className="flex items-center text-xs text-destructive">
-          <FiAlertCircle className="mr-1" size={16} />
-          {errorMessage}
-        </p>
-      )}
+      <p
+        className={cn(
+          'min-h-[1rem] text-xs',
+          error
+            ? 'flex items-center gap-2 text-destructive'
+            : 'text-muted-foreground'
+        )}
+      >
+        {error ? (
+          <>
+            <AlertCircle className="h-4 w-4" /> {errorMessage}
+          </>
+        ) : (
+          helperText || '\u00A0'
+        )}
+      </p>
     </div>
   );
 };

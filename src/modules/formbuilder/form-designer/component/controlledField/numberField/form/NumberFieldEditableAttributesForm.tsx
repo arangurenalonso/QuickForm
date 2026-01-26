@@ -13,9 +13,9 @@ import { Input } from '@/common/libs/ui/input';
 import NumberFieldEditableProps from '../type/NumberFieldEditableProps';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/common/libs/ui/switch';
-import { FormFieldConfigType } from '../../enum/FormFieldConfigType';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../enum/FieldType';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
+import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 
 interface NumberFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
