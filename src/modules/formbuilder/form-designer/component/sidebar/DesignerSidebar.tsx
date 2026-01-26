@@ -10,7 +10,6 @@ function DesignerSidebar() {
       className="
         w-full  h-full
         p-4 
-        overflow-hidden
         border-l-2 border-muted  bg-background
       "
     >

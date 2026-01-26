@@ -1,11 +1,11 @@
-import { FormFieldConfigType } from '../enum/FormFieldConfigType';
-import { FieldTypeEnum } from '../enum/FieldType';
 import TextFieldEditableAttributesForm from './form/TextFieldEditableAttributesForm';
 import TextFieldRulesForm from './form/TextFieldRulesForm';
 import TextFieldComponent from './TextFieldComponent';
 import TextFieldControlled from './TextFieldControlled';
 import { v4 as uuidv4 } from 'uuid';
 import { MdTextFields } from 'react-icons/md';
+import { FieldTypeEnum } from '../common/enum/FieldType';
+import { FormFieldConfigType } from '../common/enum/FormFieldConfigType';
 
 export const TextFieldConfig = (): FormFieldConfigType => {
   const id = uuidv4();

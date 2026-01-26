@@ -1,5 +1,5 @@
-import { FieldTypeEnum } from './enum/FieldType';
-import { FormFieldConfigType } from './enum/FormFieldConfigType';
+import { FieldTypeEnum } from './common/enum/FieldType';
+import { FormFieldConfigType } from './common/enum/FormFieldConfigType';
 import { NumberFieldConfig } from './numberField/NumberFieldConfig';
 import { TextFieldConfig } from './textfield/TextFieldConfig';
 

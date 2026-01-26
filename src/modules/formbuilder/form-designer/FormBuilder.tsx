@@ -40,7 +40,7 @@ const FormBuilder = ({ id }: FormBuilderProps) => {
             </div>
           </div>
         </div>
-        <div className="col-span-12 md:col-span-4 overflow-auto bg-red-800">
+        <div className="col-span-12 md:col-span-4 bg-red-800 overflow-auto">
           <DesignerSidebar />
         </div>
       </div>

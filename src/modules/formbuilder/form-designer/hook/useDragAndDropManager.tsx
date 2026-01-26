@@ -1,7 +1,7 @@
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
 import { Active, Over, useDndMonitor } from '@dnd-kit/core';
-import { FieldTypeEnum } from '../component/controlledField/enum/FieldType';
 import { generateFieldElement } from '../component/controlledField/generateFieldElement';
+import { FieldTypeEnum } from '../component/controlledField/common/enum/FieldType';
 
 const useDragAndDropManager = () => {
   const { sections, activeSectionId, addElement, reorderFieldInSection } =

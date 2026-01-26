@@ -1,5 +1,4 @@
 import { Button } from '@/common/libs/ui/button';
-import { Separator } from '@/common/libs/ui/separator';
 import {
   Tabs,
   TabsContent,
@@ -33,12 +32,9 @@ const PropertiesFormSidebar = () => {
   const { EditablePropsForm, RulesForm } = render;
 
   return (
-    <div className="h-full w-full">
-      <Tabs
-        defaultValue="editable"
-        className="w-full h-full grid grid-rows-[auto,1fr] gap-0"
-      >
-        <div className="row-start-1 row-end-2">
+    <Tabs defaultValue="editable" className="w-full h-full">
+      <div className="grid h-full w-full grid-rows-[auto_1fr]  ">
+        <div>
           <div className="flex items-center">
             <TabsList className="flex-grow flex justify-center">
               <TabsTrigger value="editable">Properties</TabsTrigger>
@@ -53,23 +49,18 @@ const PropertiesFormSidebar = () => {
               <AiOutlineClose />
             </Button>
           </div>
-
-          <Separator className="my-2" />
         </div>
 
-        <TabsContent value="editable" className="overflow-hidden">
-          <div className="h-full w-full overflow-auto">
+        <div className="min-h-0 w-full overflow-y-auto   ">
+          <TabsContent value="editable">
             <EditablePropsForm formFieldConfig={field} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="rules">
-          <div className="h-full w-full overflow-auto">
+          </TabsContent>
+          <TabsContent value="rules">
             <RulesForm formFieldConfig={field} />
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+          </TabsContent>
+        </div>
+      </div>
+    </Tabs>
   );
 };
 
