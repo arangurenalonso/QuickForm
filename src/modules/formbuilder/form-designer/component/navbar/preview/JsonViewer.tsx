@@ -60,7 +60,7 @@ export default function JsonViewer({
 
       <div className={`rounded-md border bg-muted/40 ${maxHeightClassName}`}>
         <ScrollArea className="h-full w-full">
-          <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap break-all text-sm">
+          <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap break-all text-sm p-2">
             {pretty}
           </pre>
         </ScrollArea>
