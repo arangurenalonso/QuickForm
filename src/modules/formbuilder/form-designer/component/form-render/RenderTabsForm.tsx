@@ -20,48 +20,14 @@ import type { SectionType } from '@/modules/formbuilder/form-designer/context/de
 import SectionFieldsRenderer from './SectionFieldsRenderer';
 import { cn } from '@/common/libs/utils';
 
-import type { FieldErrors } from 'react-hook-form';
-
-function isPlainObject(x: unknown): x is Record<string, unknown> {
-  return (
-    typeof x === 'object' &&
-    x !== null &&
-    (x.constructor === Object || Object.getPrototypeOf(x) === Object.prototype)
-  );
-}
-
-function containsFieldError(value: unknown): boolean {
-  if (!value) return false;
-
-  if (
-    typeof value === 'object' &&
-    value !== null &&
-    ('type' in value || 'message' in value)
-  ) {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.some(containsFieldError);
-  }
-
-  if (isPlainObject(value)) {
-    return Object.values(value).some(containsFieldError);
-  }
-
-  return false;
-}
-
-function hasError(errors: FieldErrors, fieldName: string) {
-  return containsFieldError(errors[fieldName]);
-}
+import { DynamicFormValues } from './type/form-rende.type';
+import { hasError } from './method/form-render.type';
 
 type RenderTabsFormProps = {
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
   showSubmitButton?: boolean;
 };
-type DynamicFormValues = Record<string, unknown>;
 
 export default function RenderTabsForm({
   sections,
@@ -93,7 +59,7 @@ export default function RenderTabsForm({
             const sectionHasErrors =
               submitCount > 0 &&
               s.fields.some((f) => {
-                const fieldName = f.properties.name as string | undefined;
+                const fieldName = f.properties.name;
                 if (!fieldName) return false;
                 return hasError(errors, fieldName);
               });

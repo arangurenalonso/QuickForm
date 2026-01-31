@@ -1,8 +1,7 @@
 import React from 'react';
 import { Control, UseFormWatch } from 'react-hook-form';
 import { SectionType } from '../../context/designer-context.type';
-
-type DynamicFormValues = Record<string, unknown>;
+import { DynamicFormValues } from './type/form-rende.type';
 
 type SectionFieldsRendererProps = {
   section: SectionType;
