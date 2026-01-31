@@ -62,38 +62,54 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
     form.reset({
       required: !!formFieldConfig.rules.required?.value,
       requiredMessage:
-        formFieldConfig.rules.required?.message ?? DEFAULTS.requiredMessage,
+        formFieldConfig.rules.required?.messageTemplate ??
+        DEFAULTS.requiredMessage,
 
       min: formFieldConfig.rules.min?.value,
-      minMessage: formFieldConfig.rules.min?.message ?? DEFAULTS.minMessage,
+      minMessage:
+        formFieldConfig.rules.min?.messageTemplate ?? DEFAULTS.minMessage,
 
       max: formFieldConfig.rules.max?.value,
-      maxMessage: formFieldConfig.rules.max?.message ?? DEFAULTS.maxMessage,
+      maxMessage:
+        formFieldConfig.rules.max?.messageTemplate ?? DEFAULTS.maxMessage,
     });
   }, [formFieldConfig, form]);
 
   const onSubmit = (data: NumberFieldRulesFormValues) => {
+    const min = data.min;
+    const max = data.max;
+    const maxMessageTemplate = data.maxMessage?.trim() || DEFAULTS.maxMessage;
+    const minMessageTemplate = data.minMessage?.trim() || DEFAULTS.minMessage;
+
     const ruleUpdated: NumberFieldValidationRulesWithMessage = {
       required: data.required
         ? {
             value: true,
-            message: data.requiredMessage.trim() || DEFAULTS.requiredMessage,
+            message: data.requiredMessage?.trim() || DEFAULTS.requiredMessage,
+            messageTemplate:
+              data.requiredMessage.trim() || DEFAULTS.requiredMessage,
           }
         : undefined,
 
       min:
-        data.min || data.min === 0
+        min || min === 0
           ? {
-              value: data.min,
-              message: data.minMessage.trim() || DEFAULTS.minMessage, // template (usa {min})
+              value: min,
+              messageTemplate: minMessageTemplate,
+              message: applyTemplate(minMessageTemplate, {
+                min: min,
+              }),
             }
           : undefined,
 
       max:
-        data.max || data.max === 0
+        max || max === 0
           ? {
-              value: data.max,
-              message: data.maxMessage.trim() || DEFAULTS.maxMessage, // template (usa {max})
+              value: max,
+              messageTemplate: maxMessageTemplate,
+              message: applyTemplate(maxMessageTemplate, {
+                max: max,
+              }),
             }
           : undefined,
     };
@@ -211,9 +227,10 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
                   </FormControl>
                   <FormDescription>
                     Use <code>{'{min}'}</code> to insert the configured value.
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Preview: <span className="font-medium">{preview}</span>
-                    </div>
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      <strong>Preview</strong>:{' '}
+                      <span className="font-medium">{preview}</span>
+                    </span>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -271,9 +288,10 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
                   </FormControl>
                   <FormDescription>
                     Use <code>{'{max}'}</code> to insert the configured value.
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Preview: <span className="font-medium">{preview}</span>
-                    </div>
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      <strong>Preview</strong>:{' '}
+                      <span className="font-medium">{preview}</span>
+                    </span>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import PublishFormBtn from './PublishFormBtn';
-import PreviewDialogBtn from './PreviewDialogBtn';
+import PreviewDialogBtn from './preview/PreviewDialogBtn';
 import SaveFormBtn from './SaveFormBtn';
 
 const NavbarDesigner = () => {

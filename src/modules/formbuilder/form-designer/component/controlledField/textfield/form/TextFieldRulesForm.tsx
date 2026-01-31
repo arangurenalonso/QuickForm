@@ -35,9 +35,9 @@ const DEFAULTS: TextFieldRulesFormValues = {
   required: false,
   requiredMessage: 'Field is required',
   minLength: undefined,
-  minLengthMessage: 'Minimum length is {min}',
+  minLengthMessage: 'Minimum length is {minLength}',
   maxLength: undefined,
-  maxLengthMessage: 'Maximum length is {max}',
+  maxLengthMessage: 'Maximum length is {maxLength}',
 };
 
 interface TextFieldRulesFormProps {
@@ -60,43 +60,61 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
     const resetValue = {
       required: !!formFieldConfig.rules.required?.value,
       requiredMessage:
-        formFieldConfig.rules.required?.message ?? DEFAULTS.requiredMessage,
+        formFieldConfig.rules.required?.messageTemplate ??
+        DEFAULTS.requiredMessage,
 
       minLength: formFieldConfig.rules.minLength?.value,
       minLengthMessage:
-        formFieldConfig.rules.minLength?.message ?? DEFAULTS.minLengthMessage,
+        formFieldConfig.rules.minLength?.messageTemplate ??
+        DEFAULTS.minLengthMessage,
 
       maxLength: formFieldConfig.rules.maxLength?.value,
       maxLengthMessage:
-        formFieldConfig.rules.maxLength?.message ?? DEFAULTS.maxLengthMessage,
+        formFieldConfig.rules.maxLength?.messageTemplate ??
+        DEFAULTS.maxLengthMessage,
     };
     form.reset(resetValue);
   }, [formFieldConfig, form]);
 
   const onSubmit = (data: TextFieldRulesFormValues) => {
+    const minLength = data.minLength;
+    const maxLength = data.maxLength;
+    const required = data.required;
+    const minLengthMessageTemplate =
+      data.minLengthMessage?.trim() || DEFAULTS.minLengthMessage;
+    const maxLengthMessageTemplate =
+      data.maxLengthMessage.trim() || DEFAULTS.maxLengthMessage;
+    const requiredMessageTemplate =
+      data.requiredMessage?.trim() || DEFAULTS.requiredMessage;
+
     const ruleUpdated: TextFieldValidationRulesWithMessage = {
-      required: data.required
+      required: required
         ? {
             value: true,
-            message: data.requiredMessage.trim() || DEFAULTS.requiredMessage,
+            messageTemplate: requiredMessageTemplate,
+            message: requiredMessageTemplate,
           }
         : undefined,
 
       minLength:
-        data.minLength || data.minLength === 0
+        minLength || minLength === 0
           ? {
-              value: data.minLength,
-              message:
-                data.minLengthMessage.trim() || DEFAULTS.minLengthMessage,
+              value: minLength,
+              messageTemplate: minLengthMessageTemplate,
+              message: applyTemplate(minLengthMessageTemplate, {
+                minLength: minLength,
+              }),
             }
           : undefined,
 
       maxLength:
-        data.maxLength || data.maxLength === 0
+        maxLength || maxLength === 0
           ? {
-              value: data.maxLength,
-              message:
-                data.maxLengthMessage.trim() || DEFAULTS.maxLengthMessage,
+              value: maxLength,
+              messageTemplate: maxLengthMessageTemplate,
+              message: applyTemplate(maxLengthMessageTemplate, {
+                maxLength: maxLength,
+              }),
             }
           : undefined,
     };
@@ -199,9 +217,9 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             control={form.control}
             name="minLengthMessage"
             render={({ field }) => {
-              const min = form.watch('minLength');
+              const minLength = form.watch('minLength');
               const preview = applyTemplate(field.value, {
-                min: min ?? '{min}',
+                minLength: minLength ?? '{minLength}',
               });
 
               return (
@@ -210,15 +228,17 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="e.g. Minimum length is {min}"
-                      disabled={min === undefined}
+                      placeholder="e.g. Minimum length is {minLength}"
+                      disabled={minLength === undefined}
                     />
                   </FormControl>
                   <FormDescription>
-                    Use <code>{'{min}'}</code> to insert the configured value.
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Preview: <span className="font-medium">{preview}</span>
-                    </div>
+                    Use <code>{'{minLength}'}</code> to insert the configured
+                    value.
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      <strong>Preview</strong>:{' '}
+                      <span className="font-medium">{preview}</span>
+                    </span>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -261,9 +281,9 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             control={form.control}
             name="maxLengthMessage"
             render={({ field }) => {
-              const max = form.watch('maxLength');
+              const maxLength = form.watch('maxLength');
               const preview = applyTemplate(field.value, {
-                max: max ?? '{max}',
+                maxLength: maxLength ?? '{maxLength}',
               });
 
               return (
@@ -272,15 +292,17 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="e.g. Maximum length is {max}"
-                      disabled={max === undefined}
+                      placeholder="e.g. Maximum length is {maxLength}"
+                      disabled={maxLength === undefined}
                     />
                   </FormControl>
                   <FormDescription>
-                    Use <code>{'{max}'}</code> to insert the configured value.
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Preview: <span className="font-medium">{preview}</span>
-                    </div>
+                    Use <code>{'{maxLength}'}</code> to insert the configured
+                    value.
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      <strong>Preview</strong>:{' '}
+                      <span className="font-medium">{preview}</span>
+                    </span>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

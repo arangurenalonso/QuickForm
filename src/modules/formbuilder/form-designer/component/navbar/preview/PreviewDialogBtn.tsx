@@ -1,3 +1,6 @@
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { MdPreview } from 'react-icons/md';
 import { Button } from '@/common/libs/ui/button';
 import {
   Dialog,
@@ -7,12 +10,14 @@ import {
   DialogDescription,
 } from '@/common/libs/ui/dialog';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { MdPreview } from 'react-icons/md';
+
+import { useBoundStore } from '@/store';
+import JsonSubmitPreviewModalContent from './JsonSubmitPreviewModalContent';
 
 const PreviewDialogBtn = () => {
   const { sections } = useDesigner();
+
+  const openModal = useBoundStore((s) => s.openModal);
 
   const { watch, control, handleSubmit, reset } = useForm({
     mode: 'onTouched',
@@ -22,8 +27,19 @@ const PreviewDialogBtn = () => {
     reset();
   }, [sections, reset]);
 
-  const onSubmit = (data: unknown) => {
-    console.log('data', data);
+  const onSubmit = (values: unknown) => {
+    const payload = values;
+
+    const modalId = `submit-preview-${Date.now()}`;
+
+    openModal({
+      id: modalId,
+      title: 'Submit payload preview',
+      titleDescription: 'This is exactly what will be sent to the API.',
+      content: (
+        <JsonSubmitPreviewModalContent modalId={modalId} payload={payload} />
+      ),
+    });
   };
 
   return (
@@ -51,7 +67,6 @@ const PreviewDialogBtn = () => {
             >
               {sections.map((section) => (
                 <div key={section.id} className="flex flex-col gap-4">
-                  {/* ✅ título sección (opcional pero recomendado) */}
                   <div>
                     <h3 className="text-lg font-semibold">{section.title}</h3>
                   </div>

@@ -1,6 +1,7 @@
 // 1) Wrapper genérico para cualquier regla con mensaje
 export type RuleWithMessage<T> = {
   value: T;
+  messageTemplate: string;
   message: string;
 };
 
