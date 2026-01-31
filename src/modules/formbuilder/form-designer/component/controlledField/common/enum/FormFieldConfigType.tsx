@@ -41,3 +41,5 @@ export type FormFieldConfigType =
         RulesForm: typeof TextFieldRulesForm;
       };
     };
+
+export default FormFieldConfigType;

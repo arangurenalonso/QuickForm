@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { MdPreview } from 'react-icons/md';
 import { Button } from '@/common/libs/ui/button';
 import {
@@ -13,21 +11,15 @@ import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner
 
 import { useBoundStore } from '@/store';
 import JsonSubmitPreviewModalContent from './JsonSubmitPreviewModalContent';
+import RenderTabsForm from '../../form-render/RenderTabsForm';
 
 const PreviewDialogBtn = () => {
   const { sections } = useDesigner();
 
   const openModal = useBoundStore((s) => s.openModal);
 
-  const { watch, control, handleSubmit, reset } = useForm({
-    mode: 'onTouched',
-  });
-
-  useEffect(() => {
-    reset();
-  }, [sections, reset]);
-
   const onSubmit = (values: unknown) => {
+    console.log('Preview form submitted values:', values);
     const payload = values;
 
     const modalId = `submit-preview-${Date.now()}`;
@@ -61,37 +53,7 @@ const PreviewDialogBtn = () => {
 
         <div className="bg-accent flex flex-col flex-grow items-center justify-center p-4 bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-y-auto">
           <div className="max-w-[620px] flex flex-col gap-6 flex-grow bg-background h-full w-full rounded-2xl p-8 overflow-y-auto">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-6"
-            >
-              {sections.map((section) => (
-                <div key={section.id} className="flex flex-col gap-4">
-                  <div>
-                    <h3 className="text-lg font-semibold">{section.title}</h3>
-                  </div>
-
-                  {section.fields.map((field) => {
-                    const { render, properties, rules } = field;
-                    const { Controlled } = render;
-
-                    return (
-                      <Controlled
-                        key={field.id}
-                        {...properties}
-                        control={control}
-                        watch={watch}
-                        rules={rules}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
-
-              <Button type="submit" className="w-full mt-2">
-                Submit
-              </Button>
-            </form>
+            <RenderTabsForm sections={sections} onSubmit={onSubmit} />
           </div>
         </div>
       </DialogContent>

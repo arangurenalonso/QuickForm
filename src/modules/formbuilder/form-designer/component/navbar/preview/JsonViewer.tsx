@@ -19,7 +19,10 @@ export default function JsonViewer({
 }: JsonViewerProps) {
   const [copied, setCopied] = useState(false);
 
-  const pretty = useMemo(() => JSON.stringify(value, null, 2), [value]);
+  const pretty = useMemo(
+    () => JSON.stringify(value, (_key, v) => (v === undefined ? null : v), 2),
+    [value]
+  );
 
   const copy = async () => {
     await navigator.clipboard.writeText(pretty);
@@ -57,7 +60,7 @@ export default function JsonViewer({
 
       <div className={`rounded-md border bg-muted/40 ${maxHeightClassName}`}>
         <ScrollArea className="h-full w-full">
-          <pre className="p-4 text-xs leading-relaxed overflow-x-auto">
+          <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap break-all text-sm">
             {pretty}
           </pre>
         </ScrollArea>
