@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
 import { Button } from '@/common/libs/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/common/libs/ui/tabs';
-import { Plus, Trash2, Pencil } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,9 @@ import {
 } from '@/common/libs/ui/dialog';
 import { Input } from '@/common/libs/ui/input';
 import { Textarea } from '@/common/libs/ui/textarea';
+import { cn } from '@/common/libs/utils';
+
+const SCROLL_STEP = 260;
 
 const SectionsTabs = () => {
   const {
@@ -28,7 +31,6 @@ const SectionsTabs = () => {
 
   const [open, setOpen] = useState(false);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
-
   const [draftTitle, setDraftTitle] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
 
@@ -63,73 +65,155 @@ const SectionsTabs = () => {
     closeModal();
   };
 
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+  }, [sections.length]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onScroll = () => updateScrollState();
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    const ro = new ResizeObserver(() => updateScrollState());
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      ro.disconnect();
+    };
+  }, []);
+
+  const scrollByAmount = (amount: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: amount, behavior: 'smooth' });
+  };
+
   return (
     <>
-      <div className="w-full flex items-center gap-2 border-b bg-background px-2 py-2">
-        <Tabs value={activeSectionId} onValueChange={setActiveSection}>
-          <TabsList className="flex flex-wrap gap-1">
-            {sections.map((section) => (
-              <div key={section.id} className="flex items-center gap-1 group">
-                <div className="relative">
-                  <TabsTrigger
-                    value={section.id}
-                    className="max-w-[220px] truncate pr-10"
+      <div className="w-full min-w-0 flex items-center gap-2 border-b bg-background px-2 py-2 overflow-hidden">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            'h-9 w-9 shrink-0',
+            !canScrollLeft && 'opacity-40 pointer-events-none'
+          )}
+          onClick={() => scrollByAmount(-SCROLL_STEP)}
+          aria-label="Scroll left"
+          title="Scroll left"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        {/* Tabs area */}
+        <div className="flex-1 min-w-0">
+          <Tabs value={activeSectionId} onValueChange={setActiveSection}>
+            <div
+              ref={scrollRef}
+              className={cn(
+                'min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap',
+                'scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none]'
+              )}
+            >
+              <TabsList className="inline-flex gap-1 bg-transparent p-0 min-w-0">
+                {sections.map((section) => (
+                  <div
+                    key={section.id}
+                    className="inline-flex items-center gap-1"
                   >
-                    <span className="truncate">{section.title}</span>
-                  </TabsTrigger>
-                </div>
+                    <TabsTrigger
+                      value={section.id}
+                      className="max-w-[220px] truncate"
+                    >
+                      <span className="truncate">{section.title}</span>
+                    </TabsTrigger>
 
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openEditModal(section.id);
-                  }}
-                  aria-label="Edit section"
-                  title="Edit section"
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeSection(section.id);
-                  }}
-                  disabled={sections.length === 1}
-                  title={
-                    sections.length === 1
-                      ? 'You need at least 1 section'
-                      : 'Delete section'
-                  }
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </TabsList>
-        </Tabs>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 shrink-0"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openEditModal(section.id);
+                      }}
+                      aria-label="Edit section"
+                      title="Edit section"
+                    >
+                      <Pencil className="h-4 w-4 text-yellow-500 " />
+                    </Button>
 
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 shrink-0"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeSection(section.id);
+                      }}
+                      disabled={sections.length === 1}
+                      title={
+                        sections.length === 1
+                          ? 'You need at least 1 section'
+                          : 'Delete section'
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
+                ))}
+              </TabsList>
+            </div>
+          </Tabs>
+        </div>
+
+        {/* Right scroll */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            'h-9 w-9 shrink-0',
+            !canScrollRight && 'opacity-40 pointer-events-none'
+          )}
+          onClick={() => scrollByAmount(SCROLL_STEP)}
+          aria-label="Scroll right"
+          title="Scroll right"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        {/* Add section */}
         <Button
           type="button"
           variant="outline"
-          className="gap-2"
+          className="gap-2 shrink-0"
           onClick={() => addSection(`Section ${sections.length + 1}`)}
         >
           <Plus className="h-4 w-4" />
-          Add section
+          Add
         </Button>
       </div>
 
-      {/* ✅ Modal */}
+      {/* Modal */}
       <Dialog
         open={open}
         onOpenChange={(v) => (v ? setOpen(true) : closeModal())}

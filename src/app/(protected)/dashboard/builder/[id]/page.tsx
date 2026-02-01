@@ -8,7 +8,6 @@ async function BuilderPage({
   };
 }) {
   const { id } = params;
-  console.log('id', id);
 
   return <FormBuilderView id={id} />;
 }

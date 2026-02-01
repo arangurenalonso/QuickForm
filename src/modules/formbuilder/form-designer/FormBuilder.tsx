@@ -1,4 +1,5 @@
 'use client';
+
 import {
   DndContext,
   MouseSensor,
@@ -17,8 +18,7 @@ type FormBuilderProps = {
   id?: string | null | undefined;
 };
 
-const FormBuilder = ({ id }: FormBuilderProps) => {
-  console.log('FormBuilder id:', id);
+const FormBuilder = ({}: FormBuilderProps) => {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
   });
@@ -31,16 +31,20 @@ const FormBuilder = ({ id }: FormBuilderProps) => {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter}>
-      <div className="w-full h-full grid grid-cols-12 gap-2">
-        <div className="col-span-12 md:col-span-8 bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-auto">
-          <div className="grid h-full w-full grid-rows-[auto_1fr]  ">
+      {/* ✅ min-w-0 evita que el grid se expanda por hijos */}
+      <div className="w-full h-full min-w-0 grid grid-cols-12 gap-2">
+        {/* ✅ overflow-x-hidden corta desbordes horizontales */}
+        <div className="col-span-12 md:col-span-8 min-w-0 bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-auto overflow-x-hidden">
+          <div className="grid h-full w-full min-w-0 grid-rows-[auto_1fr]">
             <SectionsTabs />
-            <div className="min-h-0 w-full">
+            <div className="min-h-0 w-full min-w-0">
               <Designer />
             </div>
           </div>
         </div>
-        <div className="col-span-12 md:col-span-4 bg-red-800 overflow-auto">
+
+        {/* sidebar */}
+        <div className="col-span-12 md:col-span-4 min-w-0 overflow-auto">
           <DesignerSidebar />
         </div>
       </div>

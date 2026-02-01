@@ -44,7 +44,6 @@ export default function RenderTabsForm({
   const { errors, submitCount } = useFormState({ control });
 
   useEffect(() => {
-    console.log('Resetting form due to sections change:', sections);
     reset();
   }, [sections, reset]);
 

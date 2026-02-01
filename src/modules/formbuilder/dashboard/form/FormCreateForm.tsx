@@ -50,12 +50,10 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
       if (!res) {
         throw new Error('Form creation failed');
       }
-      const formId = res.message;
       toast({
         title: 'Success',
         description: 'Form created successfully',
       });
-      console.log({ formId });
 
       closeModal(modalId);
     } catch (error) {
