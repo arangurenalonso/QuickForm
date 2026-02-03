@@ -9,7 +9,7 @@ async function BuilderPage({
 }) {
   const { id } = params;
 
-  return <FormBuilderView id={id} />;
+  return <FormBuilderView idForm={id} />;
 }
 
 export default BuilderPage;

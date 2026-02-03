@@ -20,3 +20,20 @@ export const generateFieldElement = (
   }
   return newField;
 };
+
+export const generateFieldFromExisting = (
+  field: FormFieldConfigType
+): FormFieldConfigType | null => {
+  let newField = null;
+  switch (field.type) {
+    case FieldTypeEnum.InputTypeText:
+      newField = TextFieldConfig(field);
+      break;
+    case FieldTypeEnum.InputTypeNumber:
+      newField = NumberFieldConfig(field);
+      break;
+    default:
+      break;
+  }
+  return newField;
+};

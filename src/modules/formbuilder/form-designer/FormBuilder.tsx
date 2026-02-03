@@ -13,12 +13,52 @@ import Designer from './Designer';
 import DragOverlayWrapper from './DragOverlayWrapper';
 import DesignerSidebar from './component/sidebar/DesignerSidebar';
 import SectionsTabs from './SectionsTabs';
+import useFormStore from '../hooks/useFormStore';
+import { useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import useDesigner from './context/useDesigner';
 
 type FormBuilderProps = {
-  id?: string | null | undefined;
+  idForm?: string | null | undefined;
 };
 
-const FormBuilder = ({}: FormBuilderProps) => {
+const FormBuilder = ({ idForm }: FormBuilderProps) => {
+  const { getFormStructure, error } = useFormStore();
+  const { toast } = useToast();
+
+  const { setFormStructure } = useDesigner();
+
+  useEffect(() => {
+    handleGetFormStructure();
+  }, [idForm]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: 'Error',
+        description: `Something went wrong, please try again later ${error}`,
+        variant: 'destructive',
+      });
+    }
+  }, [error]);
+
+  const handleGetFormStructure = async () => {
+    try {
+      if (!idForm) return;
+      const res = await getFormStructure(idForm);
+      if (!res) {
+        throw new Error('Failed to load form structure');
+      }
+      setFormStructure(res);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: `Something went wrong, please try again later ${error}`,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
   });

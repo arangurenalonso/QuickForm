@@ -19,9 +19,6 @@ export default function useFormStore() {
         setError(res.error);
         return;
       }
-
-      // signIn({ user: res.user, token: res.accessToken });
-      // router.replace('/');
       return res.value;
     },
     []
@@ -40,13 +37,23 @@ export default function useFormStore() {
     setError(null);
   }, []);
 
+  const getFormStructure = useCallback(async (idForm: string) => {
+    clearError();
+    const res = await formService.getFormStructureByIdForm(idForm);
+    if (!isOk(res)) {
+      setError(res.error);
+      return;
+    }
+    return res.value;
+  }, []);
   return useMemo(
     () => ({
       error,
       createFormProcess,
       getFormaProcess,
       clearError,
+      getFormStructure,
     }),
-    [error, createFormProcess, getFormaProcess, clearError]
+    [error, createFormProcess, getFormaProcess, clearError, getFormStructure]
   );
 }

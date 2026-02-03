@@ -7,7 +7,20 @@ import { MdNumbers } from 'react-icons/md';
 import { FieldTypeEnum } from '../common/enum/FieldType';
 import { FormFieldConfigType } from '../common/enum/FormFieldConfigType';
 
-export const NumberFieldConfig = (): FormFieldConfigType => {
+export const NumberFieldConfig = (
+  field?: FormFieldConfigType | null | undefined
+): FormFieldConfigType => {
+  if (field) {
+    return {
+      ...field,
+      render: {
+        Component: NumberFieldComponent,
+        Controlled: NumberFieldControlled,
+        EditablePropsForm: NumberFieldEditableAttributesForm,
+        RulesForm: NumberFieldRulesForm,
+      },
+    } as FormFieldConfigType;
+  }
   const id = uuidv4();
   return {
     id: `${id}`,

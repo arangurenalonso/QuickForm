@@ -33,6 +33,7 @@ type DesignerContextType = {
     activeFieldId: string,
     overFieldId: string
   ) => void;
+  setFormStructure: (sections: SectionType[]) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);

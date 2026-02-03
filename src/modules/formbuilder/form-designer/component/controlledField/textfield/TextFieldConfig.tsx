@@ -7,7 +7,23 @@ import { MdTextFields } from 'react-icons/md';
 import { FieldTypeEnum } from '../common/enum/FieldType';
 import { FormFieldConfigType } from '../common/enum/FormFieldConfigType';
 
-export const TextFieldConfig = (): FormFieldConfigType => {
+export const TextFieldConfig = (
+  field?: FormFieldConfigType | null | undefined
+): FormFieldConfigType => {
+  if (field) {
+    return {
+      ...field,
+      label: 'Text Field',
+      type: FieldTypeEnum.InputTypeText,
+      render: {
+        Component: TextFieldComponent,
+        Controlled: TextFieldControlled,
+        EditablePropsForm: TextFieldEditableAttributesForm,
+        RulesForm: TextFieldRulesForm,
+      },
+    };
+  }
+
   const id = uuidv4();
   return {
     id: `${id}`,

@@ -19,7 +19,6 @@ const Designer = () => {
   );
 
   const fields = activeSection?.fields ?? [];
-
   const droppable = useDroppable({
     id: 'designer-drop-area',
     data: { isDesignerDropArea: true, sectionId: activeSectionId },

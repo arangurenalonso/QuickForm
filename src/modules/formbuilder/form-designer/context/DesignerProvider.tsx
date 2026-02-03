@@ -43,6 +43,13 @@ export default function DesignerContextProvider({
     setSelectedField(null);
   };
 
+  const setFormStructure = (sections: SectionType[]) => {
+    setSections(sections);
+    if (sections.length > 0) {
+      setActiveSectionId(sections[0].id);
+    }
+  };
+
   const addSection = (title?: string) => {
     const newSection = createSection(title);
 
@@ -193,7 +200,7 @@ export default function DesignerContextProvider({
       addSection,
       removeSection,
       updateSectionMeta,
-
+      setFormStructure,
       selectedField,
       handleSelectedField,
       addElement,
