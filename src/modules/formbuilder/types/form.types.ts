@@ -1,6 +1,6 @@
 import { FormStatusType } from '@/modules/ui/type/ui.type';
 
-export type formType = {
+export type FormType = {
   id: string;
   name: string;
   description?: string;

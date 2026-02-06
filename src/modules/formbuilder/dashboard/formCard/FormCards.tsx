@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import useFormStore from '@/modules/formbuilder/hooks/useFormStore';
 import FormCardSkeleton from './FormCardSkeleton';
-import { formType } from '../../types/form.types';
+import { FormType } from '../../types/form.types';
 
 // type FormCardsProps = {
 // };
 
 const FormCards = () => {
   const { getFormaProcess } = useFormStore();
-  const [forms, setForms] = useState<formType[]>([]);
+  const [forms, setForms] = useState<FormType[]>([]);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
 

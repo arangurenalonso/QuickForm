@@ -44,10 +44,11 @@ export default function DesignerContextProvider({
   };
 
   const setFormStructure = (sections: SectionType[]) => {
-    setSections(sections);
-    if (sections.length > 0) {
-      setActiveSectionId(sections[0].id);
+    if (sections.length == 0) {
+      return;
     }
+    setSections(sections);
+    setActiveSectionId(sections[0].id);
   };
 
   const addSection = (title?: string) => {

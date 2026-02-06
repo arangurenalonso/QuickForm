@@ -4,35 +4,27 @@ import { useToast } from '@/hooks/use-toast';
 import useDesigner from '@/modules/formbuilder/form-designer/context/useDesigner';
 import { useTransition } from 'react';
 import { HiSaveAs } from 'react-icons/hi';
+import useFormStore from '@/modules/formbuilder/hooks/useFormStore';
 
 const SaveFormBtn = () => {
   const { toast } = useToast();
   const { sections } = useDesigner();
   const [loading, startTransition] = useTransition();
+  const { saveFormStructure, formSelected } = useFormStore();
 
   const updateFormContent = async () => {
     try {
-      const payload = sections.map((section) => ({
-        id: section.id,
-        title: section.title,
-        description: section.description,
-        question: section.fields.map((field) => ({
-          id: field.id,
-          type: field.type,
-          properties: field.properties,
-          rules: field.rules,
-        })),
-      }));
-
-      const json = JSON.stringify(payload);
-      console.log('save payload:', payload);
-      console.log('save json:', json);
-
-      // await UpdateFormContent(id, json);
-
+      const payload = sections;
+      if (!formSelected) {
+        throw new Error('Form not selected');
+      }
+      const res = await saveFormStructure(payload, formSelected.id);
+      if (!res) {
+        throw new Error('Form creation failed');
+      }
       toast({
         title: 'Success',
-        description: 'Your form has been saved',
+        description: 'Your form has been updated',
       });
     } catch (error) {
       toast({

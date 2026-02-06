@@ -5,7 +5,7 @@ import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
 import { ResultResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
-import { CreateFormRequest, formType } from '../types/form.types';
+import { CreateFormRequest, FormType } from '../types/form.types';
 import { SectionType } from '../form-designer/context/designer-context.type';
 import { generateFieldFromExisting } from '../form-designer/component/controlledField/generateFieldElement';
 
@@ -24,14 +24,30 @@ export const formService = {
     }
   },
 
-  async getForms(): Promise<Result<formType[], AuthError>> {
+  async getForms(): Promise<Result<FormType[], AuthError>> {
     try {
-      const { data } = await api.auth.get<formType[]>('/me/forms');
+      const { data } = await api.auth.get<FormType[]>('/me/forms');
       return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }
   },
+
+  async saveFormStructure(
+    payload: SectionType[],
+    idForm: string
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<ResultResponse>(
+        `/form/${idForm}/structure`,
+        payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
   async getFormStructureByIdForm(
     idForm: string
   ): Promise<Result<SectionType[], AuthError>> {
