@@ -1,4 +1,4 @@
-import FormBuilderView from '@/modules/formbuilder/form-designer/containers/FormBuilderView';
+import FormBuilderView from '@/modules/form/containers/FormBuilderView';
 
 async function BuilderPage({
   params,

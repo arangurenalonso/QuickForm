@@ -1,6 +1,6 @@
 'use client';
 
-import { FORM_ACTION } from '@/modules/formbuilder/types/form.types';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
 import { ReactNode } from 'react';
 
 type ActionGuardProps = {

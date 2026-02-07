@@ -1,4 +1,4 @@
-import FormDashboardView from '@/modules/formbuilder/containers/FormDashboardView';
+import FormDashboardView from '@/modules/form/containers/FormDashboardView';
 
 async function BuilderPage() {
   return (

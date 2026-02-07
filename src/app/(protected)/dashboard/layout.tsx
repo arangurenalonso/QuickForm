@@ -1,4 +1,4 @@
-import Navbar from '@/modules/formbuilder/components/navbar/Navbar';
+import Navbar from '@/modules/form/components/navbar/Navbar';
 
 type LayoutProps = {
   children: React.ReactNode;

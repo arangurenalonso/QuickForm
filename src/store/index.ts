@@ -6,10 +6,7 @@ import { immer } from 'zustand/middleware/immer';
 
 import { createUiSlice, UiSlice } from '@/modules/ui/store/ui.slice';
 import { AuthSlice, createAuthSlice } from '@/modules/auth/store/auth.slice';
-import {
-  createFormSlice,
-  FormSlice,
-} from '@/modules/formbuilder/store/form.slice';
+import { createFormSlice, FormSlice } from '@/modules/form/store/form.slice';
 
 export type BoundState = AuthSlice & UiSlice & FormSlice;
 

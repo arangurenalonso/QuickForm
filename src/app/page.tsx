@@ -1,5 +1,6 @@
 'use client';
-import FormBuilderView from '@/modules/formbuilder/form-designer/containers/FormBuilderView';
+
+import FormBuilderView from '@/modules/form/containers/FormBuilderView';
 
 export default function Home() {
   return (
