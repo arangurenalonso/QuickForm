@@ -1,9 +1,11 @@
+'use client';
+
 import { Active, DragOverlay, useDndMonitor } from '@dnd-kit/core';
 import React, { useMemo, useState } from 'react';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum } from '../../controlledField/common/enum/FieldType';
 import { FormElements } from '../../controlledField/FormElements';
-import SidebarBtnDragOverlay from '../component/sidebar/SidebarBtnDragOverlay';
+import SidebarBtnDragOverlay from './SidebarBtnDragOverlay';
 
 const DragPreviewOverlay = () => {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
@@ -33,7 +35,6 @@ const DragPreviewOverlay = () => {
     node = (
       <SidebarBtnDragOverlay
         icon={formElement.icon}
-        type={formElement.type}
         label={formElement.label}
       />
     );
