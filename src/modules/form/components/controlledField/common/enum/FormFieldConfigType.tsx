@@ -1,9 +1,10 @@
+import IntegerFieldControlled from '../../numberField/controlled/IntegerFieldControlled';
+import DecimalFieldControlled from '../../numberField/controlled/NumberFieldControlled';
 import DecimalFieldEditableAttributesForm from '../../numberField/form/decimal/DecimalFieldEditableAttributesForm';
 import DecimalFieldRulesForm from '../../numberField/form/decimal/DecimalFieldRulesForm';
 import IntegerFieldEditableAttributesForm from '../../numberField/form/integer/IntegerFieldEditableAttributesForm';
 import IntegerFieldRulesForm from '../../numberField/form/integer/IntegerFieldRulesForm';
 import NumberFieldComponent from '../../numberField/NumberFieldComponent';
-import NumberFieldControlled from '../../numberField/NumberFieldControlled';
 import DecimalFieldEditableProps from '../../numberField/type/decimal/DecimalFieldEditableProps';
 import IntegerFieldEditableProps from '../../numberField/type/integer/NumberFieldEditableProps';
 import { NumberFieldValidationRulesWithMessage } from '../../numberField/type/NumberFieldValidationRules';
@@ -25,7 +26,7 @@ export type FormFieldConfigType =
       rules: NumberFieldValidationRulesWithMessage;
       render: {
         Component: typeof NumberFieldComponent;
-        Controlled: typeof NumberFieldControlled;
+        Controlled: typeof DecimalFieldControlled;
         EditablePropsForm: typeof DecimalFieldEditableAttributesForm;
         RulesForm: typeof DecimalFieldRulesForm;
       };
@@ -39,7 +40,7 @@ export type FormFieldConfigType =
       rules: NumberFieldValidationRulesWithMessage;
       render: {
         Component: typeof NumberFieldComponent;
-        Controlled: typeof NumberFieldControlled;
+        Controlled: typeof IntegerFieldControlled;
         EditablePropsForm: typeof IntegerFieldEditableAttributesForm;
         RulesForm: typeof IntegerFieldRulesForm;
       };

@@ -1,11 +1,11 @@
 import IntegerFieldEditableAttributesForm from '../form/integer/IntegerFieldEditableAttributesForm';
 import IntegerFieldRulesForm from '../form/integer/IntegerFieldRulesForm';
 import NumberFieldComponent from '../NumberFieldComponent';
-import NumberFieldControlled from '../NumberFieldControlled';
 import { v4 as uuidv4 } from 'uuid';
 import { MdNumbers } from 'react-icons/md';
 import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
+import IntegerFieldControlled from '../controlled/IntegerFieldControlled';
 
 export const IntegerFieldConfig = (
   field?: FormFieldConfigType | null | undefined
@@ -15,7 +15,7 @@ export const IntegerFieldConfig = (
       ...field,
       render: {
         Component: NumberFieldComponent,
-        Controlled: NumberFieldControlled,
+        Controlled: IntegerFieldControlled,
         EditablePropsForm: IntegerFieldEditableAttributesForm,
         RulesForm: IntegerFieldRulesForm,
       },
@@ -45,7 +45,7 @@ export const IntegerFieldConfig = (
     },
     render: {
       Component: NumberFieldComponent,
-      Controlled: NumberFieldControlled,
+      Controlled: IntegerFieldControlled,
       EditablePropsForm: IntegerFieldEditableAttributesForm,
       RulesForm: IntegerFieldRulesForm,
     },

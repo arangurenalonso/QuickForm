@@ -1,11 +1,12 @@
 import NumberFieldComponent from '../NumberFieldComponent';
-import NumberFieldControlled from '../NumberFieldControlled';
 import { v4 as uuidv4 } from 'uuid';
 import { TbDecimal } from 'react-icons/tb';
 import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableAttributesForm from '../form/decimal/DecimalFieldEditableAttributesForm';
 import DecimalFieldRulesForm from '../form/decimal/DecimalFieldRulesForm';
+import IntegerFieldControlled from '../controlled/IntegerFieldControlled';
+import DecimalFieldControlled from '../controlled/NumberFieldControlled';
 
 export const DecimalFieldConfig = (
   field?: FormFieldConfigType | null | undefined
@@ -15,7 +16,7 @@ export const DecimalFieldConfig = (
       ...field,
       render: {
         Component: NumberFieldComponent,
-        Controlled: NumberFieldControlled,
+        Controlled: IntegerFieldControlled,
         EditablePropsForm: DecimalFieldEditableAttributesForm,
         RulesForm: DecimalFieldRulesForm,
       },
@@ -46,7 +47,7 @@ export const DecimalFieldConfig = (
     },
     render: {
       Component: NumberFieldComponent,
-      Controlled: NumberFieldControlled,
+      Controlled: DecimalFieldControlled,
       EditablePropsForm: DecimalFieldEditableAttributesForm,
       RulesForm: DecimalFieldRulesForm,
     },

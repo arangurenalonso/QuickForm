@@ -10,12 +10,12 @@ import {
 } from 'react-hook-form';
 import BaseControlledField, {
   DependentField,
-} from '../common/BaseControlledField';
-import NumberFieldComponent from './NumberFieldComponent';
-import DecimalFieldEditableProps from './type/decimal/DecimalFieldEditableProps';
+} from '../../common/BaseControlledField';
+import NumberFieldComponent from '../NumberFieldComponent';
+import DecimalFieldEditableProps from '../type/decimal/DecimalFieldEditableProps';
 // import { v4 as uuidv4 } from 'uuid';
 
-type NumberFieldControlledProps<T extends FieldValues> = {
+type DecimalFieldControlledProps<T extends FieldValues> = {
   name: Path<T>;
   defaultValue?: FieldPathValue<T, Path<T>>;
   rules?: Omit<
@@ -29,7 +29,7 @@ type NumberFieldControlledProps<T extends FieldValues> = {
   dependentFields?: DependentField<T>[];
   //   valueToSet?: FieldPathValue<T, Path<T>> | string | undefined | null;
 };
-const NumberFieldControlled = <T extends FieldValues>({
+const DecimalFieldControlled = <T extends FieldValues>({
   watch,
   // setValue,
   control,
@@ -51,7 +51,7 @@ const NumberFieldControlled = <T extends FieldValues>({
   suffix,
   decimalScale = 2,
   allowNegative = true,
-}: NumberFieldControlledProps<T> & DecimalFieldEditableProps) => {
+}: DecimalFieldControlledProps<T> & DecimalFieldEditableProps) => {
   if (!watch || !control) {
     return null;
   }
@@ -93,4 +93,4 @@ const NumberFieldControlled = <T extends FieldValues>({
   );
 };
 
-export default NumberFieldControlled;
+export default DecimalFieldControlled;
