@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -48,15 +48,20 @@ const NumberFieldEditableAttributesForm: React.FC<
     }
   }, [formFieldConfig, form]);
 
+  const cfgRef = useRef(formFieldConfig);
+  useEffect(() => {
+    cfgRef.current = formFieldConfig;
+  }, [formFieldConfig]);
+
   const onSubmit = useCallback(
     (data: NumberFieldEditableProps) => {
       const updated: FormFieldConfigType = {
-        ...formFieldConfig,
+        ...cfgRef.current,
         properties: data,
       };
       updateField(updated, UpdatedTypeEnum.EditableForm);
     },
-    [formFieldConfig, updateField]
+    [updateField]
   );
 
   useEffect(() => {

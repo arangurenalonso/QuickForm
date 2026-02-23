@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -75,6 +75,11 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
     });
   }, [formFieldConfig, form]);
 
+  const cfgRef = useRef(formFieldConfig);
+  useEffect(() => {
+    cfgRef.current = formFieldConfig;
+  }, [formFieldConfig]);
+
   const onSubmit = useCallback(
     (data: NumberFieldRulesFormValues) => {
       const min = data.min;
@@ -116,11 +121,11 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
       };
 
       updateField(
-        { ...formFieldConfig, rules: ruleUpdated },
+        { ...cfgRef.current, rules: ruleUpdated },
         UpdatedTypeEnum.RuleForm
       );
     },
-    [formFieldConfig, updateField]
+    [updateField]
   );
 
   // Save on unmount

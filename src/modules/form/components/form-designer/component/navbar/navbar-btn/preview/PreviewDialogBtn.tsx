@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { MdPreview } from 'react-icons/md';
 import { Button } from '@/common/libs/ui/button';
 import {
@@ -33,18 +33,21 @@ const PreviewDialogBtn = () => {
 
   const [mode, setMode] = useState<PreviewMode>('tabs');
 
-  const onSubmit = (values: unknown) => {
-    const modalId = `submit-preview-${Date.now()}`;
+  const onSubmit = useCallback(
+    (values: unknown) => {
+      const modalId = `submit-preview-${Date.now()}`;
 
-    openModal({
-      id: modalId,
-      title: 'Submit payload preview',
-      titleDescription: 'This is exactly what will be sent to the API.',
-      content: (
-        <JsonSubmitPreviewModalContent modalId={modalId} payload={values} />
-      ),
-    });
-  };
+      openModal({
+        id: modalId,
+        title: 'Submit payload preview',
+        titleDescription: 'This is exactly what will be sent to the API.',
+        content: (
+          <JsonSubmitPreviewModalContent modalId={modalId} payload={values} />
+        ),
+      });
+    },
+    [openModal]
+  );
 
   const FormRenderer = useMemo(() => {
     switch (mode) {
@@ -57,7 +60,7 @@ const PreviewDialogBtn = () => {
       default:
         return <RenderTabsForm sections={sections} onSubmit={onSubmit} />;
     }
-  }, [mode, sections]);
+  }, [mode, sections, onSubmit]);
 
   return (
     <Dialog>

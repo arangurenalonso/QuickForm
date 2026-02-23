@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -75,6 +75,11 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
     form.reset(resetValue);
   }, [formFieldConfig, form]);
 
+  const cfgRef = useRef(formFieldConfig);
+  useEffect(() => {
+    cfgRef.current = formFieldConfig;
+  }, [formFieldConfig]);
+
   const onSubmit = useCallback(
     (data: TextFieldRulesFormValues) => {
       const minLength = data.minLength;
@@ -120,11 +125,11 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
       };
 
       updateField(
-        { ...formFieldConfig, rules: ruleUpdated },
+        { ...cfgRef.current, rules: ruleUpdated },
         UpdatedTypeEnum.RuleForm
       );
     },
-    [formFieldConfig, updateField]
+    [updateField]
   );
 
   // Guardar al desmontar
