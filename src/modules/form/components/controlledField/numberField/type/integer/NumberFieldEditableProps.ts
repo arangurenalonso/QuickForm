@@ -1,4 +1,4 @@
-export default interface NumberFieldEditableProps {
+export default interface IntegerFieldEditableProps {
   name: string;
   label?: string;
   helperText?: string;
@@ -8,6 +8,5 @@ export default interface NumberFieldEditableProps {
 
   prefix?: string;
   suffix?: string;
-  decimalScale?: number;
   allowNegative?: boolean;
 }

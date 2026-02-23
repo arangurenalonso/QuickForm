@@ -10,11 +10,11 @@ import {
   FormMessage,
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
-import NumberFieldEditableProps from '../../type/NumberFieldEditableProps';
 import { Switch } from '@/common/libs/ui/switch';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
+import IntegerFieldEditableProps from '../../type/integer/NumberFieldEditableProps';
 
 interface IntegerFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
@@ -23,7 +23,7 @@ interface IntegerFieldEditableAttributesFormProps {
 const IntegerFieldEditableAttributesForm: React.FC<
   IntegerFieldEditableAttributesFormProps
 > = ({ formFieldConfig }) => {
-  const form = useForm<NumberFieldEditableProps>({
+  const form = useForm<IntegerFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -33,7 +33,6 @@ const IntegerFieldEditableAttributesForm: React.FC<
       informationText: '',
       prefix: '',
       suffix: '',
-      decimalScale: 0,
       allowNegative: true,
     },
   });
@@ -53,7 +52,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
   }, [formFieldConfig]);
 
   const onSubmit = useCallback(
-    (data: NumberFieldEditableProps) => {
+    (data: IntegerFieldEditableProps) => {
       const updated: FormFieldConfigType = {
         ...cfgRef.current,
         properties: data,

@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/common/libs/ui/tooltip';
 import { Info, AlertCircle } from 'lucide-react';
-import NumberFieldEditableProps from './type/NumberFieldEditableProps';
+import DecimalFieldEditableProps from './type/decimal/DecimalFieldEditableProps';
 
 interface NumberFieldComponentProps {
   inputRef?: React.Ref<HTMLInputElement>;
@@ -24,7 +24,7 @@ interface NumberFieldComponentProps {
 }
 
 const NumberFieldComponent: React.FC<
-  NumberFieldComponentProps & NumberFieldEditableProps
+  NumberFieldComponentProps & DecimalFieldEditableProps
 > = ({
   label,
   value,

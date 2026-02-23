@@ -36,7 +36,6 @@ export const IntegerFieldConfig = (
       icon: undefined,
       prefix: '',
       suffix: '',
-      decimalScale: 0,
       allowNegative: true,
     },
     rules: {

@@ -10,12 +10,12 @@ import {
   FormMessage,
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
-import NumberFieldEditableProps from '../../type/NumberFieldEditableProps';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/common/libs/ui/switch';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
+import DecimalFieldEditableProps from '../../type/decimal/DecimalFieldEditableProps';
 
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
@@ -24,7 +24,7 @@ interface DecimalFieldEditableAttributesFormProps {
 const DecimalFieldEditableAttributesForm: React.FC<
   DecimalFieldEditableAttributesFormProps
 > = ({ formFieldConfig }) => {
-  const form = useForm<NumberFieldEditableProps>({
+  const form = useForm<DecimalFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -54,7 +54,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
   }, [formFieldConfig]);
 
   const onSubmit = useCallback(
-    (data: NumberFieldEditableProps) => {
+    (data: DecimalFieldEditableProps) => {
       const updated: FormFieldConfigType = {
         ...cfgRef.current,
         properties: data,

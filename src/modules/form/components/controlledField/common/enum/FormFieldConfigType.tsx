@@ -4,7 +4,8 @@ import IntegerFieldEditableAttributesForm from '../../numberField/form/integer/I
 import IntegerFieldRulesForm from '../../numberField/form/integer/IntegerFieldRulesForm';
 import NumberFieldComponent from '../../numberField/NumberFieldComponent';
 import NumberFieldControlled from '../../numberField/NumberFieldControlled';
-import NumberFieldEditableProps from '../../numberField/type/NumberFieldEditableProps';
+import DecimalFieldEditableProps from '../../numberField/type/decimal/DecimalFieldEditableProps';
+import IntegerFieldEditableProps from '../../numberField/type/integer/NumberFieldEditableProps';
 import { NumberFieldValidationRulesWithMessage } from '../../numberField/type/NumberFieldValidationRules';
 import TextFieldEditableAttributesForm from '../../textfield/form/TextFieldEditableAttributesForm';
 import TextFieldRulesForm from '../../textfield/form/TextFieldRulesForm';
@@ -20,7 +21,7 @@ export type FormFieldConfigType =
       icon: React.ElementType;
       label: string;
       type: FieldTypeEnum.InputTypeDecimal;
-      properties: NumberFieldEditableProps;
+      properties: DecimalFieldEditableProps;
       rules: NumberFieldValidationRulesWithMessage;
       render: {
         Component: typeof NumberFieldComponent;
@@ -34,7 +35,7 @@ export type FormFieldConfigType =
       icon: React.ElementType;
       label: string;
       type: FieldTypeEnum.InputTypeInteger;
-      properties: NumberFieldEditableProps;
+      properties: IntegerFieldEditableProps;
       rules: NumberFieldValidationRulesWithMessage;
       render: {
         Component: typeof NumberFieldComponent;

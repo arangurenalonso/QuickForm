@@ -12,7 +12,7 @@ import BaseControlledField, {
   DependentField,
 } from '../common/BaseControlledField';
 import NumberFieldComponent from './NumberFieldComponent';
-import NumberFieldEditableProps from './type/NumberFieldEditableProps';
+import DecimalFieldEditableProps from './type/decimal/DecimalFieldEditableProps';
 // import { v4 as uuidv4 } from 'uuid';
 
 type NumberFieldControlledProps<T extends FieldValues> = {
@@ -51,7 +51,7 @@ const NumberFieldControlled = <T extends FieldValues>({
   suffix,
   decimalScale = 2,
   allowNegative = true,
-}: NumberFieldControlledProps<T> & NumberFieldEditableProps) => {
+}: NumberFieldControlledProps<T> & DecimalFieldEditableProps) => {
   if (!watch || !control) {
     return null;
   }
