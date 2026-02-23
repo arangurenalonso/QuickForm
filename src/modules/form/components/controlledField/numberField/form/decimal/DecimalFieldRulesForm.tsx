@@ -13,14 +13,14 @@ import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
-import { NumberFieldValidationRulesWithMessage } from '../type/NumberFieldValidationRules';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
-import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
-import { applyTemplate } from '../../common/methods/common.methods';
+import { NumberFieldValidationRulesWithMessage } from '../../type/NumberFieldValidationRules';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
+import { applyTemplate } from '../../../common/methods/common.methods';
 
 type RuleMessageTemplate = string;
 
-interface NumberFieldRulesFormValues {
+interface DecimalFieldRulesFormValues {
   required: boolean;
   requiredMessage: RuleMessageTemplate;
 
@@ -31,7 +31,7 @@ interface NumberFieldRulesFormValues {
   maxMessage: RuleMessageTemplate;
 }
 
-const DEFAULTS: NumberFieldRulesFormValues = {
+const DEFAULTS: DecimalFieldRulesFormValues = {
   required: false,
   requiredMessage: 'Field is required',
   min: undefined,
@@ -40,16 +40,16 @@ const DEFAULTS: NumberFieldRulesFormValues = {
   maxMessage: 'Cannot exceed {max}',
 };
 
-interface NumberFieldRulesFormProps {
+interface DecimalFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
 }
 
-const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
+const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
   const { updateField } = useDesigner();
 
-  const form = useForm<NumberFieldRulesFormValues>({
+  const form = useForm<DecimalFieldRulesFormValues>({
     mode: 'onBlur',
     defaultValues: DEFAULTS,
   });
@@ -57,7 +57,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   const { control, handleSubmit } = form;
 
   useEffect(() => {
-    if (formFieldConfig?.type !== FieldTypeEnum.InputTypeNumber) return;
+    if (formFieldConfig?.type !== FieldTypeEnum.InputTypeDecimal) return;
 
     form.reset({
       required: !!formFieldConfig.rules.required?.value,
@@ -81,7 +81,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   }, [formFieldConfig]);
 
   const onSubmit = useCallback(
-    (data: NumberFieldRulesFormValues) => {
+    (data: DecimalFieldRulesFormValues) => {
       const min = data.min;
       const max = data.max;
       const maxMessageTemplate = data.maxMessage?.trim() || DEFAULTS.maxMessage;
@@ -133,7 +133,7 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
     return () => onSubmit(form.getValues());
   }, [onSubmit, form]);
 
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) return null;
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeDecimal) return null;
 
   return (
     <Form {...form}>
@@ -311,4 +311,4 @@ const NumberFieldRulesForm: React.FC<NumberFieldRulesFormProps> = ({
   );
 };
 
-export default NumberFieldRulesForm;
+export default DecimalFieldRulesForm;

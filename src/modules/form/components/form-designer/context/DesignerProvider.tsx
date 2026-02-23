@@ -5,7 +5,7 @@ import { DesignerContext } from './DesignerContext';
 import { SectionType, SelectedFieldType } from './designer-context.type';
 import { arrayMove } from '@dnd-kit/sortable';
 import { UpdatedTypeEnum } from '@/modules/form/components/controlledField/common/enum/FieldType';
-import FormFieldConfigType from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
+import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
 
 const createSection = (title?: string): SectionType => {
   // id simple; ideal: crypto.randomUUID() si lo tienes disponible

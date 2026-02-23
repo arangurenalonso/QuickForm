@@ -1,6 +1,7 @@
 import { FieldTypeEnum } from './common/enum/FieldType';
 import { FormFieldConfigType } from './common/enum/FormFieldConfigType';
-import { NumberFieldConfig } from './numberField/NumberFieldConfig';
+import { DecimalFieldConfig } from './numberField/fieldConfig/DecimalFieldConfig';
+import { IntegerFieldConfig } from './numberField/fieldConfig/IntegerFieldConfig';
 import { TextFieldConfig } from './textfield/TextFieldConfig';
 
 type FormElementsType = {
@@ -9,5 +10,6 @@ type FormElementsType = {
 
 export const FormElements: FormElementsType = {
   [FieldTypeEnum.InputTypeText]: TextFieldConfig(),
-  [FieldTypeEnum.InputTypeNumber]: NumberFieldConfig(),
+  [FieldTypeEnum.InputTypeDecimal]: DecimalFieldConfig(),
+  [FieldTypeEnum.InputTypeInteger]: IntegerFieldConfig(),
 };

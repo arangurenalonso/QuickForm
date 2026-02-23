@@ -1,5 +1,7 @@
-import NumberFieldEditableAttributesForm from '../../numberField/form/NumberFieldEditableAttributesForm';
-import NumberFieldRulesForm from '../../numberField/form/NumberFieldRulesForm';
+import DecimalFieldEditableAttributesForm from '../../numberField/form/decimal/DecimalFieldEditableAttributesForm';
+import DecimalFieldRulesForm from '../../numberField/form/decimal/DecimalFieldRulesForm';
+import IntegerFieldEditableAttributesForm from '../../numberField/form/integer/IntegerFieldEditableAttributesForm';
+import IntegerFieldRulesForm from '../../numberField/form/integer/IntegerFieldRulesForm';
 import NumberFieldComponent from '../../numberField/NumberFieldComponent';
 import NumberFieldControlled from '../../numberField/NumberFieldControlled';
 import NumberFieldEditableProps from '../../numberField/type/NumberFieldEditableProps';
@@ -17,14 +19,28 @@ export type FormFieldConfigType =
       id: string;
       icon: React.ElementType;
       label: string;
-      type: FieldTypeEnum.InputTypeNumber;
+      type: FieldTypeEnum.InputTypeDecimal;
       properties: NumberFieldEditableProps;
       rules: NumberFieldValidationRulesWithMessage;
       render: {
         Component: typeof NumberFieldComponent;
         Controlled: typeof NumberFieldControlled;
-        EditablePropsForm: typeof NumberFieldEditableAttributesForm;
-        RulesForm: typeof NumberFieldRulesForm;
+        EditablePropsForm: typeof DecimalFieldEditableAttributesForm;
+        RulesForm: typeof DecimalFieldRulesForm;
+      };
+    }
+  | {
+      id: string;
+      icon: React.ElementType;
+      label: string;
+      type: FieldTypeEnum.InputTypeInteger;
+      properties: NumberFieldEditableProps;
+      rules: NumberFieldValidationRulesWithMessage;
+      render: {
+        Component: typeof NumberFieldComponent;
+        Controlled: typeof NumberFieldControlled;
+        EditablePropsForm: typeof IntegerFieldEditableAttributesForm;
+        RulesForm: typeof IntegerFieldRulesForm;
       };
     }
   | {
@@ -41,5 +57,3 @@ export type FormFieldConfigType =
         RulesForm: typeof TextFieldRulesForm;
       };
     };
-
-export default FormFieldConfigType;

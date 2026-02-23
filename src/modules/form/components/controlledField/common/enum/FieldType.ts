@@ -3,7 +3,8 @@ export enum FieldTypeEnum {
   // Array = 'Array',
   // Select = 'Select',
   InputTypeText = 'InputTypeText',
-  InputTypeNumber = 'InputTypeNumber',
+  InputTypeInteger = 'InputTypeInteger',
+  InputTypeDecimal = 'InputTypeDecimal',
 }
 export enum UpdatedTypeEnum {
   EditableForm = 'EditableForm',
@@ -14,7 +15,9 @@ export type FieldType =
   // | FieldTypeEnum.LineBreak
   // | FieldTypeEnum.Array
   // | FieldTypeEnum.Select
-  FieldTypeEnum.InputTypeText | FieldTypeEnum.InputTypeNumber;
+  | FieldTypeEnum.InputTypeText
+  | FieldTypeEnum.InputTypeInteger
+  | FieldTypeEnum.InputTypeDecimal;
 // TextArea="TextArea",
 // | FieldTypeEnum.Select
 // DatePicker="DatePicker",

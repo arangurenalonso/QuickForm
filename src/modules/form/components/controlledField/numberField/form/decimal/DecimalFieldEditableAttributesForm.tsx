@@ -10,19 +10,19 @@ import {
   FormMessage,
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
-import NumberFieldEditableProps from '../type/NumberFieldEditableProps';
+import NumberFieldEditableProps from '../../type/NumberFieldEditableProps';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/common/libs/ui/switch';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
-import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
+import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 
-interface NumberFieldEditableAttributesFormProps {
+interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
 }
 
-const NumberFieldEditableAttributesForm: React.FC<
-  NumberFieldEditableAttributesFormProps
+const DecimalFieldEditableAttributesForm: React.FC<
+  DecimalFieldEditableAttributesFormProps
 > = ({ formFieldConfig }) => {
   const form = useForm<NumberFieldEditableProps>({
     mode: 'onBlur',
@@ -43,7 +43,7 @@ const NumberFieldEditableAttributesForm: React.FC<
   const { updateField } = useDesigner();
 
   useEffect(() => {
-    if (formFieldConfig?.type === FieldTypeEnum.InputTypeNumber) {
+    if (formFieldConfig?.type === FieldTypeEnum.InputTypeDecimal) {
       form.reset(formFieldConfig.properties);
     }
   }, [formFieldConfig, form]);
@@ -71,7 +71,7 @@ const NumberFieldEditableAttributesForm: React.FC<
     };
   }, [form, onSubmit]);
 
-  if (formFieldConfig.type !== FieldTypeEnum.InputTypeNumber) return null;
+  if (formFieldConfig.type !== FieldTypeEnum.InputTypeDecimal) return null;
 
   return (
     <Form {...form}>
@@ -255,6 +255,8 @@ const NumberFieldEditableAttributesForm: React.FC<
                   }}
                   className="flex-1 bg-transparent placeholder:text-muted-foreground"
                   allowNegative={false}
+                  min={1}
+                  decimalScale={0}
                   customInput={Input}
                 />
               </FormControl>
@@ -294,4 +296,4 @@ const NumberFieldEditableAttributesForm: React.FC<
   );
 };
 
-export default NumberFieldEditableAttributesForm;
+export default DecimalFieldEditableAttributesForm;

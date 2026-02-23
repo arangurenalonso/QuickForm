@@ -1,6 +1,7 @@
 import { FieldTypeEnum } from './common/enum/FieldType';
 import { FormFieldConfigType } from './common/enum/FormFieldConfigType';
-import { NumberFieldConfig } from './numberField/NumberFieldConfig';
+import { DecimalFieldConfig } from './numberField/fieldConfig/DecimalFieldConfig';
+import { IntegerFieldConfig } from './numberField/fieldConfig/IntegerFieldConfig';
 import { TextFieldConfig } from './textfield/TextFieldConfig';
 
 export const generateFieldElement = (
@@ -11,8 +12,11 @@ export const generateFieldElement = (
     case FieldTypeEnum.InputTypeText:
       newField = TextFieldConfig();
       break;
-    case FieldTypeEnum.InputTypeNumber:
-      newField = NumberFieldConfig();
+    case FieldTypeEnum.InputTypeInteger:
+      newField = IntegerFieldConfig();
+      break;
+    case FieldTypeEnum.InputTypeDecimal:
+      newField = DecimalFieldConfig();
       break;
 
     default:
@@ -29,8 +33,11 @@ export const generateFieldFromExisting = (
     case FieldTypeEnum.InputTypeText:
       newField = TextFieldConfig(field);
       break;
-    case FieldTypeEnum.InputTypeNumber:
-      newField = NumberFieldConfig(field);
+    case FieldTypeEnum.InputTypeInteger:
+      newField = IntegerFieldConfig(field);
+      break;
+    case FieldTypeEnum.InputTypeDecimal:
+      newField = DecimalFieldConfig(field);
       break;
     default:
       break;
