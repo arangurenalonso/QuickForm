@@ -40,6 +40,18 @@ export default function useFormStore() {
     return res.value;
   }, [clearError]);
 
+  const getFormForSubmission = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const res = await formService.getFormById(idForm);
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      return res.value;
+    },
+    [clearError]
+  );
   const getFormDetail = useCallback(
     async (idForm: string) => {
       clearError();
@@ -90,6 +102,7 @@ export default function useFormStore() {
       getFormDetail,
       saveFormStructure,
       handleClearFormSelected,
+      getFormForSubmission,
     }),
     [
       formSelected,
@@ -100,6 +113,8 @@ export default function useFormStore() {
       getFormDetail,
       saveFormStructure,
       handleClearFormSelected,
+      ,
+      getFormForSubmission,
     ]
   );
 }
