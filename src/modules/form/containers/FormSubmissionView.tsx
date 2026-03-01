@@ -18,7 +18,7 @@ const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
   const [form, setForm] = useState<FormType | null>(null);
 
   const [mode, setMode] = useState<PreviewMode>('tabs');
-  const { getFormForSubmission, error } = useFormStore();
+  const { getFormTemplate, error } = useFormStore();
 
   const handleGetFormStructure = useCallback(async () => {
     if (!idForm) {
@@ -26,11 +26,12 @@ const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
       return;
     }
 
-    const data = await getFormForSubmission(idForm);
+    const data = await getFormTemplate(idForm);
     if (!data) return;
 
-    setSections(data.structure);
-  }, [idForm, getFormForSubmission]);
+    setSections(data.sections);
+    setForm(data.form);
+  }, [idForm, getFormTemplate]);
 
   useEffect(() => {
     handleGetFormStructure();

@@ -92,6 +92,20 @@ export default function useFormStore() {
   const handleClearFormSelected = useCallback(() => {
     clearFormSelected();
   }, [clearFormSelected]);
+
+  const getFormTemplate = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const formTemplate = await formService.getFormTemplateByIdForm(idForm);
+
+      if (!isOk(formTemplate)) {
+        setError(formTemplate.error);
+        return;
+      }
+      return formTemplate.value;
+    },
+    [clearError]
+  );
   return useMemo(
     () => ({
       formSelected,
@@ -102,6 +116,7 @@ export default function useFormStore() {
       getFormDetail,
       saveFormStructure,
       handleClearFormSelected,
+      getFormTemplate,
       getFormForSubmission,
     }),
     [
@@ -113,7 +128,7 @@ export default function useFormStore() {
       getFormDetail,
       saveFormStructure,
       handleClearFormSelected,
-      ,
+      getFormTemplate,
       getFormForSubmission,
     ]
   );

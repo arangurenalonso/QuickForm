@@ -6,7 +6,10 @@ import { Result } from '@/common/types/result';
 import { ResultResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
 import { CreateFormRequest, FormType } from '../types/form.types';
-import { SectionType } from '../components/form-designer/context/designer-context.type';
+import {
+  FormTemplateType,
+  SectionType,
+} from '../components/form-designer/context/designer-context.type';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
 
 export const formService = {
@@ -78,6 +81,39 @@ export const formService = {
         return sectionDTO;
       });
 
+      return ok(result);
+    } catch (e) {
+      console.log('Error fetching form structure:', e);
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async getFormTemplateByIdForm(
+    idForm: string
+  ): Promise<Result<FormTemplateType, AuthError>> {
+    try {
+      const { data } = await api.auth.get<FormTemplateType>(
+        `/form/${idForm}/submission-template`
+      );
+
+      const sections = data.sections.map((section) => {
+        const sectionDTO: SectionType = {
+          id: section.id,
+          title: section.title,
+          description: section.description,
+          fields: section.fields
+            .map((field) => {
+              return generateFieldFromExisting(field);
+            })
+            .filter((field) => field !== null),
+        };
+        return sectionDTO;
+      });
+
+      const result: FormTemplateType = {
+        sections: sections,
+        form: data.form,
+      };
       return ok(result);
     } catch (e) {
       console.log('Error fetching form structure:', e);

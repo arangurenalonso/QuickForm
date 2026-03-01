@@ -1,3 +1,4 @@
+import { FormType } from '@/modules/form/types/form.types';
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
 
 export type SelectedFieldType = {
@@ -10,4 +11,9 @@ export type SectionType = {
   title: string;
   description?: string;
   fields: FormFieldConfigType[];
+};
+
+export type FormTemplateType = {
+  sections: SectionType[];
+  form: FormType;
 };
