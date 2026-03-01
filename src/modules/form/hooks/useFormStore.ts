@@ -6,6 +6,7 @@ import { AuthError } from '@/common/libs/axios/type/error.type';
 import { formService } from '../services/form.service';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
 import { useBoundStore } from '@/store';
+import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
@@ -96,7 +97,10 @@ export default function useFormStore() {
   const getFormTemplate = useCallback(
     async (idForm: string) => {
       clearError();
-      const formTemplate = await formService.getFormTemplateByIdForm(idForm);
+      const formTemplate = await withGlobalLoading(
+        () => formService.getFormTemplateByIdForm(idForm),
+        'Loading form...'
+      );
 
       if (!isOk(formTemplate)) {
         setError(formTemplate.error);
