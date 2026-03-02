@@ -65,7 +65,17 @@ const IntegerFieldControlled = <T extends FieldValues>({
       disabled={disabled}
       defaultValue={defaultValue}
       rules={rules}
-      render={({ value, onChange, onBlur, name, ref, error, disabled }) => {
+      render={({
+        value,
+        onChange,
+        onBlur,
+        name,
+        ref,
+        error,
+        disabled,
+        rules,
+      }) => {
+        const isRequired = !!rules?.required;
         return (
           <NumberFieldComponent
             inputRef={ref}
@@ -85,6 +95,7 @@ const IntegerFieldControlled = <T extends FieldValues>({
             suffix={suffix}
             decimalScale={0}
             allowNegative={allowNegative}
+            required={isRequired}
           />
         );
       }}

@@ -5,8 +5,14 @@ import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableAttributesForm from '../form/decimal/DecimalFieldEditableAttributesForm';
 import DecimalFieldRulesForm from '../form/decimal/DecimalFieldRulesForm';
-import IntegerFieldControlled from '../controlled/IntegerFieldControlled';
-import DecimalFieldControlled from '../controlled/NumberFieldControlled';
+import DecimalFieldControlled from '../controlled/DecimalFieldControlled';
+
+const decimalRender = {
+  Component: NumberFieldComponent,
+  Controlled: DecimalFieldControlled,
+  EditablePropsForm: DecimalFieldEditableAttributesForm,
+  RulesForm: DecimalFieldRulesForm,
+};
 
 export const DecimalFieldConfig = (
   field?: FormFieldConfigType | null | undefined
@@ -14,12 +20,7 @@ export const DecimalFieldConfig = (
   if (field) {
     return {
       ...field,
-      render: {
-        Component: NumberFieldComponent,
-        Controlled: IntegerFieldControlled,
-        EditablePropsForm: DecimalFieldEditableAttributesForm,
-        RulesForm: DecimalFieldRulesForm,
-      },
+      render: decimalRender,
     } as FormFieldConfigType;
   }
   const id = uuidv4();
@@ -45,11 +46,6 @@ export const DecimalFieldConfig = (
       max: undefined,
       min: undefined,
     },
-    render: {
-      Component: NumberFieldComponent,
-      Controlled: DecimalFieldControlled,
-      EditablePropsForm: DecimalFieldEditableAttributesForm,
-      RulesForm: DecimalFieldRulesForm,
-    },
+    render: decimalRender,
   };
 };

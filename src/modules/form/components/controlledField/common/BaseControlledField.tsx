@@ -38,6 +38,11 @@ type BaseControlledFieldProps<T extends FieldValues> = {
     ref: RefCallBack;
     error: FieldError | undefined;
     invalid: boolean;
+
+    rules?: Omit<
+      RegisterOptions<T, Path<T>>,
+      'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'
+    >;
     // valueToSet?: any;
   }) => React.ReactElement;
 };
@@ -89,6 +94,7 @@ const BaseControlledField = <T extends FieldValues>({
           error: error,
           disabled: disabled,
           invalid: invalid,
+          rules,
         });
       }}
     />

@@ -19,6 +19,8 @@ export type AuthErrorKind =
   | 'Canceled'
   | 'Server'
   | 'BadRequest'
+  | 'PayloadTooLarge'
+  | 'UnsupportedMediaType'
   | 'Unknown';
 
 export type AuthError = {

@@ -7,18 +7,20 @@ import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import IntegerFieldControlled from '../controlled/IntegerFieldControlled';
 
+const integerRender = {
+  Component: NumberFieldComponent,
+  Controlled: IntegerFieldControlled,
+  EditablePropsForm: IntegerFieldEditableAttributesForm,
+  RulesForm: IntegerFieldRulesForm,
+};
+
 export const IntegerFieldConfig = (
   field?: FormFieldConfigType | null | undefined
 ): FormFieldConfigType => {
   if (field) {
     return {
       ...field,
-      render: {
-        Component: NumberFieldComponent,
-        Controlled: IntegerFieldControlled,
-        EditablePropsForm: IntegerFieldEditableAttributesForm,
-        RulesForm: IntegerFieldRulesForm,
-      },
+      render: integerRender,
     } as FormFieldConfigType;
   }
   const id = uuidv4();
@@ -43,11 +45,6 @@ export const IntegerFieldConfig = (
       max: undefined,
       min: undefined,
     },
-    render: {
-      Component: NumberFieldComponent,
-      Controlled: IntegerFieldControlled,
-      EditablePropsForm: IntegerFieldEditableAttributesForm,
-      RulesForm: IntegerFieldRulesForm,
-    },
+    render: integerRender,
   };
 };

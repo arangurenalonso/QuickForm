@@ -18,7 +18,7 @@ const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
   const [showSkeleton, setShowSkeleton] = useState(false);
 
   // const [mode, setMode] = useState<PreviewMode>('tabs');
-  const { getFormTemplate, error } = useFormStore();
+  const { getFormTemplate, error, submitForm } = useFormStore();
 
   const handleGetFormStructure = useCallback(async () => {
     setShowSkeleton(true);
@@ -43,9 +43,20 @@ const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
     handleGetFormStructure();
   }, [handleGetFormStructure]);
 
-  const onSubmit = useCallback((values: unknown) => {
-    console.log('Form submitted with values:', values);
-  }, []);
+  const onSubmit = useCallback(
+    (values: unknown) => {
+      console.log('Form submitted with values:', values);
+      if (!form) return;
+
+      const result = submitForm(form.id, values);
+      if (!result) {
+        console.error('Failed to submit form');
+      } else {
+        console.log('Form submitted successfully');
+      }
+    },
+    [form, submitForm]
+  );
 
   const FormRenderer = useMemo(() => {
     return <RenderTabsForm sections={sections} onSubmit={onSubmit} />;

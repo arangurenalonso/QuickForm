@@ -9,10 +9,8 @@ export async function withGlobalLoading<T>(
 
   beginLoading({ message });
   try {
-    console.log('withGlobalLoading: started');
     return await fn();
   } finally {
     endLoading();
-    console.log('withGlobalLoading: ended');
   }
 }

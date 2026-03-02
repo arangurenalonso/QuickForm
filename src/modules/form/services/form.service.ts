@@ -120,4 +120,19 @@ export const formService = {
       return err(mapAxiosToAuthError(e));
     }
   },
+
+  async submitForm(
+    idForm: string,
+    payload: unknown
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<ResultResponse>(
+        `/form/${idForm}/submit`,
+        payload
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
 };

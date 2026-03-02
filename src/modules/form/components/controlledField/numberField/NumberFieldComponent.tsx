@@ -21,6 +21,7 @@ interface NumberFieldComponentProps {
   error?: boolean;
   errorMessage?: React.ReactNode;
   disabled?: boolean;
+  required?: boolean;
 }
 
 const NumberFieldComponent: React.FC<
@@ -43,14 +44,33 @@ const NumberFieldComponent: React.FC<
   suffix,
   decimalScale = 2,
   allowNegative = true,
+  required = false,
 }) => {
   return (
     <div className="space-y-2">
       {(label || informationText) && (
         <div className="flex items-center gap-2">
           {label && (
-            <label htmlFor={name} className="text-sm font-medium">
+            <label
+              htmlFor={name}
+              className={cn(
+                'text-sm font-medium',
+                error ? 'text-destructive' : 'text-foreground'
+              )}
+            >
               {label}
+
+              {required && (
+                <span
+                  className={cn(
+                    'ml-1',
+                    error ? 'text-destructive' : 'text-muted-foreground'
+                  )}
+                  aria-hidden="true"
+                >
+                  *
+                </span>
+              )}
             </label>
           )}
 
@@ -60,7 +80,10 @@ const NumberFieldComponent: React.FC<
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    className="text-muted-foreground hover:text-foreground"
+                    className={cn(
+                      'text-muted-foreground hover:text-foreground',
+                      error && 'text-destructive hover:text-destructive'
+                    )}
                     onClick={(e) => e.preventDefault()}
                     aria-label="Information"
                   >
@@ -75,7 +98,6 @@ const NumberFieldComponent: React.FC<
           )}
         </div>
       )}
-
       <div
         className={cn(
           'flex items-center gap-2 rounded-md border bg-background px-3 py-2',

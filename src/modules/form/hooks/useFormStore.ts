@@ -110,6 +110,24 @@ export default function useFormStore() {
     },
     [clearError]
   );
+
+  const submitForm = useCallback(
+    async (idForm: string, payload: unknown) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.submitForm(idForm, payload),
+        'Submitting form...'
+      );
+
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      return result.value;
+    },
+    [clearError]
+  );
+
   return useMemo(
     () => ({
       formSelected,
@@ -122,6 +140,7 @@ export default function useFormStore() {
       handleClearFormSelected,
       getFormTemplate,
       getFormForSubmission,
+      submitForm,
     }),
     [
       formSelected,
@@ -134,6 +153,7 @@ export default function useFormStore() {
       handleClearFormSelected,
       getFormTemplate,
       getFormForSubmission,
+      submitForm,
     ]
   );
 }

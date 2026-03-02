@@ -1,5 +1,5 @@
+import DecimalFieldControlled from '../../numberField/controlled/DecimalFieldControlled';
 import IntegerFieldControlled from '../../numberField/controlled/IntegerFieldControlled';
-import DecimalFieldControlled from '../../numberField/controlled/NumberFieldControlled';
 import DecimalFieldEditableAttributesForm from '../../numberField/form/decimal/DecimalFieldEditableAttributesForm';
 import DecimalFieldRulesForm from '../../numberField/form/decimal/DecimalFieldRulesForm';
 import IntegerFieldEditableAttributesForm from '../../numberField/form/integer/IntegerFieldEditableAttributesForm';
