@@ -1,4 +1,4 @@
-import FormSubmissionView from '@/modules/form/containers/FormSubmissionView';
+import FormSubmissionView from '@/modules/form/containers/FormSubmitView';
 
 async function FormFillPage({
   params,

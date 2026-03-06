@@ -128,6 +128,23 @@ export default function useFormStore() {
     [clearError]
   );
 
+  const getSubmissions = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.getSubmissionsByFormId(idForm),
+        'Loading submissions...'
+      );
+
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      return result.value;
+    },
+    [clearError]
+  );
+
   return useMemo(
     () => ({
       formSelected,
@@ -141,6 +158,7 @@ export default function useFormStore() {
       getFormTemplate,
       getFormForSubmission,
       submitForm,
+      getSubmissions,
     }),
     [
       formSelected,
@@ -154,6 +172,7 @@ export default function useFormStore() {
       getFormTemplate,
       getFormForSubmission,
       submitForm,
+      getSubmissions,
     ]
   );
 }

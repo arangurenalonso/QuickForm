@@ -9,6 +9,7 @@ import { CreateFormRequest, FormType } from '../types/form.types';
 import {
   FormTemplateType,
   SectionType,
+  SubmissionType,
 } from '../components/form-designer/context/designer-context.type';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
 
@@ -129,6 +130,19 @@ export const formService = {
       const { data } = await api.auth.post<ResultResponse>(
         `/form/${idForm}/submit`,
         payload
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async getSubmissionsByFormId(
+    idForm: string
+  ): Promise<Result<SubmissionType, AuthError>> {
+    try {
+      const { data } = await api.auth.get<SubmissionType>(
+        `/form/${idForm}/submissions`
       );
       return ok(data);
     } catch (e) {

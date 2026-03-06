@@ -8,10 +8,10 @@ import { FormType } from '../types/form.types';
 import { Alert } from '@/common/libs/ui/alert';
 import { useBoundStore } from '@/store';
 import FormSubmissionSkeleton from './FormSkeleton';
-type FormSubmissionViewProps = {
+type FormSubmitViewProps = {
   idForm?: string | null | undefined;
 };
-const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
+const FormSubmitView = ({ idForm }: FormSubmitViewProps) => {
   const isLoading = useBoundStore((s) => s.isLoading);
   const [sections, setSections] = useState<SectionType[]>([]);
   const [form, setForm] = useState<FormType | null>(null);
@@ -112,4 +112,4 @@ const FormSubmissionView = ({ idForm }: FormSubmissionViewProps) => {
   );
 };
 
-export default FormSubmissionView;
+export default FormSubmitView;

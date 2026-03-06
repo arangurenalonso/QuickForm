@@ -1,5 +1,9 @@
 import { FormType } from '@/modules/form/types/form.types';
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
+import {
+  DynamicTableColumnType,
+  DynamicTableRowType,
+} from '@/common/components/dynamic-table/dynamic-table.types';
 
 export type SelectedFieldType = {
   sectionId: string;
@@ -16,4 +20,8 @@ export type SectionType = {
 export type FormTemplateType = {
   sections: SectionType[];
   form: FormType;
+};
+export type SubmissionType = {
+  columns: DynamicTableColumnType[];
+  rows: DynamicTableRowType[];
 };
