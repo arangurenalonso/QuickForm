@@ -5,6 +5,11 @@ import {
 } from './dynamic-table.types';
 import DynamicTableHeader from './DynamicTableHeader';
 import DynamicTableRow from './DynamicTableRow';
+import {
+  getOrderedVisibleColumns,
+  getPinnedOffsets,
+} from './dynamic-table.utils';
+import DynamicTableEmptyState from './DynamicTableEmptyState ';
 
 type DynamicTableProps = {
   columns: DynamicTableColumnType[];
@@ -12,40 +17,48 @@ type DynamicTableProps = {
   emptyMessage?: string;
   className?: string;
 };
+
 const DynamicTable = ({
   columns,
   rows,
   emptyMessage = 'No submissions found.',
   className,
 }: DynamicTableProps) => {
-  const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
+  const columnsByOrder = [...columns].sort((a, b) => a.order - b.order);
+  const visibleOrderedColumns = getOrderedVisibleColumns(columnsByOrder);
+  const pinnedOffsets = getPinnedOffsets(columnsByOrder);
+
+  const rowKeyColumn =
+    columnsByOrder.find((column) => column.isKey) ?? columnsByOrder[0];
 
   return (
     <div className={clsx('w-full', className)}>
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <table className="w-max min-w-full border-separate border-spacing-0">
-          <DynamicTableHeader columns={sortedColumns} />
+          <DynamicTableHeader
+            columns={visibleOrderedColumns}
+            pinnedOffsets={pinnedOffsets}
+          />
 
-          <tbody className="bg-white">
-            {rows.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={sortedColumns.length}
-                  className="px-4 py-10 text-center text-sm text-slate-500"
-                >
-                  {emptyMessage}
-                </td>
-              </tr>
-            ) : (
-              rows.map((row, index) => (
+          {rows.length === 0 ? (
+            <DynamicTableEmptyState
+              colSpan={visibleOrderedColumns.length}
+              message={emptyMessage}
+            />
+          ) : (
+            <tbody className="bg-white dark:bg-slate-900">
+              {rows.map((row, index) => (
                 <DynamicTableRow
-                  key={String(row.submissionId ?? index)}
-                  columns={sortedColumns}
+                  key={String(
+                    rowKeyColumn ? (row[rowKeyColumn.key] ?? index) : index
+                  )}
+                  columns={visibleOrderedColumns}
                   row={row}
+                  pinnedOffsets={pinnedOffsets}
                 />
-              ))
-            )}
-          </tbody>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>

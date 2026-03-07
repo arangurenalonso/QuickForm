@@ -1,4 +1,7 @@
-import { DynamicTableColumnType } from './dynamic-table.types';
+import {
+  DynamicTableColumnType,
+  DynamicTablePinnedOffsetsType,
+} from './dynamic-table.types';
 
 export type ColumnSize = {
   minWidth: number;
@@ -13,22 +16,6 @@ const DEFAULT_SIZE: ColumnSize = {
 };
 
 export function getColumnSize(column: DynamicTableColumnType): ColumnSize {
-  if (column.key === 'submissionId') {
-    return {
-      minWidth: 220,
-      maxWidth: 320,
-      align: 'left',
-    };
-  }
-
-  if (column.key === 'submittedAt') {
-    return {
-      minWidth: 180,
-      maxWidth: 220,
-      align: 'left',
-    };
-  }
-
   switch (column.type) {
     case 'InputTypeText':
       return {
@@ -118,9 +105,7 @@ export function formatCellValue(value: unknown, type: string): string {
   return String(value);
 }
 
-export function shouldTruncate(type: string, key: string): boolean {
-  if (key === 'submissionId') return true;
-
+export function shouldTruncate(type: string): boolean {
   switch (type) {
     case 'InputTypeText':
     case 'InputTypeDate':
@@ -130,4 +115,59 @@ export function shouldTruncate(type: string, key: string): boolean {
     default:
       return false;
   }
+}
+
+export function getVisibleColumns(
+  columns: DynamicTableColumnType[]
+): DynamicTableColumnType[] {
+  return columns.filter((column) => column.showInTable);
+}
+
+export function getOrderedVisibleColumns(
+  columns: DynamicTableColumnType[]
+): DynamicTableColumnType[] {
+  const visibleColumns = getVisibleColumns(columns);
+  const byOrder = (a: DynamicTableColumnType, b: DynamicTableColumnType) =>
+    a.order - b.order;
+
+  const leftPinned = visibleColumns
+    .filter((column) => column.pinned === 'left')
+    .sort(byOrder);
+
+  const centerColumns = visibleColumns
+    .filter((column) => !column.pinned)
+    .sort(byOrder);
+
+  const rightPinned = visibleColumns
+    .filter((column) => column.pinned === 'right')
+    .sort(byOrder);
+
+  return [...leftPinned, ...centerColumns, ...rightPinned];
+}
+
+export function getPinnedOffsets(
+  columns: DynamicTableColumnType[]
+): DynamicTablePinnedOffsetsType {
+  const orderedVisibleColumns = getOrderedVisibleColumns(columns);
+
+  const leftOffsets: Record<string, number> = {};
+  const rightOffsets: Record<string, number> = {};
+
+  let accumulatedLeft = 0;
+  for (const column of orderedVisibleColumns) {
+    if (column.pinned === 'left') {
+      leftOffsets[column.key] = accumulatedLeft;
+      accumulatedLeft += getColumnSize(column).maxWidth;
+    }
+  }
+
+  let accumulatedRight = 0;
+  for (const column of [...orderedVisibleColumns].reverse()) {
+    if (column.pinned === 'right') {
+      rightOffsets[column.key] = accumulatedRight;
+      accumulatedRight += getColumnSize(column).maxWidth;
+    }
+  }
+
+  return { leftOffsets, rightOffsets };
 }

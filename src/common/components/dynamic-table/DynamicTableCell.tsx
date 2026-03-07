@@ -1,4 +1,7 @@
-import { DynamicTableColumnType } from './dynamic-table.types';
+import {
+  DynamicTableColumnType,
+  DynamicTablePinnedOffsetsType,
+} from './dynamic-table.types';
 import {
   formatCellValue,
   getAlignClass,
@@ -9,25 +12,38 @@ import {
 type Props = {
   column: DynamicTableColumnType;
   value: unknown;
+  pinnedOffsets: DynamicTablePinnedOffsetsType;
 };
 
-const DynamicTableCell = ({ column, value }: Props) => {
+const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
   const size = getColumnSize(column);
   const displayValue = formatCellValue(value, column.type);
-  const truncate = shouldTruncate(column.type, column.key);
+  const truncate = shouldTruncate(column.type);
   const showPreview = truncate && displayValue.length > 20;
+
+  const isPinnedLeft = column.pinned === 'left';
+  const isPinnedRight = column.pinned === 'right';
+  const isPinned = isPinnedLeft || isPinnedRight;
 
   return (
     <td
       className={[
-        'group relative border-b border-slate-100 px-4 py-3 text-sm text-slate-700 align-middle',
+        'group relative border-b px-4 py-3 text-sm align-middle',
+        'border-slate-100 text-slate-700 dark:border-slate-700 dark:text-slate-200',
+        'bg-[var(--row-bg)]',
         getAlignClass(size.align),
-        column.isKey ? 'sticky left-0 z-[5] bg-inherit' : '',
+        isPinned ? 'sticky z-[5]' : '',
       ].join(' ')}
       style={{
         minWidth: `${size.minWidth}px`,
         maxWidth: `${size.maxWidth}px`,
         width: `${size.maxWidth}px`,
+        ...(isPinnedLeft
+          ? { left: `${pinnedOffsets.leftOffsets[column.key] ?? 0}px` }
+          : {}),
+        ...(isPinnedRight
+          ? { right: `${pinnedOffsets.rightOffsets[column.key] ?? 0}px` }
+          : {}),
       }}
     >
       <div className="relative overflow-visible">
@@ -43,7 +59,7 @@ const DynamicTableCell = ({ column, value }: Props) => {
         </span>
 
         {showPreview ? (
-          <div className="pointer-events-none absolute left-0 top-full z-30 mt-2 hidden w-max max-w-[420px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-xl group-hover:block">
+          <div className="pointer-events-none absolute left-0 top-full z-30 mt-2 hidden w-max max-w-[420px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-xl group-hover:block dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
             <div className="whitespace-pre-wrap break-words">
               {displayValue}
             </div>
