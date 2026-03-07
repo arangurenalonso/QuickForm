@@ -28,7 +28,7 @@ const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
   return (
     <td
       className={[
-        'group relative border-b px-4 py-3 text-sm align-middle',
+        'group/cell relative border-b px-4 py-3 text-sm align-middle',
         'border-slate-100 text-slate-700 dark:border-slate-700 dark:text-slate-200',
         'bg-[var(--row-bg)]',
         getAlignClass(size.align),
@@ -59,7 +59,7 @@ const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
         </span>
 
         {showPreview ? (
-          <div className="pointer-events-none absolute left-0 top-full z-30 mt-2 hidden w-max max-w-[420px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-xl group-hover:block dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+          <div className="pointer-events-none absolute left-0 top-full z-30 mt-2 hidden w-max max-w-[420px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-xl group-hover/cell:block dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
             <div className="whitespace-pre-wrap break-words">
               {displayValue}
             </div>
