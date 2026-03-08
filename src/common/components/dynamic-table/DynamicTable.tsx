@@ -26,7 +26,7 @@ const DynamicTable = ({
 }: DynamicTableProps) => {
   const columnsByOrder = [...columns].sort((a, b) => a.order - b.order);
   const visibleOrderedColumns = getOrderedVisibleColumns(columnsByOrder);
-  const pinnedOffsets = getPinnedOffsets(columnsByOrder);
+  const pinnedOffsets = getPinnedOffsets(visibleOrderedColumns);
 
   const rowKeyColumn =
     columnsByOrder.find((column) => column.isKey) ?? columnsByOrder[0];

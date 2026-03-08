@@ -129,10 +129,10 @@ export default function useFormStore() {
   );
 
   const getSubmissions = useCallback(
-    async (idForm: string) => {
+    async (idForm: string, page: number, pageSize: number) => {
       clearError();
       const result = await withGlobalLoading(
-        () => formService.getSubmissionsByFormId(idForm),
+        () => formService.getSubmissionsByFormId(idForm, page, pageSize),
         'Loading submissions...'
       );
 

@@ -85,24 +85,27 @@ export function getAlignClass(align: ColumnSize['align']): string {
 export function formatCellValue(value: unknown, type: string): string {
   if (value === null || value === undefined) return '';
 
-  if (type === 'InputTypeBoolean') {
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    return String(value);
-  }
-
-  if (type === 'InputTypeDecimal') {
-    if (typeof value === 'number') {
-      return Number.isInteger(value) ? value.toString() : value.toFixed(2);
-    }
-    return String(value);
-  }
-
-  if (type === 'InputTypeInteger') {
-    if (typeof value === 'number') return Math.trunc(value).toString();
-    return String(value);
-  }
-
+  console.log('Formatting value:', { value, type });
   return String(value);
+
+  // if (type === 'InputTypeBoolean') {
+  //   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  //   return String(value);
+  // }
+
+  // if (type === 'InputTypeDecimal') {
+  //   if (typeof value === 'number') {
+  //     return Number.isInteger(value) ? value.toString() : value.toFixed(2);
+  //   }
+  //   return String(value);
+  // }
+
+  // if (type === 'InputTypeInteger') {
+  //   if (typeof value === 'number') return Math.trunc(value).toString();
+  //   return String(value);
+  // }
+
+  // return String(value);
 }
 
 export function shouldTruncate(type: string): boolean {

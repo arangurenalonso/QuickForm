@@ -138,11 +138,13 @@ export const formService = {
   },
 
   async getSubmissionsByFormId(
-    idForm: string
+    idForm: string,
+    page: number,
+    pageSize: number
   ): Promise<Result<SubmissionType, AuthError>> {
     try {
       const { data } = await api.auth.get<SubmissionType>(
-        `/form/${idForm}/submissions`
+        `/form/${idForm}/submissions?page=${page}&pageSize=${pageSize}`
       );
       return ok(data);
     } catch (e) {

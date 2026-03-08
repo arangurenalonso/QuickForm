@@ -4,6 +4,7 @@ import {
   DynamicTableColumnType,
   DynamicTableRowType,
 } from '@/common/components/dynamic-table/dynamic-table.types';
+import { PaginationResultType } from '@/common/components/pagination/pagination.types';
 
 export type SelectedFieldType = {
   sectionId: string;
@@ -23,5 +24,5 @@ export type FormTemplateType = {
 };
 export type SubmissionType = {
   columns: DynamicTableColumnType[];
-  rows: DynamicTableRowType[];
+  data: PaginationResultType<DynamicTableRowType>;
 };
