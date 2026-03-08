@@ -3,12 +3,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import DynamicTable from '@/common/components/dynamic-table/DynamicTable';
 import Pagination from '@/common/components/pagination/Pagination';
-import { PaginationResultType } from '@/common/components/pagination/pagination.types';
 import useFormStore from '../hooks/useFormStore';
 import {
   DynamicTableColumnType,
   DynamicTableRowType,
 } from '@/common/components/dynamic-table/dynamic-table.types';
+import Filters from '@/common/components/filters/Filters';
+import { createEmptyFilter } from '@/common/components/filters/filters.utils';
+import { PaginationResultType } from '@/common/components/pagination/pagination.types';
+import { FilterItemType } from '@/common/components/filters/filters.types';
 
 type FormSubmissionsViewProps = {
   idForm: string;
@@ -35,44 +38,50 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const [filters, setFilters] = useState<FilterItemType[]>([
+    createEmptyFilter(),
+  ]);
+
   const [data, setData] = useState<FormSubmissionsViewState>({
     columns: [],
     data: emptyPagination,
   });
 
-  const handleGetSubmissions = useCallback(
-    async (targetPage: number, targetPageSize: number) => {
-      if (!idForm) {
-        return;
-      }
+  useEffect(() => {
+    console.log('filters changed', filters);
+  }, [filters]);
 
-      const result = await getSubmissions(idForm, targetPage, targetPageSize);
+  const handleGetSubmissions = useCallback(async () => {
+    if (!idForm) {
+      return;
+    }
 
-      if (!result) {
-        return;
-      }
+    const result = await getSubmissions(idForm, page, pageSize);
 
-      setData(result);
-    },
-    [idForm, getSubmissions]
-  );
+    if (!result) {
+      return;
+    }
+
+    setData(result);
+  }, [idForm, page, pageSize, getSubmissions]);
 
   useEffect(() => {
-    void handleGetSubmissions(page, pageSize);
-  }, [handleGetSubmissions, page, pageSize]);
+    void handleGetSubmissions();
+  }, [handleGetSubmissions]);
 
-  const handlePageChange = useCallback((nextPage: number) => {
-    setPage(nextPage);
-  }, []);
+  const handleApplyFilters = useCallback(() => {
+    setPage(1);
+    void handleGetSubmissions();
+  }, [handleGetSubmissions]);
 
-  const handlePageSizeChange = useCallback((nextPageSize: number) => {
-    setPageSize(nextPageSize);
+  const handleResetFilters = useCallback(() => {
+    setFilters([createEmptyFilter()]);
     setPage(1);
   }, []);
 
   return (
-    <section className="w-full p-4 md:p-6">
-      <div className="mb-4">
+    <section className="space-y-4 p-4 md:p-6">
+      <div>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           Submissions
         </h2>
@@ -81,20 +90,29 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
         </p>
       </div>
 
-      <div className="space-y-4">
-        <DynamicTable
-          columns={data.columns}
-          rows={data.data.items}
-          emptyMessage="This form does not have submissions yet."
-        />
+      <Filters
+        columns={data.columns}
+        filters={filters}
+        onChange={setFilters}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
+      />
 
-        <Pagination
-          pagination={data.data}
-          pageSizeOptions={[1, 5, 10, 25, 50, 100]}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-        />
-      </div>
+      <DynamicTable
+        columns={data.columns}
+        rows={data.data.items}
+        emptyMessage="This form does not have submissions yet."
+      />
+
+      <Pagination
+        pagination={data.data}
+        pageSizeOptions={[10, 25, 50, 100]}
+        onPageChange={setPage}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
     </section>
   );
 };

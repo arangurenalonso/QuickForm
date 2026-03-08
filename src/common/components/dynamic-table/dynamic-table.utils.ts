@@ -82,10 +82,9 @@ export function getAlignClass(align: ColumnSize['align']): string {
   }
 }
 
-export function formatCellValue(value: unknown, type: string): string {
+export function formatCellValue(value: unknown): string {
   if (value === null || value === undefined) return '';
 
-  console.log('Formatting value:', { value, type });
   return String(value);
 
   // if (type === 'InputTypeBoolean') {

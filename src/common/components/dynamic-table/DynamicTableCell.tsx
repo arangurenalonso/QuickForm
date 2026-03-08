@@ -17,7 +17,7 @@ type Props = {
 
 const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
   const size = getColumnSize(column);
-  const displayValue = formatCellValue(value, column.type);
+  const displayValue = formatCellValue(value);
   const truncate = shouldTruncate(column.type);
   const showPreview = truncate && displayValue.length > 20;
 
