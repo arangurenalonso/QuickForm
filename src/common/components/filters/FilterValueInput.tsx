@@ -1,116 +1,120 @@
-import { FilterValueKindType } from './filters.types';
+import { Input } from '@/common/libs/ui/input';
+import { UiControlType } from './filters.types';
 
 type FilterValueInputProps = {
-  valueKind: FilterValueKindType;
+  uiControlType: UiControlType;
   value?: string | number | boolean | null;
   secondValue?: string | number | boolean | null;
   onChange: (value: string | number | boolean | null) => void;
   onSecondChange: (value: string | number | boolean | null) => void;
 };
 
-const baseInputClassName =
-  'h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200';
-
 const FilterValueInput = ({
-  valueKind,
+  uiControlType,
   value,
   secondValue,
   onChange,
   onSecondChange,
 }: FilterValueInputProps) => {
-  if (valueKind === 'none') {
+  if (uiControlType === 'none') {
     return null;
   }
 
-  if (valueKind === 'text') {
+  if (uiControlType === 'text') {
     return (
-      <input
-        type="text"
+      <Input
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
-        className={baseInputClassName}
         placeholder="Enter value"
       />
     );
   }
 
-  if (valueKind === 'number') {
+  if (uiControlType === 'number') {
     return (
-      <input
+      <Input
         type="number"
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
-        className={baseInputClassName}
         placeholder="Enter number"
       />
     );
   }
 
-  if (valueKind === 'date') {
+  if (uiControlType === 'date') {
     return (
-      <input
+      <Input
         type="date"
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
-        className={baseInputClassName}
       />
     );
   }
 
-  if (valueKind === 'datetime') {
+  if (uiControlType === 'datetime') {
     return (
-      <input
+      <Input
         type="datetime-local"
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
-        className={baseInputClassName}
       />
     );
   }
 
-  if (valueKind === 'time') {
+  if (uiControlType === 'time') {
     return (
-      <input
+      <Input
         type="time"
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
-        className={baseInputClassName}
       />
     );
   }
 
   if (
-    valueKind === 'range-number' ||
-    valueKind === 'range-date' ||
-    valueKind === 'range-datetime' ||
-    valueKind === 'range-time'
+    uiControlType === 'range-number' ||
+    uiControlType === 'range-date' ||
+    uiControlType === 'range-datetime' ||
+    uiControlType === 'range-time'
   ) {
     const inputType =
-      valueKind === 'range-number'
+      uiControlType === 'range-number'
         ? 'number'
-        : valueKind === 'range-date'
+        : uiControlType === 'range-date'
           ? 'date'
-          : valueKind === 'range-datetime'
+          : uiControlType === 'range-datetime'
             ? 'datetime-local'
             : 'time';
 
     return (
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-        <input
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <Input
           type={inputType}
           value={String(value ?? '')}
           onChange={(event) => onChange(event.target.value)}
-          className={baseInputClassName}
           placeholder="From"
         />
-        <input
+        <Input
           type={inputType}
           value={String(secondValue ?? '')}
           onChange={(event) => onSecondChange(event.target.value)}
-          className={baseInputClassName}
           placeholder="To"
         />
       </div>
+    );
+  }
+
+  if (uiControlType === 'boolean') {
+    return (
+      <select
+        value={String(value ?? '')}
+        onChange={(event) => onChange(event.target.value)}
+        className="qf-select"
+      >
+        <option value="">Select value</option>
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
     );
   }
 

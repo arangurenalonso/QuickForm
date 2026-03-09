@@ -12,6 +12,7 @@ import {
   SubmissionType,
 } from '../components/form-designer/context/designer-context.type';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
+import { QuestionTypeFiltersGroupType } from '@/common/components/filters/filters.types';
 
 export const formService = {
   async createForm(
@@ -145,6 +146,19 @@ export const formService = {
     try {
       const { data } = await api.auth.get<SubmissionType>(
         `/form/${idForm}/submissions?page=${page}&pageSize=${pageSize}`
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async getQuestionTypeFiltersCatalog(): Promise<
+    Result<QuestionTypeFiltersGroupType[], AuthError>
+  > {
+    try {
+      const { data } = await api.auth.get<QuestionTypeFiltersGroupType[]>(
+        `/question-type/filters`
       );
       return ok(data);
     } catch (e) {

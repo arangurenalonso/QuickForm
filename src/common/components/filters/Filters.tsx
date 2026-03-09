@@ -1,89 +1,112 @@
-import { Plus, RotateCcw, Search } from 'lucide-react';
+'use client';
+
+import { useMemo, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { Button } from '@/common/libs/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/common/libs/ui/popover';
 import { getVisibleColumns } from '@/common/components/dynamic-table/dynamic-table.utils';
+import FilterChip from './FilterChip';
+import FilterComposer from './FilterComposer';
 import { FiltersProps } from './filters.types';
-import { createEmptyFilter } from './filters.utils';
-import FilterRow from './FilterRow';
+import { buildAppliedFilter, createEmptyDraft } from './filters.utils';
 
 const Filters = ({
   columns,
-  filters,
-  onChange,
-  onApply,
-  onReset,
+  catalog,
+  appliedFilters,
+  onApplyFilter,
+  onRemoveFilter,
+  onClearAll,
 }: FiltersProps) => {
-  const visibleColumns = getVisibleColumns(columns);
+  const visibleColumns = useMemo(() => getVisibleColumns(columns), [columns]);
 
-  const handleAdd = () => {
-    onChange([...filters, createEmptyFilter()]);
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(createEmptyDraft());
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+
+    if (!nextOpen) {
+      setDraft(createEmptyDraft());
+    }
   };
 
-  const handleUpdate = (id: string, nextFilter: (typeof filters)[number]) => {
-    onChange(filters.map((filter) => (filter.id === id ? nextFilter : filter)));
+  const handleApply = () => {
+    const nextFilter = buildAppliedFilter(visibleColumns, catalog, draft);
+
+    if (!nextFilter) {
+      return;
+    }
+
+    onApplyFilter(nextFilter);
+    setDraft(createEmptyDraft());
+    setOpen(false);
   };
 
-  const handleRemove = (id: string) => {
-    onChange(filters.filter((filter) => filter.id !== id));
+  const handleCancel = () => {
+    setDraft(createEmptyDraft());
+    setOpen(false);
   };
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-            Filters
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Filter submissions by column, operator, and value.
-          </p>
-        </div>
+    <section className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Popover open={open} onOpenChange={handleOpenChange}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-9 rounded-full px-4"
+            >
+              <Plus size={16} className="mr-1" />
+              Add filter
+            </Button>
+          </PopoverTrigger>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={handleAdd}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+          <PopoverContent
+            align="start"
+            side="bottom"
+            sideOffset={10}
+            className="w-[min(560px,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white p-0 shadow-xl dark:border-slate-800 dark:bg-slate-950"
           >
-            <Plus size={16} />
-            Add filter
-          </button>
-
-          <button
-            type="button"
-            onClick={onReset}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            <RotateCcw size={16} />
-            Reset
-          </button>
-
-          <button
-            type="button"
-            onClick={onApply}
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-blue-600 px-3 text-sm font-medium text-white transition hover:bg-blue-700"
-          >
-            <Search size={16} />
-            Apply
-          </button>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        {filters.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
-            No filters added yet.
-          </div>
-        ) : (
-          filters.map((filter) => (
-            <FilterRow
-              key={filter.id}
+            <FilterComposer
               columns={visibleColumns}
-              filter={filter}
-              onChange={(next) => handleUpdate(filter.id, next)}
-              onRemove={() => handleRemove(filter.id)}
+              catalog={catalog}
+              draft={draft}
+              onDraftChange={setDraft}
+              onApply={handleApply}
+              onCancel={handleCancel}
             />
-          ))
-        )}
+          </PopoverContent>
+        </Popover>
+
+        {appliedFilters.length > 0 ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClearAll}
+            className="h-9 px-2 text-slate-500"
+          >
+            Clear all
+          </Button>
+        ) : null}
       </div>
+
+      {appliedFilters.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {appliedFilters.map((filter) => (
+            <FilterChip
+              key={filter.id}
+              filter={filter}
+              onRemove={() => onRemoveFilter(filter.id)}
+            />
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 };

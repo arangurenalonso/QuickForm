@@ -111,6 +111,20 @@ export default function useFormStore() {
     [clearError]
   );
 
+  const getQuestionTypeFiltersCatalog = useCallback(async () => {
+    clearError();
+    const catalog = await withGlobalLoading(
+      () => formService.getQuestionTypeFiltersCatalog(),
+      'Loading filters catalog...'
+    );
+
+    if (!isOk(catalog)) {
+      setError(catalog.error);
+      return;
+    }
+    return catalog.value;
+  }, [clearError]);
+
   const submitForm = useCallback(
     async (idForm: string, payload: unknown) => {
       clearError();
@@ -159,6 +173,7 @@ export default function useFormStore() {
       getFormForSubmission,
       submitForm,
       getSubmissions,
+      getQuestionTypeFiltersCatalog,
     }),
     [
       formSelected,
@@ -173,6 +188,7 @@ export default function useFormStore() {
       getFormForSubmission,
       submitForm,
       getSubmissions,
+      getQuestionTypeFiltersCatalog,
     ]
   );
 }

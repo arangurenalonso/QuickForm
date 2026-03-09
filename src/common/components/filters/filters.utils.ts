@@ -1,104 +1,19 @@
+import { DynamicTableColumnType } from '@/common/components/dynamic-table/dynamic-table.types';
 import {
-  DynamicTableColumnType,
-  DynamicColumnType,
-} from '@/common/components/dynamic-table/dynamic-table.types';
-import { FilterOperatorOptionType, FilterItemType } from './filters.types';
+  AppliedFilterType,
+  FilterDraftType,
+  QuestionTypeFilterOptionType,
+  QuestionTypeFiltersGroupType,
+  UiControlType,
+} from './filters.types';
 
-const TEXT_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'contains', label: 'Contains', valueKind: 'text' },
-  { value: 'notContains', label: 'Does not contain', valueKind: 'text' },
-  { value: 'equals', label: 'Equals', valueKind: 'text' },
-  { value: 'notEquals', label: 'Does not equal', valueKind: 'text' },
-  { value: 'startsWith', label: 'Starts with', valueKind: 'text' },
-  { value: 'endsWith', label: 'Ends with', valueKind: 'text' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-const NUMBER_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'equals', label: 'Equals', valueKind: 'number' },
-  { value: 'notEquals', label: 'Does not equal', valueKind: 'number' },
-  { value: 'greaterThan', label: 'Greater than', valueKind: 'number' },
-  {
-    value: 'greaterThanOrEqual',
-    label: 'Greater than or equal',
-    valueKind: 'number',
-  },
-  { value: 'lessThan', label: 'Less than', valueKind: 'number' },
-  {
-    value: 'lessThanOrEqual',
-    label: 'Less than or equal',
-    valueKind: 'number',
-  },
-  { value: 'between', label: 'Between', valueKind: 'range-number' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-const DATE_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'on', label: 'On', valueKind: 'date' },
-  { value: 'before', label: 'Before', valueKind: 'date' },
-  { value: 'after', label: 'After', valueKind: 'date' },
-  { value: 'onOrBefore', label: 'On or before', valueKind: 'date' },
-  { value: 'onOrAfter', label: 'On or after', valueKind: 'date' },
-  { value: 'between', label: 'Between', valueKind: 'range-date' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-const DATETIME_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'on', label: 'On', valueKind: 'datetime' },
-  { value: 'before', label: 'Before', valueKind: 'datetime' },
-  { value: 'after', label: 'After', valueKind: 'datetime' },
-  { value: 'onOrBefore', label: 'On or before', valueKind: 'datetime' },
-  { value: 'onOrAfter', label: 'On or after', valueKind: 'datetime' },
-  { value: 'between', label: 'Between', valueKind: 'range-datetime' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-const TIME_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'equals', label: 'Equals', valueKind: 'time' },
-  { value: 'before', label: 'Before', valueKind: 'time' },
-  { value: 'after', label: 'After', valueKind: 'time' },
-  { value: 'between', label: 'Between', valueKind: 'range-time' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-const BOOLEAN_OPERATORS: FilterOperatorOptionType[] = [
-  { value: 'isTrue', label: 'Is true', valueKind: 'none' },
-  { value: 'isFalse', label: 'Is false', valueKind: 'none' },
-  { value: 'isEmpty', label: 'Is empty', valueKind: 'none' },
-  { value: 'isNotEmpty', label: 'Is not empty', valueKind: 'none' },
-];
-
-export function getOperatorsByColumnType(
-  type: DynamicColumnType | string
-): FilterOperatorOptionType[] {
-  switch (type) {
-    case 'InputTypeText':
-      return TEXT_OPERATORS;
-
-    case 'InputTypeInteger':
-    case 'InputTypeDecimal':
-      return NUMBER_OPERATORS;
-
-    case 'InputTypeDate':
-      return DATE_OPERATORS;
-
-    case 'InputTypeDatetime':
-      return DATETIME_OPERATORS;
-
-    case 'InputTypeTime':
-      return TIME_OPERATORS;
-
-    case 'InputTypeBoolean':
-      return BOOLEAN_OPERATORS;
-
-    default:
-      return TEXT_OPERATORS;
-  }
+export function createEmptyDraft(): FilterDraftType {
+  return {
+    columnKey: '',
+    operatorId: '',
+    value: '',
+    secondValue: '',
+  };
 }
 
 export function getColumnByKey(
@@ -108,12 +23,125 @@ export function getColumnByKey(
   return columns.find((column) => column.key === key);
 }
 
-export function createEmptyFilter(): FilterItemType {
+export function getOperatorsByColumnType(
+  catalog: QuestionTypeFiltersGroupType[],
+  questionTypeKey: string
+): QuestionTypeFilterOptionType[] {
+  return (
+    catalog.find((item) => item.questionTypeKey === questionTypeKey)
+      ?.operators ?? []
+  );
+}
+
+export function getOperatorById(
+  catalog: QuestionTypeFiltersGroupType[],
+  questionTypeKey: string,
+  operatorId: string
+): QuestionTypeFilterOptionType | undefined {
+  return getOperatorsByColumnType(catalog, questionTypeKey).find(
+    (operator) => operator.id === operatorId
+  );
+}
+
+export function requiresValue(uiControlType: UiControlType): boolean {
+  return uiControlType !== 'none';
+}
+
+export function buildAppliedFilter(
+  columns: DynamicTableColumnType[],
+  catalog: QuestionTypeFiltersGroupType[],
+  draft: FilterDraftType
+): AppliedFilterType | null {
+  const selectedColumn = getColumnByKey(columns, draft.columnKey);
+
+  if (!selectedColumn) {
+    return null;
+  }
+
+  const selectedOperator = getOperatorById(
+    catalog,
+    selectedColumn.type,
+    draft.operatorId
+  );
+
+  if (!selectedOperator) {
+    return null;
+  }
+
   return {
     id: crypto.randomUUID(),
-    columnKey: '',
-    operator: '',
-    value: '',
-    secondValue: '',
+    columnKey: selectedColumn.key,
+    columnLabel: selectedColumn.label,
+    questionTypeKey: selectedColumn.type,
+    operatorId: selectedOperator.id,
+    operatorKey: selectedOperator.key,
+    operatorLabel: selectedOperator.label,
+    uiControlType: selectedOperator.uiControlType,
+    value: draft.value ?? '',
+    secondValue: draft.secondValue ?? '',
   };
+}
+
+export function formatFilterValue(filter: AppliedFilterType): string {
+  if (filter.uiControlType === 'none') {
+    return '';
+  }
+
+  if (
+    filter.uiControlType === 'range-number' ||
+    filter.uiControlType === 'range-date' ||
+    filter.uiControlType === 'range-datetime' ||
+    filter.uiControlType === 'range-time'
+  ) {
+    const left = String(filter.value ?? '').trim();
+    const right = String(filter.secondValue ?? '').trim();
+
+    if (!left && !right) {
+      return '';
+    }
+
+    return `${left} – ${right}`.trim();
+  }
+
+  return String(filter.value ?? '').trim();
+}
+
+export function isDraftValid(
+  columns: DynamicTableColumnType[],
+  catalog: QuestionTypeFiltersGroupType[],
+  draft: FilterDraftType
+): boolean {
+  const selectedColumn = getColumnByKey(columns, draft.columnKey);
+
+  if (!selectedColumn || !draft.operatorId) {
+    return false;
+  }
+
+  const selectedOperator = getOperatorById(
+    catalog,
+    selectedColumn.type,
+    draft.operatorId
+  );
+
+  if (!selectedOperator) {
+    return false;
+  }
+
+  if (!requiresValue(selectedOperator.uiControlType)) {
+    return true;
+  }
+
+  if (
+    selectedOperator.uiControlType === 'range-number' ||
+    selectedOperator.uiControlType === 'range-date' ||
+    selectedOperator.uiControlType === 'range-datetime' ||
+    selectedOperator.uiControlType === 'range-time'
+  ) {
+    return (
+      String(draft.value ?? '').trim().length > 0 &&
+      String(draft.secondValue ?? '').trim().length > 0
+    );
+  }
+
+  return String(draft.value ?? '').trim().length > 0;
 }

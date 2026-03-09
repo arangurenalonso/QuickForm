@@ -1,28 +1,6 @@
 import { DynamicTableColumnType } from '@/common/components/dynamic-table/dynamic-table.types';
 
-export type FilterOperatorType =
-  | 'contains'
-  | 'notContains'
-  | 'equals'
-  | 'notEquals'
-  | 'startsWith'
-  | 'endsWith'
-  | 'greaterThan'
-  | 'greaterThanOrEqual'
-  | 'lessThan'
-  | 'lessThanOrEqual'
-  | 'between'
-  | 'before'
-  | 'after'
-  | 'on'
-  | 'onOrBefore'
-  | 'onOrAfter'
-  | 'isTrue'
-  | 'isFalse'
-  | 'isEmpty'
-  | 'isNotEmpty';
-
-export type FilterValueKindType =
+export type UiControlType =
   | 'none'
   | 'text'
   | 'number'
@@ -35,24 +13,60 @@ export type FilterValueKindType =
   | 'range-datetime'
   | 'range-time';
 
-export type FilterOperatorOptionType = {
-  value: FilterOperatorType;
+export type QuestionTypeFilterOptionType = {
+  id: string;
+  key: string;
   label: string;
-  valueKind: FilterValueKindType;
+  uiControlType: UiControlType;
+  uiControlLabel: string;
 };
 
-export type FilterItemType = {
+export type QuestionTypeFiltersGroupType = {
+  questionTypeId: string;
+  questionTypeKey: string;
+  questionTypeLabel: string;
+  operators: QuestionTypeFilterOptionType[];
+};
+
+export type FilterDraftType = {
+  columnKey: string;
+  operatorId: string;
+  value?: string | number | boolean | null;
+  secondValue?: string | number | boolean | null;
+};
+
+export type AppliedFilterType = {
   id: string;
   columnKey: string;
-  operator: FilterOperatorType | '';
+  columnLabel: string;
+  questionTypeKey: string;
+  operatorId: string;
+  operatorKey: string;
+  operatorLabel: string;
+  uiControlType: UiControlType;
   value?: string | number | boolean | null;
   secondValue?: string | number | boolean | null;
 };
 
 export type FiltersProps = {
   columns: DynamicTableColumnType[];
-  filters: FilterItemType[];
-  onChange: (filters: FilterItemType[]) => void;
+  catalog: QuestionTypeFiltersGroupType[];
+  appliedFilters: AppliedFilterType[];
+  onApplyFilter: (filter: AppliedFilterType) => void;
+  onRemoveFilter: (filterId: string) => void;
+  onClearAll: () => void;
+};
+
+export type FilterComposerProps = {
+  columns: DynamicTableColumnType[];
+  catalog: QuestionTypeFiltersGroupType[];
+  draft: FilterDraftType;
+  onDraftChange: (draft: FilterDraftType) => void;
   onApply: () => void;
-  onReset: () => void;
+  onCancel: () => void;
+};
+
+export type FilterChipProps = {
+  filter: AppliedFilterType;
+  onRemove: () => void;
 };

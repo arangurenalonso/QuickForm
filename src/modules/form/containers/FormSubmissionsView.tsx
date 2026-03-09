@@ -3,15 +3,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import DynamicTable from '@/common/components/dynamic-table/DynamicTable';
 import Pagination from '@/common/components/pagination/Pagination';
+import Filters from '@/common/components/filters/Filters';
+import {
+  AppliedFilterType,
+  QuestionTypeFiltersGroupType,
+} from '@/common/components/filters/filters.types';
 import useFormStore from '../hooks/useFormStore';
 import {
   DynamicTableColumnType,
   DynamicTableRowType,
 } from '@/common/components/dynamic-table/dynamic-table.types';
-import Filters from '@/common/components/filters/Filters';
-import { createEmptyFilter } from '@/common/components/filters/filters.utils';
 import { PaginationResultType } from '@/common/components/pagination/pagination.types';
-import { FilterItemType } from '@/common/components/filters/filters.types';
 
 type FormSubmissionsViewProps = {
   idForm: string;
@@ -33,14 +35,13 @@ const emptyPagination: PaginationResultType<DynamicTableRowType> = {
 };
 
 const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
-  const { getSubmissions } = useFormStore();
+  const { getSubmissions, getQuestionTypeFiltersCatalog } = useFormStore();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const [filters, setFilters] = useState<FilterItemType[]>([
-    createEmptyFilter(),
-  ]);
+  const [catalog, setCatalog] = useState<QuestionTypeFiltersGroupType[]>([]);
+  const [appliedFilters, setAppliedFilters] = useState<AppliedFilterType[]>([]);
 
   const [data, setData] = useState<FormSubmissionsViewState>({
     columns: [],
@@ -48,8 +49,17 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
   });
 
   useEffect(() => {
-    console.log('filters changed', filters);
-  }, [filters]);
+    console.log('Applied filters changed:', appliedFilters);
+  }, [appliedFilters]);
+
+  const handleLoadCatalog = useCallback(async () => {
+    const result = await getQuestionTypeFiltersCatalog();
+    if (!result) {
+      return;
+    }
+
+    setCatalog(result);
+  }, [getQuestionTypeFiltersCatalog]);
 
   const handleGetSubmissions = useCallback(async () => {
     if (!idForm) {
@@ -66,16 +76,27 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
   }, [idForm, page, pageSize, getSubmissions]);
 
   useEffect(() => {
+    void handleLoadCatalog();
+  }, [handleLoadCatalog]);
+
+  useEffect(() => {
     void handleGetSubmissions();
   }, [handleGetSubmissions]);
 
-  const handleApplyFilters = useCallback(() => {
+  const handleApplyFilter = useCallback((filter: AppliedFilterType) => {
+    setAppliedFilters((previous) => [...previous, filter]);
     setPage(1);
-    void handleGetSubmissions();
-  }, [handleGetSubmissions]);
+  }, []);
 
-  const handleResetFilters = useCallback(() => {
-    setFilters([createEmptyFilter()]);
+  const handleRemoveFilter = useCallback((filterId: string) => {
+    setAppliedFilters((previous) =>
+      previous.filter((filter) => filter.id !== filterId)
+    );
+    setPage(1);
+  }, []);
+
+  const handleClearAllFilters = useCallback(() => {
+    setAppliedFilters([]);
     setPage(1);
   }, []);
 
@@ -92,10 +113,11 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
 
       <Filters
         columns={data.columns}
-        filters={filters}
-        onChange={setFilters}
-        onApply={handleApplyFilters}
-        onReset={handleResetFilters}
+        catalog={catalog}
+        appliedFilters={appliedFilters}
+        onApplyFilter={handleApplyFilter}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAll={handleClearAllFilters}
       />
 
       <DynamicTable
