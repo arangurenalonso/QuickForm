@@ -256,6 +256,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
                   className="flex-1 bg-transparent placeholder:text-muted-foreground"
                   allowNegative={false}
                   min={1}
+                  max={8}
                   decimalScale={0}
                   customInput={Input}
                 />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/common/libs/ui/button';
 import {
@@ -11,51 +11,52 @@ import {
 import { getVisibleColumns } from '@/common/components/dynamic-table/dynamic-table.utils';
 import FilterChip from './FilterChip';
 import FilterComposer from './FilterComposer';
-import { FiltersProps } from './filters.types';
-import { buildAppliedFilter, createEmptyDraft } from './filters.utils';
+import {
+  AppliedFilterType,
+  QuestionTypeFiltersGroupType,
+} from './filters.types';
+import { DynamicTableColumnType } from '../dynamic-table/dynamic-table.types';
 
-const Filters = ({
-  columns,
-  catalog,
-  appliedFilters,
-  onApplyFilter,
-  onRemoveFilter,
-  onClearAll,
-}: FiltersProps) => {
+type FiltersProps = {
+  columns: DynamicTableColumnType[];
+  catalog: QuestionTypeFiltersGroupType[];
+  onApplyFilters: (filters: AppliedFilterType[]) => void;
+};
+
+const Filters = ({ columns, catalog, onApplyFilters }: FiltersProps) => {
+  const [open, setOpen] = useState(false);
+  const [filters, setFilters] = useState<AppliedFilterType[]>([]);
   const visibleColumns = useMemo(() => getVisibleColumns(columns), [columns]);
 
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState(createEmptyDraft());
+  useEffect(() => {
+    onApplyFilters(filters);
+  }, [filters, onApplyFilters]);
 
-  const handleOpenChange = (nextOpen: boolean) => {
-    setOpen(nextOpen);
+  const handleApplyFilter = useCallback(
+    (filter: AppliedFilterType) => {
+      setFilters((previous) => [...previous, filter]);
+      setOpen(false);
+    },
+    [setFilters, setOpen]
+  );
 
-    if (!nextOpen) {
-      setDraft(createEmptyDraft());
-    }
-  };
+  const handleRemoveFilter = useCallback(
+    (filterId: string) => {
+      setFilters((previous) =>
+        previous.filter((filter) => filter.id !== filterId)
+      );
+    },
+    [setFilters]
+  );
 
-  const handleApply = () => {
-    const nextFilter = buildAppliedFilter(visibleColumns, catalog, draft);
-
-    if (!nextFilter) {
-      return;
-    }
-
-    onApplyFilter(nextFilter);
-    setDraft(createEmptyDraft());
-    setOpen(false);
-  };
-
-  const handleCancel = () => {
-    setDraft(createEmptyDraft());
-    setOpen(false);
-  };
+  const handleClearAllFilters = useCallback(() => {
+    setFilters([]);
+  }, [setFilters]);
 
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Popover open={open} onOpenChange={handleOpenChange}>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               type="button"
@@ -76,19 +77,19 @@ const Filters = ({
             <FilterComposer
               columns={visibleColumns}
               catalog={catalog}
-              draft={draft}
-              onDraftChange={setDraft}
-              onApply={handleApply}
-              onCancel={handleCancel}
+              onApply={handleApplyFilter}
+              onCancel={() => {
+                setOpen(false);
+              }}
             />
           </PopoverContent>
         </Popover>
 
-        {appliedFilters.length > 0 ? (
+        {filters.length > 0 ? (
           <Button
             type="button"
             variant="ghost"
-            onClick={onClearAll}
+            onClick={handleClearAllFilters}
             className="h-9 px-2 text-slate-500"
           >
             Clear all
@@ -96,13 +97,13 @@ const Filters = ({
         ) : null}
       </div>
 
-      {appliedFilters.length > 0 ? (
+      {filters.length > 0 ? (
         <div className="flex flex-wrap gap-2">
-          {appliedFilters.map((filter) => (
+          {filters.map((filter) => (
             <FilterChip
               key={filter.id}
               filter={filter}
-              onRemove={() => onRemoveFilter(filter.id)}
+              onRemove={() => handleRemoveFilter(filter.id)}
             />
           ))}
         </div>

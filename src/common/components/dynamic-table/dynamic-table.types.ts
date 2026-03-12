@@ -13,7 +13,8 @@ export type DynamicTableColumnType = {
   key: string;
   label: string;
   order: number;
-  type: DynamicColumnType | string;
+  questionTypeId: string;
+  questionTypeKey: DynamicColumnType | string;
   isKey: boolean;
   showInTable: boolean;
   pinned?: DynamicTablePinnedType;

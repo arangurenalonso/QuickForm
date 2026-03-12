@@ -1,32 +1,112 @@
 import { Button } from '@/common/libs/ui/button';
-import { FilterComposerProps } from './filters.types';
 import {
-  getColumnByKey,
-  getOperatorById,
-  getOperatorsByColumnType,
-  isDraftValid,
-} from './filters.utils';
+  AppliedFilterType,
+  QuestionTypeFilterOptionType,
+  QuestionTypeFiltersGroupType,
+} from './filters.types';
+import { useEffect, useMemo, useState } from 'react';
+import { DynamicTableColumnType } from '../dynamic-table/dynamic-table.types';
 import FilterValueInput from './FilterValueInput';
+
+type FilterComposerProps = {
+  columns: DynamicTableColumnType[];
+  catalog: QuestionTypeFiltersGroupType[];
+  onApply: (filter: AppliedFilterType) => void;
+  onCancel: () => void;
+};
 
 const FilterComposer = ({
   columns,
   catalog,
-  draft,
-  onDraftChange,
   onApply,
   onCancel,
 }: FilterComposerProps) => {
-  const selectedColumn = getColumnByKey(columns, draft.columnKey);
+  const [selectedColumn, setSelectedColumn] = useState<
+    DynamicTableColumnType | undefined
+  >(undefined);
+  const [operatorOptions, setOperatorOptions] = useState<
+    QuestionTypeFilterOptionType[]
+  >([]);
+  const [selectedOperator, setSelectedOperator] = useState<
+    QuestionTypeFilterOptionType | undefined
+  >(undefined);
+  const [value, setValue] = useState<string | number | boolean | null>(null);
+  const [secondValue, setSecondValue] = useState<
+    string | number | boolean | null
+  >(null);
 
-  const operatorOptions = selectedColumn
-    ? getOperatorsByColumnType(catalog, selectedColumn.type)
-    : [];
+  const handleSelectColumn = (columnKey: string) => {
+    const column = columns.find((column) => column.key === columnKey);
+    setSelectedColumn(column);
+  };
 
-  const selectedOperator = selectedColumn
-    ? getOperatorById(catalog, selectedColumn.type, draft.operatorId)
-    : undefined;
+  useEffect(() => {
+    if (selectedColumn) {
+      const operators =
+        catalog.find(
+          (item) => item.questionTypeKey === selectedColumn.questionTypeKey
+        )?.operators ?? [];
+      setOperatorOptions(operators);
+    }
+  }, [selectedColumn, setOperatorOptions, catalog]);
 
-  const canApply = isDraftValid(columns, catalog, draft);
+  const handleSelectedOperator = (operatorId: string) => {
+    const operator = operatorOptions.find(
+      (operator) => operator.id === operatorId
+    );
+    setSelectedOperator(operator);
+  };
+
+  const handleApply = () => {
+    if (!selectedColumn) {
+      return;
+    }
+    if (!selectedOperator) {
+      return;
+    }
+
+    const object: AppliedFilterType = {
+      id: crypto.randomUUID(),
+      columnKey: selectedColumn.key,
+      columnLabel: selectedColumn.label,
+      questionTypeId: selectedColumn.questionTypeId,
+      questionTypeKey: selectedColumn.questionTypeKey,
+      operatorId: selectedOperator.id,
+      operatorKey: selectedOperator.key,
+      operatorLabel: selectedOperator.label,
+      uiControlType: selectedOperator.uiControlType,
+      value: value,
+      secondValue: secondValue,
+    };
+    onApply(object);
+  };
+
+  const canApply = useMemo(() => {
+    if (!selectedColumn) {
+      return false;
+    }
+    if (!selectedOperator) {
+      return false;
+    }
+    if (selectedOperator.uiControlType === 'none') {
+      return true;
+    }
+    if (
+      selectedOperator.uiControlType === 'range-number' ||
+      selectedOperator.uiControlType === 'range-date' ||
+      selectedOperator.uiControlType === 'range-datetime' ||
+      selectedOperator.uiControlType === 'range-time'
+    ) {
+      if (value && secondValue) {
+        return true;
+      }
+      return false;
+    }
+    if (value) {
+      return true;
+    }
+    return false;
+  }, [selectedColumn, selectedOperator, value, secondValue]);
 
   return (
     <div className="p-5">
@@ -40,15 +120,11 @@ const FilterComposer = ({
         <div>
           <label className="qf-field-label">Filter</label>
           <select
-            value={draft.columnKey}
-            onChange={(event) =>
-              onDraftChange({
-                columnKey: event.target.value,
-                operatorId: '',
-                value: '',
-                secondValue: '',
-              })
-            }
+            value={selectedColumn?.key}
+            onChange={(event) => {
+              const columnKey = event.target.value;
+              handleSelectColumn(columnKey);
+            }}
             className="qf-select"
           >
             <option value="">Select options</option>
@@ -63,15 +139,8 @@ const FilterComposer = ({
         <div>
           <label className="qf-field-label">Operator</label>
           <select
-            value={draft.operatorId}
-            onChange={(event) =>
-              onDraftChange({
-                ...draft,
-                operatorId: event.target.value,
-                value: '',
-                secondValue: '',
-              })
-            }
+            value={selectedOperator?.id}
+            onChange={(event) => handleSelectedOperator(event.target.value)}
             disabled={!selectedColumn}
             className="qf-select"
           >
@@ -90,12 +159,10 @@ const FilterComposer = ({
               <label className="qf-field-label">Value</label>
               <FilterValueInput
                 uiControlType={selectedOperator.uiControlType}
-                value={draft.value}
-                secondValue={draft.secondValue}
-                onChange={(value) => onDraftChange({ ...draft, value })}
-                onSecondChange={(secondValue) =>
-                  onDraftChange({ ...draft, secondValue })
-                }
+                value={value}
+                secondValue={secondValue}
+                onChange={(value) => setValue(value)}
+                onSecondChange={(secondValue) => setSecondValue(secondValue)}
               />
             </>
           )}
@@ -103,7 +170,7 @@ const FilterComposer = ({
 
         <div className="pt-2">
           <div className="flex items-center gap-3">
-            <Button type="button" onClick={onApply} disabled={!canApply}>
+            <Button type="button" onClick={handleApply} disabled={!canApply}>
               Apply
             </Button>
 

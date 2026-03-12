@@ -7,6 +7,7 @@ import { formService } from '../services/form.service';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
 import { useBoundStore } from '@/store';
 import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
+import { AppliedFilterType } from '@/common/components/filters/filters.types';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
@@ -143,11 +144,33 @@ export default function useFormStore() {
   );
 
   const getSubmissions = useCallback(
-    async (idForm: string, page: number, pageSize: number) => {
+    async (
+      idForm: string,
+      page: number,
+      pageSize: number,
+      filters: AppliedFilterType[]
+    ) => {
       clearError();
       const result = await withGlobalLoading(
-        () => formService.getSubmissionsByFormId(idForm, page, pageSize),
+        () =>
+          formService.getSubmissionsByFormId(idForm, page, pageSize, filters),
         'Loading submissions...'
+      );
+
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      return result.value;
+    },
+    [clearError]
+  );
+  const getDynamicHeaderListSubmissions = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.getDynamicHeaderListSubmissions(idForm),
+        'Loading submissions headers...'
       );
 
       if (!isOk(result)) {
@@ -173,6 +196,7 @@ export default function useFormStore() {
       getFormForSubmission,
       submitForm,
       getSubmissions,
+      getDynamicHeaderListSubmissions,
       getQuestionTypeFiltersCatalog,
     }),
     [
@@ -188,6 +212,7 @@ export default function useFormStore() {
       getFormForSubmission,
       submitForm,
       getSubmissions,
+      getDynamicHeaderListSubmissions,
       getQuestionTypeFiltersCatalog,
     ]
   );

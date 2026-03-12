@@ -39,22 +39,14 @@ export type AppliedFilterType = {
   id: string;
   columnKey: string;
   columnLabel: string;
+  questionTypeId: string;
   questionTypeKey: string;
   operatorId: string;
   operatorKey: string;
   operatorLabel: string;
   uiControlType: UiControlType;
-  value?: string | number | boolean | null;
-  secondValue?: string | number | boolean | null;
-};
-
-export type FiltersProps = {
-  columns: DynamicTableColumnType[];
-  catalog: QuestionTypeFiltersGroupType[];
-  appliedFilters: AppliedFilterType[];
-  onApplyFilter: (filter: AppliedFilterType) => void;
-  onRemoveFilter: (filterId: string) => void;
-  onClearAll: () => void;
+  value?: string | number | boolean | null | undefined;
+  secondValue?: string | number | boolean | null | undefined;
 };
 
 export type FilterComposerProps = {

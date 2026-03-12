@@ -19,11 +19,6 @@ type FormSubmissionsViewProps = {
   idForm: string;
 };
 
-type FormSubmissionsViewState = {
-  columns: DynamicTableColumnType[];
-  data: PaginationResultType<DynamicTableRowType>;
-};
-
 const emptyPagination: PaginationResultType<DynamicTableRowType> = {
   items: [],
   totalCount: 0,
@@ -35,22 +30,30 @@ const emptyPagination: PaginationResultType<DynamicTableRowType> = {
 };
 
 const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
-  const { getSubmissions, getQuestionTypeFiltersCatalog } = useFormStore();
+  const {
+    getSubmissions,
+    getDynamicHeaderListSubmissions,
+    getQuestionTypeFiltersCatalog,
+  } = useFormStore();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const [catalog, setCatalog] = useState<QuestionTypeFiltersGroupType[]>([]);
-  const [appliedFilters, setAppliedFilters] = useState<AppliedFilterType[]>([]);
+  const [filters, setFilters] = useState<AppliedFilterType[]>([]);
 
-  const [data, setData] = useState<FormSubmissionsViewState>({
-    columns: [],
-    data: emptyPagination,
-  });
-
-  useEffect(() => {
-    console.log('Applied filters changed:', appliedFilters);
-  }, [appliedFilters]);
+  const handleApplyFilter = useCallback(
+    (newFilters: AppliedFilterType[]) => {
+      if (newFilters.length != filters.length) {
+        setPage(1);
+        setFilters(newFilters);
+      }
+    },
+    [setFilters, filters]
+  );
+  const [data, setData] =
+    useState<PaginationResultType<DynamicTableRowType>>(emptyPagination);
+  const [column, setColumn] = useState<DynamicTableColumnType[]>([]);
 
   const handleLoadCatalog = useCallback(async () => {
     const result = await getQuestionTypeFiltersCatalog();
@@ -61,44 +64,36 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
     setCatalog(result);
   }, [getQuestionTypeFiltersCatalog]);
 
+  const handleLoadColumns = useCallback(async () => {
+    const result = await getDynamicHeaderListSubmissions(idForm);
+    if (!result) {
+      return;
+    }
+    setColumn(result);
+  }, [getDynamicHeaderListSubmissions, idForm]);
+
   const handleGetSubmissions = useCallback(async () => {
     if (!idForm) {
       return;
     }
-
-    const result = await getSubmissions(idForm, page, pageSize);
-
+    const result = await getSubmissions(idForm, page, pageSize, filters);
     if (!result) {
       return;
     }
-
     setData(result);
-  }, [idForm, page, pageSize, getSubmissions]);
+  }, [idForm, page, pageSize, getSubmissions, filters]);
 
   useEffect(() => {
     void handleLoadCatalog();
   }, [handleLoadCatalog]);
 
   useEffect(() => {
+    void handleLoadColumns();
+  }, [handleLoadColumns]);
+
+  useEffect(() => {
     void handleGetSubmissions();
   }, [handleGetSubmissions]);
-
-  const handleApplyFilter = useCallback((filter: AppliedFilterType) => {
-    setAppliedFilters((previous) => [...previous, filter]);
-    setPage(1);
-  }, []);
-
-  const handleRemoveFilter = useCallback((filterId: string) => {
-    setAppliedFilters((previous) =>
-      previous.filter((filter) => filter.id !== filterId)
-    );
-    setPage(1);
-  }, []);
-
-  const handleClearAllFilters = useCallback(() => {
-    setAppliedFilters([]);
-    setPage(1);
-  }, []);
 
   return (
     <section className="space-y-4 p-4 md:p-6">
@@ -112,23 +107,20 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
       </div>
 
       <Filters
-        columns={data.columns}
+        columns={column}
         catalog={catalog}
-        appliedFilters={appliedFilters}
-        onApplyFilter={handleApplyFilter}
-        onRemoveFilter={handleRemoveFilter}
-        onClearAll={handleClearAllFilters}
+        onApplyFilters={handleApplyFilter}
       />
 
       <DynamicTable
-        columns={data.columns}
-        rows={data.data.items}
+        columns={column}
+        rows={data.items}
         emptyMessage="This form does not have submissions yet."
       />
 
       <Pagination
-        pagination={data.data}
-        pageSizeOptions={[10, 25, 50, 100]}
+        pagination={data}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         onPageChange={setPage}
         onPageSizeChange={(nextPageSize) => {
           setPageSize(nextPageSize);

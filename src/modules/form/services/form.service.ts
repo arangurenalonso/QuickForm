@@ -9,10 +9,17 @@ import { CreateFormRequest, FormType } from '../types/form.types';
 import {
   FormTemplateType,
   SectionType,
-  SubmissionType,
 } from '../components/form-designer/context/designer-context.type';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
-import { QuestionTypeFiltersGroupType } from '@/common/components/filters/filters.types';
+import {
+  AppliedFilterType,
+  QuestionTypeFiltersGroupType,
+} from '@/common/components/filters/filters.types';
+import {
+  DynamicTableColumnType,
+  DynamicTableRowType,
+} from '@/common/components/dynamic-table/dynamic-table.types';
+import { PaginationResultType } from '@/common/components/pagination/pagination.types';
 
 export const formService = {
   async createForm(
@@ -141,11 +148,28 @@ export const formService = {
   async getSubmissionsByFormId(
     idForm: string,
     page: number,
-    pageSize: number
-  ): Promise<Result<SubmissionType, AuthError>> {
+    pageSize: number,
+    filters: AppliedFilterType[]
+  ): Promise<Result<PaginationResultType<DynamicTableRowType>, AuthError>> {
     try {
-      const { data } = await api.auth.get<SubmissionType>(
-        `/form/${idForm}/submissions?page=${page}&pageSize=${pageSize}`
+      const { data } = await api.auth.post<
+        PaginationResultType<DynamicTableRowType>
+      >(
+        `/form/${idForm}/submissions/rows?page=${page}&pageSize=${pageSize}`,
+        filters
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async getDynamicHeaderListSubmissions(
+    idForm: string
+  ): Promise<Result<DynamicTableColumnType[], AuthError>> {
+    try {
+      const { data } = await api.auth.get<DynamicTableColumnType[]>(
+        `/form/${idForm}/submissions/columns`
       );
       return ok(data);
     } catch (e) {

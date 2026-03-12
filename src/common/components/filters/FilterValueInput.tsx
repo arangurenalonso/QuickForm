@@ -1,5 +1,6 @@
 import { Input } from '@/common/libs/ui/input';
 import { UiControlType } from './filters.types';
+import { NumericFormat } from 'react-number-format';
 
 type FilterValueInputProps = {
   uiControlType: UiControlType;
@@ -31,12 +32,20 @@ const FilterValueInput = ({
   }
 
   if (uiControlType === 'number') {
+    const numericValue =
+      typeof value === 'string' || typeof value === 'number' || value == null
+        ? value
+        : undefined;
     return (
-      <Input
-        type="number"
-        value={String(value ?? '')}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="Enter number"
+      <NumericFormat
+        value={numericValue}
+        name={'number'}
+        placeholder="Enter a number"
+        onValueChange={(values) => {
+          onChange(values.floatValue ?? null);
+        }}
+        className="flex-1 bg-transparent placeholder:text-muted-foreground"
+        customInput={Input}
       />
     );
   }
@@ -52,10 +61,11 @@ const FilterValueInput = ({
   }
 
   if (uiControlType === 'datetime') {
+    const dateTimeValue = typeof value === 'string' ? value : '';
     return (
       <Input
         type="datetime-local"
-        value={String(value ?? '')}
+        value={dateTimeValue}
         onChange={(event) => onChange(event.target.value)}
       />
     );
