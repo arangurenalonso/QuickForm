@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import DynamicTable from '@/common/components/dynamic-table/DynamicTable';
 import Pagination from '@/common/components/pagination/Pagination';
 import Filters from '@/common/components/filters/Filters';
+import { useToast } from '@/hooks/use-toast';
 import {
   AppliedFilterType,
   QuestionTypeFiltersGroupType,
@@ -34,7 +35,9 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
     getSubmissions,
     getDynamicHeaderListSubmissions,
     getQuestionTypeFiltersCatalog,
+    error,
   } = useFormStore();
+  const { toast } = useToast();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -95,6 +98,17 @@ const FormSubmissionsView = ({ idForm }: FormSubmissionsViewProps) => {
     void handleGetSubmissions();
   }, [handleGetSubmissions]);
 
+  useEffect(() => {
+    if (!error) return;
+
+    const message = error.message ?? JSON.stringify(error);
+
+    toast({
+      title: 'Error',
+      description: message ?? `Something went wrong, please try again later.`,
+      variant: 'destructive',
+    });
+  }, [error, toast]);
   return (
     <section className="space-y-4 p-4 md:p-6">
       <div>
