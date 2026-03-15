@@ -23,9 +23,6 @@ export const useBoundStore = create<BoundState>()(
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
       partialize: (state) => ({
-        isAuthenticated: state.isAuthenticated,
-        token: state.token,
-        user: state.user,
         theme: state.theme,
       }),
     }

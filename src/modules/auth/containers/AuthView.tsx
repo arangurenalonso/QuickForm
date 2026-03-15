@@ -85,7 +85,7 @@ const VIEW_MAP: Record<
     title: 'Confirm your email',
     node: <EmailConfirmationForm />,
   },
-  [ActionAuthViewEnum.RESENT_VERIFICATION]: {
+  [ActionAuthViewEnum.RESEND_VERIFICATION]: {
     title: 'Resend verification email',
     helperText: 'Enter your email address to receive a new verification email.',
     node: <ResendVerifyEmailForm />,

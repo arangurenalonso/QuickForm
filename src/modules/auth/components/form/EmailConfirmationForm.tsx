@@ -13,7 +13,7 @@ import {
 import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 type EmailConfirmationFormInputs = {
   email: string;
@@ -22,6 +22,8 @@ type EmailConfirmationFormInputs = {
 
 export default function EmailConfirmationForm() {
   const { emailConfirmationProcess, error, clearError } = useAuthStore();
+  const router = useRouter();
+
   AuthErrorModalWatcher({
     error,
     id: 'email-confirmation-error-modal',
@@ -42,7 +44,22 @@ export default function EmailConfirmationForm() {
   });
 
   const onSubmit: SubmitHandler<EmailConfirmationFormInputs> = async (data) => {
-    await emailConfirmationProcess(data.email, data.verificationCode);
+    const result = await emailConfirmationProcess(
+      data.email,
+      data.verificationCode
+    );
+
+    if (
+      result &&
+      typeof result === 'object' &&
+      'isAuthenticated' in result &&
+      result.isAuthenticated
+    ) {
+      router.replace('/dashboard');
+      return;
+    }
+
+    router.replace('/auth/login');
   };
 
   return (

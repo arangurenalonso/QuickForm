@@ -6,29 +6,59 @@ import { authService } from '../services/auth.service';
 import { isOk } from '@/common/types/result';
 import { ResultResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
+import { SessionResponse } from '../types/auth.types';
+
+function isSessionResponse(value: unknown): value is SessionResponse {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return typeof v.isAuthenticated === 'boolean' && 'user' in v;
+}
 
 export default function useAuthStore() {
   const isAuthenticated = useBoundStore((state) => state.isAuthenticated);
   const user = useBoundStore((state) => state.user);
-  const token = useBoundStore((state) => state.token);
-  const setAccessToken = useBoundStore((state) => state.setAccessToken);
+  const setSession = useBoundStore((state) => state.setSession);
+  const clearSessionState = useBoundStore((state) => state.clearSession);
 
   const [error, setError] = useState<AuthError | null>(null);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const bootstrapSession = useCallback(async () => {
+    const res = await authService.me();
+
+    if (!isOk(res)) {
+      clearSessionState();
+      return;
+    }
+
+    if (res.value.isAuthenticated && res.value.user) {
+      setSession({ user: res.value.user });
+      return;
+    }
+
+    clearSessionState();
+  }, [setSession, clearSessionState]);
 
   const signInProcess = useCallback(
     async (email: string, password: string) => {
       clearError();
+
       const res = await authService.login({ email, password });
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
-      setAccessToken(res.value);
-      // signIn({ user: res.user, token: res.accessToken });
-      // router.replace('/');
-      return;
+
+      if (res.value.isAuthenticated && res.value.user) {
+        setSession({ user: res.value.user });
+      }
+
+      return res.value;
     },
-    [setAccessToken]
+    [setSession, clearError]
   );
 
   const signUpProcess = useCallback(
@@ -38,47 +68,53 @@ export default function useAuthStore() {
       confirmPassword: string
     ): Promise<ResultResponse | undefined> => {
       clearError();
+
       const res = await authService.register({
         email,
         password,
         confirmPassword,
       });
+
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
+
       return res.value;
     },
-    []
+    [clearError]
   );
+
   const resendVerificationEmailProcess = useCallback(
     async (email: string): Promise<ResultResponse | undefined> => {
       clearError();
-      const res = await authService.resendEmailConfirmation({
-        email,
-      });
+
+      const res = await authService.resendEmailConfirmation({ email });
+
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
+
       return res.value;
     },
-    []
+    [clearError]
   );
 
   const forgotPasswordProcess = useCallback(
     async (email: string): Promise<ResultResponse | undefined> => {
       clearError();
-      const res = await authService.forgotPassword({
-        email,
-      });
+
+      const res = await authService.forgotPassword({ email });
+
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
+
       return res.value;
     },
-    []
+    [clearError]
   );
 
   const resetPasswordProcess = useCallback(
@@ -89,94 +125,94 @@ export default function useAuthStore() {
       confirmPassword: string
     ): Promise<ResultResponse | undefined> => {
       clearError();
+
       const res = await authService.resetPassword({
         email,
         verificationCode,
         password,
         confirmPassword,
       });
+
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
+
       return res.value;
     },
-    []
+    [clearError]
   );
 
   const emailConfirmationProcess = useCallback(
     async (email: string, verificationCode: string) => {
       clearError();
+
       const res = await authService.emailConfirmation({
         email,
         verificationCode,
       });
+
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
-      setAccessToken(res.value);
+
+      if (
+        isSessionResponse(res.value) &&
+        res.value.isAuthenticated &&
+        res.value.user
+      ) {
+        setSession({ user: res.value.user });
+      }
+
+      return res.value;
     },
-    []
+    [clearError, setSession]
   );
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+  const logoutProcess = useCallback(async () => {
+    clearError();
 
-  // const refreshProcess = useCallback(async () => {
-  //   const res = await authClient.refreshAction();
-  //   if (res.ok && res.accessToken) {
-  //     // actualiza access token en zustand
-  //     useBoundStore.setState({ token: res.accessToken });
-  //     return true;
-  //   }
-  //   return false;
-  // }, []);
+    const res = await authService.logout();
 
-  // const signOutProcess = useCallback(async () => {
-  //   await authClient.signOutAction();
-  //   signOut();
-  // }, [signOut]);
+    clearSessionState();
 
-  // const meProcess = useCallback(async () => {
-  //   // if (!token) return { ok: false, user: null };
-  //   // const res = await authClient.meAction(token);
-  //   // return res;
-  // }, [token]);
+    if (!isOk(res)) {
+      setError(res.error);
+      return;
+    }
+
+    return res.value;
+  }, [clearSessionState, clearError]);
 
   return useMemo(
     () => ({
       isAuthenticated,
       user,
-      token,
       error,
+      clearError,
+      bootstrapSession,
       signInProcess,
       signUpProcess,
-      clearError,
       resendVerificationEmailProcess,
       emailConfirmationProcess,
       forgotPasswordProcess,
       resetPasswordProcess,
-      // refreshProcess,
-      // signOutProcess,
-      // meProcess,
+      logoutProcess,
     }),
     [
       isAuthenticated,
       user,
-      token,
       error,
+      clearError,
+      bootstrapSession,
       signInProcess,
       signUpProcess,
       resendVerificationEmailProcess,
-      clearError,
       emailConfirmationProcess,
       forgotPasswordProcess,
       resetPasswordProcess,
-      // refreshProcess,
-      // signOutProcess,
-      // meProcess,
+      logoutProcess,
     ]
   );
 }

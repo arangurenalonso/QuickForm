@@ -3,7 +3,7 @@ import { mapAxiosToAuthError } from '@/common/libs/axios/error-map';
 import { err } from '@/common/types/result';
 import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
-import { ResultResponse } from '@/common/types/resultResponse';
+import { ResultResponse, ResultTResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
 import { CreateFormRequest, FormType } from '../types/form.types';
 import {
@@ -24,9 +24,9 @@ import { PaginationResultType } from '@/common/components/pagination/pagination.
 export const formService = {
   async createForm(
     payload: CreateFormRequest
-  ): Promise<Result<ResultResponse, AuthError>> {
+  ): Promise<Result<ResultTResponse<string>, AuthError>> {
     try {
-      const { data } = await api.auth.post<ResultResponse>(
+      const { data } = await api.auth.post<ResultTResponse<string>>(
         '/form/register',
         payload
       );

@@ -15,6 +15,8 @@ import { Button } from '@/common/libs/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 type LoginFormInputs = {
   email: string;
@@ -24,13 +26,19 @@ type LoginFormInputs = {
 const LoginForm = () => {
   const { signInProcess, error, clearError } = useAuthStore();
   const [showPwd, setShowPwd] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') ?? '/dashboard';
 
   const form = useForm<LoginFormInputs>({
     defaultValues: { email: '', password: '' },
   });
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    await signInProcess(data.email, data.password);
+    const result = await signInProcess(data.email, data.password);
+    if (result?.isAuthenticated) {
+      router.replace(next);
+    }
   };
 
   AuthErrorModalWatcher({

@@ -1,12 +1,14 @@
 'use client';
 
-import FormBuilderView from '@/modules/form/containers/FormBuilderView';
+// import QuickFormAuthenticatedPreview from '@/modules/intro/intro';
+// import QuickFormLandingPage from '@/modules/intro/QuickFormLandingPage';
 
 export default function Home() {
   return (
-    <div className="max-w-[900px] mx-auto h-full  ">
-      aaa
-      <FormBuilderView />
+    <div className=" mx-auto h-full  ">
+      PAGINA DE INICIO
+      {/* <QuickFormLandingPage /> */}
+      {/* <QuickFormAuthenticatedPreview /> */}
     </div>
   );
 }

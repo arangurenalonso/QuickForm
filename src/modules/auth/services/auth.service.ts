@@ -1,8 +1,6 @@
 import { api } from '@/common/libs/axios/http.client';
 import { mapAxiosToAuthError } from '@/common/libs/axios/error-map';
-import { err } from '@/common/types/result';
-import { ok } from '@/common/types/result';
-import { Result } from '@/common/types/result';
+import { err, ok, Result } from '@/common/types/result';
 import {
   EmailConfirmationRequest,
   ForgotPasswordRequest,
@@ -10,15 +8,45 @@ import {
   RegisterRequest,
   ResendVerifyEmailRequest,
   ResetPasswordRequest,
+  SessionResponse,
 } from '../types/auth.types';
-import { ResultResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
+import { ResultResponse } from '@/common/types/resultResponse';
 
 export const authService = {
-  async login(payload: LoginRequest): Promise<Result<string, AuthError>> {
+  async login(
+    payload: LoginRequest
+  ): Promise<Result<SessionResponse, AuthError>> {
     try {
-      const { data } = await api.auth.post<string>('/auth/login', payload);
-      return ok(data); // data = token string
+      const { data } = await api.auth.post<SessionResponse>('/login', payload);
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async me(): Promise<Result<SessionResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.get<SessionResponse>('/me');
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async refresh(): Promise<Result<SessionResponse, AuthError>> {
+    try {
+      const { data } = await api.auth.post<SessionResponse>('/refresh');
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async logout(): Promise<Result<{ ok: true }, AuthError>> {
+    try {
+      const { data } = await api.auth.post<{ ok: true }>('/logout');
+      return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }
@@ -29,10 +57,10 @@ export const authService = {
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
       const { data } = await api.auth.post<ResultResponse>(
-        '/auth/register',
+        '/register',
         payload
       );
-      return ok(data); // data = token string
+      return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }
@@ -43,10 +71,10 @@ export const authService = {
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
       const { data } = await api.auth.post<ResultResponse>(
-        '/auth/resent-email-confirmation',
+        '/resend-email-confirmation',
         payload
       );
-      return ok(data); // data = token string
+      return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }
@@ -54,13 +82,13 @@ export const authService = {
 
   async emailConfirmation(
     payload: EmailConfirmationRequest
-  ): Promise<Result<string, AuthError>> {
+  ): Promise<Result<SessionResponse | ResultResponse, AuthError>> {
     try {
-      const { data } = await api.auth.post<string>(
-        '/auth/confirm-email',
+      const { data } = await api.auth.post<SessionResponse | ResultResponse>(
+        '/email-confirmation',
         payload
       );
-      return ok(data); // data = token string
+      return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
     }
@@ -71,7 +99,7 @@ export const authService = {
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
       const { data } = await api.auth.post<ResultResponse>(
-        '/auth/forgot-password',
+        '/forgot-password',
         payload
       );
       return ok(data);
@@ -85,7 +113,7 @@ export const authService = {
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
       const { data } = await api.auth.post<ResultResponse>(
-        '/auth/reset-password',
+        '/reset-password',
         payload
       );
       return ok(data);
@@ -93,16 +121,4 @@ export const authService = {
       return err(mapAxiosToAuthError(e));
     }
   },
-
-  // async refresh(): Promise<RefreshResponse> {
-  //   const { data } = await api.auth.post<RefreshResponse>('/auth/refresh');
-  //   return data;
-  // },
-  // async me(): Promise<AuthUser> {
-  //   const { data } = await api.auth.get<AuthUser>('/auth/me');
-  //   return data;
-  // },
-  // async logout(): Promise<void> {
-  //   await api.auth.post('/auth/logout');
-  // },
 };

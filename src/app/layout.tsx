@@ -4,6 +4,7 @@ import HydrationGate from '@/common/components/HydrationGate';
 import ModalHost from '@/modules/ui/components/ModalHost';
 import ClientProviders from '@/modules/ui/ClientProviders';
 import LoadingHost from '@/modules/ui/components/LoadingHost';
+import AuthSessionBootstrap from '@/modules/auth/components/AuthSessionBootstrap';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body>
         <HydrationGate>
           <ClientProviders>
+            <AuthSessionBootstrap />
             <div className="w-full h-dvh ">{children}</div>
             <ModalHost />
             <LoadingHost />

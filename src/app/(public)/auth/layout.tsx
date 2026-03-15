@@ -1,30 +1,26 @@
-'use client';
-import { useBoundStore } from '@/store';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  DEFAULT_AUTH_REDIRECT,
+} from '@/common/libs/auth/auth.constants';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 type AuthLayoutProps = {
   children: React.ReactNode;
 };
 
-const hasSession = (token?: string | null | undefined) => {
-  return !!token && token.length > 0;
-};
+export default async function Layout({ children }: Readonly<AuthLayoutProps>) {
+  const cookieStore = await cookies();
 
-export default function Layout({ children }: Readonly<AuthLayoutProps>) {
-  const token = useBoundStore((state) => state.token);
-  const router = useRouter();
-  const sp = useSearchParams();
-  const next = sp.get('next') ?? '/dashboard';
-  //   const hydrated = useZustandHydrated();
+  const hasAnySessionCookie = Boolean(
+    cookieStore.get(ACCESS_TOKEN_COOKIE)?.value ||
+    cookieStore.get(REFRESH_TOKEN_COOKIE)?.value
+  );
 
-  useEffect(() => {
-    if (hasSession(token)) {
-      router.replace(next);
-    }
-  }, [token]);
-
-  if (hasSession(token)) return null;
+  if (hasAnySessionCookie) {
+    redirect(DEFAULT_AUTH_REDIRECT);
+  }
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center p-0">

@@ -18,6 +18,7 @@ import { Button } from '@/common/libs/ui/button';
 import { ImSpinner2 } from 'react-icons/im';
 import { useBoundStore } from '@/store';
 import useFormStore from '@/modules/form/hooks/useFormStore';
+import { useRouter } from 'next/navigation';
 
 export type FormCreatedValues = {
   name: string;
@@ -25,10 +26,9 @@ export type FormCreatedValues = {
 };
 
 const formSchema = z.object({
-  name: z.string().min(4),
-  description: z.string().optional(),
+  name: z.string().min(1),
+  description: z.string().min(1).max(250),
 });
-type formSchemaType = z.infer<typeof formSchema>;
 
 type FormCreateFormProps = {
   modalId: string;
@@ -36,30 +36,43 @@ type FormCreateFormProps = {
 
 const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
   const { createFormProcess } = useFormStore();
+  const closeModal = useBoundStore((s) => s.closeModal);
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<FormCreatedValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: '', description: '' },
   });
 
-  const closeModal = useBoundStore((s) => s.closeModal);
-  const { toast } = useToast();
-
-  const onSubmit = async (values: formSchemaType) => {
+  const onSubmit = async () => {
     try {
-      const res = await createFormProcess(values.name, values.description);
-      if (!res) {
-        throw new Error('Form creation failed');
+      const res = await createFormProcess(
+        form.getValues().name,
+        form.getValues().description
+      );
+
+      if (!res?.isSuccess || !res?.data) {
+        throw new Error(res?.message || 'Form creation failed');
       }
+
+      const url = `/dashboard/builder/${res.data}`;
+
+      router.prefetch(url);
       toast({
         title: 'Success',
         description: 'Form created successfully',
       });
 
       closeModal(modalId);
+      router.push(url);
     } catch (error) {
       toast({
         title: 'Error',
-        description: `Something went wrong, please try again later ${error}`,
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong, please try again later',
         variant: 'destructive',
       });
     }
@@ -67,11 +80,11 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
 
   return (
     <Form {...form}>
-      <FormField
-        control={form.control}
-        name="name"
-        render={({ field }) => {
-          return (
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
@@ -79,44 +92,46 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
               </FormControl>
               <FormMessage />
             </FormItem>
-          );
-        }}
-      />
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Description</FormLabel>
-            <FormControl>
-              <Textarea rows={5} {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <div className="flex space-x-4">
-        <Button
-          variant="secondary"
-          className="w-full mt-4"
-          onClick={() => closeModal(modalId)}
-        >
-          Close
-        </Button>
-        <Button
-          onClick={() => {
-            form.handleSubmit(onSubmit)();
-          }}
-          disabled={form.formState.isSubmitting}
-          className="w-full mt-4"
-        >
-          {!form.formState.isSubmitting ? (
-            <span>Save</span>
-          ) : (
-            <ImSpinner2 className="animate-spin" />
           )}
-        </Button>
-      </div>
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea rows={5} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex space-x-4">
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full"
+            onClick={() => closeModal(modalId)}
+          >
+            Close
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full"
+          >
+            {!form.formState.isSubmitting ? (
+              <span>Save</span>
+            ) : (
+              <ImSpinner2 className="animate-spin" />
+            )}
+          </Button>
+        </div>
+      </form>
     </Form>
   );
 };

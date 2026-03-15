@@ -4,7 +4,7 @@ import { ActionAuthViewEnum } from '@/modules/auth/enum/auth.enum';
 async function BuilderPage() {
   return (
     <>
-      <LoginView action={ActionAuthViewEnum.RESENT_VERIFICATION} />
+      <LoginView action={ActionAuthViewEnum.RESEND_VERIFICATION} />
     </>
   );
 }

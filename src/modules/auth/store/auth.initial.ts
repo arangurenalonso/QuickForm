@@ -1,10 +1,6 @@
 import { AuthModel } from './auth.model';
 
-export const createAuthInitialState = (): Pick<
-  AuthModel,
-  'isAuthenticated' | 'user' | 'token'
-> => ({
+export const createAuthInitialState = (): AuthModel => ({
   isAuthenticated: false,
   user: null,
-  token: null,
 });
