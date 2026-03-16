@@ -18,7 +18,7 @@ type Props = {
 const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
   const size = getColumnSize(column);
   const displayValue = formatCellValue(value);
-  const truncate = shouldTruncate(column.type);
+  const truncate = shouldTruncate(column.questionTypeKey);
   const showPreview = truncate && displayValue.length > 20;
 
   const isPinnedLeft = column.pinned === 'left';

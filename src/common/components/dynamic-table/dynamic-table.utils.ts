@@ -16,7 +16,7 @@ const DEFAULT_SIZE: ColumnSize = {
 };
 
 export function getColumnSize(column: DynamicTableColumnType): ColumnSize {
-  switch (column.type) {
+  switch (column.questionTypeKey) {
     case 'InputTypeText':
       return {
         minWidth: 180,

@@ -3,6 +3,10 @@ import { Agent } from 'undici';
 import { SERVER_ENV } from '@/common/config/env.server';
 import { isDev } from './auth.constants';
 
+type UndiciRequestInit = RequestInit & {
+  dispatcher?: Agent;
+};
+
 function buildUrl(path: string) {
   return `${SERVER_ENV.AUTH_API_URL}${path}`;
 }
@@ -25,7 +29,7 @@ export async function backendAuthFetch(
 ): Promise<Response> {
   const url = buildUrl(path);
   const dispatcher = getDevDispatcher(url);
-  return fetch(url, {
+  const requestInit: UndiciRequestInit = {
     ...init,
     cache: 'no-store',
     headers: {
@@ -33,7 +37,8 @@ export async function backendAuthFetch(
       ...(init.headers ?? {}),
     },
     dispatcher,
-  });
+  };
+  return fetch(url, requestInit);
 }
 
 export async function backendAuthPost(
@@ -81,13 +86,14 @@ export async function backendApiFetchWithBearer(
   headers.set('authorization', `Bearer ${accessToken}`);
 
   const url = buildUrl(backendPath);
-
   const dispatcher = getDevDispatcher(url);
-  return fetch(url, {
+  const requestInit: UndiciRequestInit = {
     method: request.method,
     headers,
     body,
     cache: 'no-store',
     dispatcher,
-  });
+  };
+
+  return fetch(url, requestInit);
 }

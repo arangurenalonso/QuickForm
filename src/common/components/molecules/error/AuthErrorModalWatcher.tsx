@@ -31,7 +31,7 @@ export default function AuthErrorModalWatcher({
       ),
       onClose: onClose,
     });
-  }, [error]);
+  }, [error, id, onClose, openModal, showProperties]);
 
   return null;
 }

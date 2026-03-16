@@ -13,6 +13,7 @@ import { Separator } from '@/common/libs/ui/separator';
 import ResendVerifyEmailForm from '../components/form/ResendVerifyEmailForm';
 import EmailConfirmationForm from '../components/form/EmailConfirmationForm';
 import ResetPasswordForm from '../components/form/ResetPasswordForm';
+import { LOGIN_PATH } from '@/common/libs/auth/auth.constants';
 
 type LoginViewProps = {
   action: ActionAuthViewEnum;
@@ -60,7 +61,7 @@ const VIEW_MAP: Record<
     secondaryActionLink: {
       mainText: 'Already have an account?',
       linkText: 'Sign in',
-      href: '/auth/login',
+      href: LOGIN_PATH,
       invertUnderline: false,
     },
   },
@@ -77,7 +78,7 @@ const VIEW_MAP: Record<
     },
     auxiliaryLink: {
       linkText: 'Back to Sign in',
-      href: '/auth/login',
+      href: LOGIN_PATH,
       invertUnderline: false,
     },
   },
@@ -92,7 +93,7 @@ const VIEW_MAP: Record<
     secondaryActionLink: {
       mainText: 'Already verified?',
       linkText: 'Sign in',
-      href: '/auth/login',
+      href: LOGIN_PATH,
       invertUnderline: false,
     },
   },
@@ -103,7 +104,7 @@ const VIEW_MAP: Record<
     secondaryActionLink: {
       mainText: 'Remembered your password?',
       linkText: 'Sign in',
-      href: '/auth/login',
+      href: LOGIN_PATH,
       invertUnderline: false,
     },
   },

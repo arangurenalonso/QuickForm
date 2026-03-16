@@ -14,6 +14,7 @@ import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { LOGIN_PATH } from '@/common/libs/auth/auth.constants';
 
 type EmailConfirmationFormInputs = {
   email: string;
@@ -59,7 +60,7 @@ export default function EmailConfirmationForm() {
       return;
     }
 
-    router.replace('/auth/login');
+    router.replace(LOGIN_PATH);
   };
 
   return (

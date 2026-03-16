@@ -9,9 +9,12 @@ import {
   OctagonX,
   SearchX,
   Ban,
+  FileWarning,
+  FileX,
 } from 'lucide-react';
 
 import { AuthErrorKind } from '@/common/libs/axios/type/error.type';
+
 const KIND_UI: Record<
   AuthErrorKind,
   {
@@ -70,10 +73,21 @@ const KIND_UI: Record<
     icon: CircleHelp,
     variant: 'default',
   },
+  PayloadTooLarge: {
+    title: 'The file or request is too large',
+    icon: FileWarning,
+    variant: 'warning',
+  },
+  UnsupportedMediaType: {
+    title: 'This file type is not supported',
+    icon: FileX,
+    variant: 'warning',
+  },
   Unknown: {
     title: 'Unexpected error',
     icon: CircleHelp,
     variant: 'default',
   },
 };
+
 export { KIND_UI };

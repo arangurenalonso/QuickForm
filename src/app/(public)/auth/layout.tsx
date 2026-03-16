@@ -20,11 +20,6 @@ export default async function Layout({ children }: Readonly<AuthLayoutProps>) {
     cookieStore.get(REFRESH_TOKEN_COOKIE)?.value
   );
 
-  console.log('Auth layout - session cookie presence:', {
-    accessTokenCookie: Boolean(cookieStore.get(ACCESS_TOKEN_COOKIE)?.value),
-    refreshTokenCookie: Boolean(cookieStore.get(REFRESH_TOKEN_COOKIE)?.value),
-    hasAnySessionCookie,
-  });
   if (hasAnySessionCookie) {
     redirect(DEFAULT_AUTH_REDIRECT);
   }
