@@ -12,7 +12,6 @@ type AuthLayoutProps = {
 };
 
 export default async function Layout({ children }: Readonly<AuthLayoutProps>) {
-  console.log('Auth layout - checking for session cookies...');
   const cookieStore = await cookies();
 
   const hasAnySessionCookie = Boolean(

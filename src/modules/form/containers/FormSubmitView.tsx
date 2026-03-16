@@ -45,7 +45,6 @@ const FormSubmitView = ({ idForm }: FormSubmitViewProps) => {
 
   const onSubmit = useCallback(
     (values: unknown) => {
-      console.log('Form submitted with values:', values);
       if (!form) return;
 
       const result = submitForm(form.id, values);

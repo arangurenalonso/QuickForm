@@ -35,9 +35,7 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     const result = await signInProcess(data.email, data.password);
-    console.log('Login form submission result:', result);
     if (result?.isAuthenticated) {
-      console.log('Login successful, redirecting to:', next);
       router.replace(next);
     }
   };

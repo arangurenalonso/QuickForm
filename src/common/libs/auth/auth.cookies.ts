@@ -23,7 +23,6 @@ export function setAuthCookies(
   response: NextResponse,
   payload: SessionPayload
 ) {
-  console.log('Setting auth cookies for user:', payload);
   response.cookies.set(ACCESS_TOKEN_COOKIE, payload.accessToken, {
     ...baseCookieOptions,
     maxAge: ACCESS_TOKEN_MAX_AGE_SECONDS,

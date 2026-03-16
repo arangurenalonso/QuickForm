@@ -15,7 +15,6 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function handleProxy(request: NextRequest, path: string[]) {
-  console.log('Proxying request to backend:', path.join('/'));
   const cookieStore = await cookies();
   const accessToken = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
@@ -79,6 +78,13 @@ async function handleProxy(request: NextRequest, path: string[]) {
       { status: 500 }
     );
     clearAuthCookies(response);
+    if (refreshToken) {
+      try {
+        await backendAuthPost('/auth/logout', { refreshToken });
+      } catch {
+        // Best effort. We still clear cookies below.
+      }
+    }
     return response;
   }
 

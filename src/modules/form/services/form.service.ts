@@ -92,7 +92,6 @@ export const formService = {
 
       return ok(result);
     } catch (e) {
-      console.log('Error fetching form structure:', e);
       return err(mapAxiosToAuthError(e));
     }
   },
@@ -125,7 +124,6 @@ export const formService = {
       };
       return ok(result);
     } catch (e) {
-      console.log('Error fetching form structure:', e);
       return err(mapAxiosToAuthError(e));
     }
   },
