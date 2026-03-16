@@ -4,14 +4,13 @@ import {
   ACCESS_TOKEN_MAX_AGE_SECONDS,
   REFRESH_TOKEN_COOKIE,
   REFRESH_TOKEN_MAX_AGE_SECONDS,
+  isProd,
 } from './auth.constants';
 
 type SessionPayload = {
   accessToken: string;
   refreshToken: string;
 };
-
-const isProd = process.env.NODE_ENV === 'production';
 
 const baseCookieOptions = {
   httpOnly: true,
@@ -24,6 +23,7 @@ export function setAuthCookies(
   response: NextResponse,
   payload: SessionPayload
 ) {
+  console.log('Setting auth cookies for user:', payload);
   response.cookies.set(ACCESS_TOKEN_COOKIE, payload.accessToken, {
     ...baseCookieOptions,
     maxAge: ACCESS_TOKEN_MAX_AGE_SECONDS,

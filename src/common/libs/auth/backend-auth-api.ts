@@ -1,21 +1,38 @@
 import 'server-only';
+import { Agent } from 'undici';
 import { SERVER_ENV } from '@/common/config/env.server';
+import { isDev } from './auth.constants';
 
 function buildUrl(path: string) {
   return `${SERVER_ENV.AUTH_API_URL}${path}`;
 }
+function getDevDispatcher(url: string) {
+  const isLocalHttps = url.startsWith('https://localhost');
 
+  if (!isDev || !isLocalHttps) {
+    return undefined;
+  }
+
+  return new Agent({
+    connect: {
+      rejectUnauthorized: false,
+    },
+  });
+}
 export async function backendAuthFetch(
   path: string,
   init: RequestInit = {}
 ): Promise<Response> {
-  return fetch(buildUrl(path), {
+  const url = buildUrl(path);
+  const dispatcher = getDevDispatcher(url);
+  return fetch(url, {
     ...init,
     cache: 'no-store',
     headers: {
       Accept: 'application/json',
       ...(init.headers ?? {}),
     },
+    dispatcher,
   });
 }
 
@@ -63,10 +80,14 @@ export async function backendApiFetchWithBearer(
 
   headers.set('authorization', `Bearer ${accessToken}`);
 
-  return fetch(buildUrl(backendPath), {
+  const url = buildUrl(backendPath);
+
+  const dispatcher = getDevDispatcher(url);
+  return fetch(url, {
     method: request.method,
     headers,
     body,
     cache: 'no-store',
+    dispatcher,
   });
 }

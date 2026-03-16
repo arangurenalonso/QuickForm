@@ -1,3 +1,4 @@
+'use server';
 import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
@@ -11,6 +12,7 @@ type AuthLayoutProps = {
 };
 
 export default async function Layout({ children }: Readonly<AuthLayoutProps>) {
+  console.log('Auth layout - checking for session cookies...');
   const cookieStore = await cookies();
 
   const hasAnySessionCookie = Boolean(
@@ -18,6 +20,11 @@ export default async function Layout({ children }: Readonly<AuthLayoutProps>) {
     cookieStore.get(REFRESH_TOKEN_COOKIE)?.value
   );
 
+  console.log('Auth layout - session cookie presence:', {
+    accessTokenCookie: Boolean(cookieStore.get(ACCESS_TOKEN_COOKIE)?.value),
+    refreshTokenCookie: Boolean(cookieStore.get(REFRESH_TOKEN_COOKIE)?.value),
+    hasAnySessionCookie,
+  });
   if (hasAnySessionCookie) {
     redirect(DEFAULT_AUTH_REDIRECT);
   }

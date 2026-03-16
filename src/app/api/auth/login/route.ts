@@ -35,6 +35,7 @@ export async function POST(request: Request) {
     { status: 200 }
   );
 
+  console.log('Login successful, setting auth cookies...');
   setAuthCookies(response, data);
   return response;
 }

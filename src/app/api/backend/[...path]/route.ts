@@ -57,7 +57,6 @@ async function handleProxy(request: NextRequest, path: string[]) {
     clearAuthCookies(response);
     return response;
   }
-
   const refreshResponse = await backendAuthPost('/auth/refresh', {
     refreshToken,
   });

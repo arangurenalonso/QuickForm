@@ -27,6 +27,7 @@ export default function useAuthStore() {
   }, []);
 
   const bootstrapSession = useCallback(async () => {
+    console.log('Bootstrapping auth session...');
     const res = await authService.me();
 
     if (!isOk(res)) {

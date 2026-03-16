@@ -26,7 +26,7 @@ export const formService = {
     payload: CreateFormRequest
   ): Promise<Result<ResultTResponse<string>, AuthError>> {
     try {
-      const { data } = await api.auth.post<ResultTResponse<string>>(
+      const { data } = await api.backend.post<ResultTResponse<string>>(
         '/form/register',
         payload
       );
@@ -38,7 +38,7 @@ export const formService = {
 
   async getForms(): Promise<Result<FormType[], AuthError>> {
     try {
-      const { data } = await api.auth.get<FormType[]>('/me/forms');
+      const { data } = await api.backend.get<FormType[]>('/me/forms');
       return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
@@ -47,7 +47,7 @@ export const formService = {
 
   async getFormById(idForm: string): Promise<Result<FormType, AuthError>> {
     try {
-      const { data } = await api.auth.get<FormType>(`/me/form/${idForm}`);
+      const { data } = await api.backend.get<FormType>(`/me/form/${idForm}`);
       return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));
@@ -58,7 +58,7 @@ export const formService = {
     idForm: string
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
-      const { data } = await api.auth.post<ResultResponse>(
+      const { data } = await api.backend.post<ResultResponse>(
         `/form/${idForm}/structure`,
         payload
       );
@@ -72,7 +72,7 @@ export const formService = {
     idForm: string
   ): Promise<Result<SectionType[], AuthError>> {
     try {
-      const { data } = await api.auth.get<SectionType[]>(
+      const { data } = await api.backend.get<SectionType[]>(
         `/form/${idForm}/structure`
       );
 
@@ -101,7 +101,7 @@ export const formService = {
     idForm: string
   ): Promise<Result<FormTemplateType, AuthError>> {
     try {
-      const { data } = await api.auth.get<FormTemplateType>(
+      const { data } = await api.backend.get<FormTemplateType>(
         `/form/${idForm}/submission-template`
       );
 
@@ -135,7 +135,7 @@ export const formService = {
     payload: unknown
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
-      const { data } = await api.auth.post<ResultResponse>(
+      const { data } = await api.backend.post<ResultResponse>(
         `/form/${idForm}/submit`,
         payload
       );
@@ -152,7 +152,7 @@ export const formService = {
     filters: AppliedFilterType[]
   ): Promise<Result<PaginationResultType<DynamicTableRowType>, AuthError>> {
     try {
-      const { data } = await api.auth.post<
+      const { data } = await api.backend.post<
         PaginationResultType<DynamicTableRowType>
       >(
         `/form/${idForm}/submissions/rows?page=${page}&pageSize=${pageSize}`,
@@ -168,7 +168,7 @@ export const formService = {
     idForm: string
   ): Promise<Result<DynamicTableColumnType[], AuthError>> {
     try {
-      const { data } = await api.auth.get<DynamicTableColumnType[]>(
+      const { data } = await api.backend.get<DynamicTableColumnType[]>(
         `/form/${idForm}/submissions/columns`
       );
       return ok(data);
@@ -181,7 +181,7 @@ export const formService = {
     Result<QuestionTypeFiltersGroupType[], AuthError>
   > {
     try {
-      const { data } = await api.auth.get<QuestionTypeFiltersGroupType[]>(
+      const { data } = await api.backend.get<QuestionTypeFiltersGroupType[]>(
         `/question-type/filters`
       );
       return ok(data);

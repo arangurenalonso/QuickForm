@@ -17,9 +17,9 @@ import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthError
 import { useSearchParams } from 'next/navigation';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
 import { useState } from 'react';
-import { toRHFValidate, makePasswordRules } from '../../types/auth.types';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
 import { useBoundStore } from '@/store';
+import { toRHFValidate, makePasswordRules } from '../../types/auth.method';
 
 type ResetPasswordFormFormInputs = {
   email: string;

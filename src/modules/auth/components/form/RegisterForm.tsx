@@ -15,10 +15,10 @@ import {
 } from '@/common/libs/ui/form';
 import useAuthStore from '../../hooks/useAuthStore';
 import { useBoundStore } from '@/store';
-import { makePasswordRules, toRHFValidate } from '../../types/auth.types';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
+import { toRHFValidate, makePasswordRules } from '../../types/auth.method';
 
 type RegisterFormInputs = {
   email: string;

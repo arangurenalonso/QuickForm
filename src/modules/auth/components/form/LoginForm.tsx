@@ -15,8 +15,7 @@ import { Button } from '@/common/libs/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type LoginFormInputs = {
   email: string;
@@ -36,7 +35,9 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     const result = await signInProcess(data.email, data.password);
+    console.log('Login form submission result:', result);
     if (result?.isAuthenticated) {
+      console.log('Login successful, redirecting to:', next);
       router.replace(next);
     }
   };
