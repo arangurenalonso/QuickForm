@@ -11,31 +11,40 @@ import {
 } from '@/common/libs/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 import { Button } from '@/common/libs/ui/button';
 import { FaIcons } from 'react-icons/fa';
 import { MdOutlinePublish } from 'react-icons/md';
+import useFormStore from '@/modules/form/hooks/useFormStore';
 
-const PublishFormBtn = () => {
+type PublishFormBtnProps = {
+  idForm: string;
+};
+
+const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
   const [loading, startTransition] = useTransition();
+  const { publishForm, error } = useFormStore();
   const { toast } = useToast();
   const router = useRouter();
+  useEffect(() => {
+    if (!error) return;
 
-  async function publishForm() {
-    try {
-      // await PublishForm(id);
-      toast({
-        title: 'Success',
-        description: 'Your form is now available to the public',
-      });
-      router.refresh();
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: `Something went wrong, please try again later ${error}`,
-        variant: 'destructive',
-      });
-    }
+    const message = error.message ?? JSON.stringify(error);
+
+    toast({
+      title: 'Error',
+      description: `Something went wrong, please try again later. ${message}`,
+      variant: 'destructive',
+    });
+  }, [error, toast]);
+
+  async function handlePublishForm() {
+    await publishForm(idForm);
+    toast({
+      title: 'Success',
+      description: 'Your form is now available to the public',
+    });
+    router.refresh();
   }
 
   return (
@@ -65,7 +74,7 @@ const PublishFormBtn = () => {
             disabled={loading}
             onClick={(e) => {
               e.preventDefault();
-              startTransition(publishForm);
+              startTransition(handlePublishForm);
             }}
           >
             Proceed {loading && <FaIcons className="animate-spin" />}

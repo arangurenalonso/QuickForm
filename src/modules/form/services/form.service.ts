@@ -67,7 +67,18 @@ export const formService = {
       return err(mapAxiosToAuthError(e));
     }
   },
-
+  async publishForm(
+    idForm: string
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const { data } = await api.protected.put<ResultResponse>(
+        `/form/${idForm}/publish`
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
   async getFormStructureByIdForm(
     idForm: string
   ): Promise<Result<SectionType[], AuthError>> {

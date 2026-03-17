@@ -20,6 +20,19 @@ export default function useFormStore() {
     setError(null);
   }, []);
 
+  const publishForm = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const res = await formService.publishForm(idForm);
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      return res.value;
+    },
+    [clearError]
+  );
+
   const createFormProcess = useCallback(
     async (name: string, description?: string) => {
       clearError();
@@ -192,6 +205,7 @@ export default function useFormStore() {
       getFormDetail,
       saveFormStructure,
       handleClearFormSelected,
+      publishForm,
       getFormTemplate,
       getFormForSubmission,
       submitForm,
@@ -206,6 +220,7 @@ export default function useFormStore() {
       getForms,
       clearError,
       getFormDetail,
+      publishForm,
       saveFormStructure,
       handleClearFormSelected,
       getFormTemplate,

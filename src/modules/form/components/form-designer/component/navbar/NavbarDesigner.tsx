@@ -23,12 +23,14 @@ const NavbarDesigner = () => {
         >
           <SaveFormBtn />
         </ActionGuard>
-        <ActionGuard
-          currentActions={formSelected?.status.allowedActions}
-          allowedActions={[FORM_ACTION.Publish]}
-        >
-          <PublishFormBtn />
-        </ActionGuard>
+        {formSelected && (
+          <ActionGuard
+            currentActions={formSelected?.status.allowedActions}
+            allowedActions={[FORM_ACTION.Publish]}
+          >
+            <PublishFormBtn idForm={formSelected.id} />
+          </ActionGuard>
+        )}
       </div>
     </nav>
   );
