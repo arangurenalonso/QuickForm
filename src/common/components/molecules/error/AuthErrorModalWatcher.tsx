@@ -1,37 +1,59 @@
 'use client';
 
-import * as React from 'react';
 import { useBoundStore } from '@/store';
 import AuthErrorAlertBody from './AuthErrorAlertBody';
 import AuthErrorAlertTitle from './AuthErrorAlertTitle';
 import { AuthError } from '@/common/libs/axios/type/error.type';
+import { useEffect } from 'react';
+import { SHOW_ERROR_TYPE } from './auth-error.enum';
+import { useToast } from '@/hooks/use-toast';
 
 type AuthErrorModalWatcherProps = {
   error: AuthError | null | undefined;
   id: string;
   showProperties?: boolean;
   onClose?: () => void;
+  showErrorType?: SHOW_ERROR_TYPE | undefined;
 };
 
-export default function AuthErrorModalWatcher({
+const AuthErrorModalWatcher = ({
   error,
   id,
   onClose,
   showProperties = false,
-}: AuthErrorModalWatcherProps) {
+  showErrorType = SHOW_ERROR_TYPE.Modal,
+}: AuthErrorModalWatcherProps) => {
   const openModal = useBoundStore((s) => s.openModal);
-  React.useEffect(() => {
-    if (!error) return;
 
-    openModal({
-      id,
-      title: <AuthErrorAlertTitle error={error} />,
-      content: (
-        <AuthErrorAlertBody error={error} showProperties={showProperties} />
-      ),
-      onClose: onClose,
-    });
-  }, [error, id, onClose, openModal, showProperties]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!error) return;
+    switch (showErrorType) {
+      case SHOW_ERROR_TYPE.Modal:
+        openModal({
+          id,
+          title: <AuthErrorAlertTitle error={error} />,
+          content: (
+            <AuthErrorAlertBody error={error} showProperties={showProperties} />
+          ),
+          onClose: onClose,
+        });
+        break;
+      case SHOW_ERROR_TYPE.Toast:
+        const message = error.message ?? JSON.stringify(error);
+        toast({
+          title: 'Error',
+          description: `Something went wrong, please try again later. ${message}`,
+          variant: 'destructive',
+        });
+        return;
+      default:
+        return;
+    }
+  }, [error, id, onClose, openModal, showProperties, showErrorType, toast]);
 
   return null;
-}
+};
+
+export default AuthErrorModalWatcher;

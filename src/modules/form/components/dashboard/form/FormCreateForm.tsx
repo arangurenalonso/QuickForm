@@ -19,6 +19,7 @@ import { ImSpinner2 } from 'react-icons/im';
 import { useBoundStore } from '@/store';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 import { useRouter } from 'next/navigation';
+import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 
 export type FormCreatedValues = {
   name: string;
@@ -35,7 +36,7 @@ type FormCreateFormProps = {
 };
 
 const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
-  const { createFormProcess } = useFormStore();
+  const { createFormProcess, error } = useFormStore();
   const closeModal = useBoundStore((s) => s.closeModal);
   const { toast } = useToast();
   const router = useRouter();
@@ -45,37 +46,27 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
     defaultValues: { name: '', description: '' },
   });
 
+  AuthErrorModalWatcher({ error, id: 'resend-verify-email-error-modal' });
+
   const onSubmit = async () => {
-    try {
-      const res = await createFormProcess(
-        form.getValues().name,
-        form.getValues().description
-      );
+    const res = await createFormProcess(
+      form.getValues().name,
+      form.getValues().description
+    );
 
-      if (!res?.isSuccess || !res?.data) {
-        throw new Error(res?.message || 'Form creation failed');
-      }
-
-      const url = `/dashboard/builder/${res.data}`;
-
-      router.prefetch(url);
-      toast({
-        title: 'Success',
-        description: 'Form created successfully',
-      });
-
-      closeModal(modalId);
-      router.push(url);
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong, please try again later',
-        variant: 'destructive',
-      });
+    if (!res) {
+      return;
     }
+
+    const url = `/dashboard/builder/${res.data}`;
+
+    toast({
+      title: 'Success',
+      description: 'Form created successfully',
+    });
+
+    closeModal(modalId);
+    router.push(url);
   };
 
   return (

@@ -68,11 +68,13 @@ export const formService = {
     }
   },
   async publishForm(
-    idForm: string
+    idForm: string,
+    payload: SectionType[]
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
       const { data } = await api.protected.put<ResultResponse>(
-        `/form/${idForm}/publish`
+        `/form/${idForm}/publish`,
+        payload
       );
       return ok(data); // data = token string
     } catch (e) {

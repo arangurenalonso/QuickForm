@@ -21,9 +21,9 @@ export default function useFormStore() {
   }, []);
 
   const publishForm = useCallback(
-    async (idForm: string) => {
+    async (idForm: string, payload: SectionType[]) => {
       clearError();
-      const res = await formService.publishForm(idForm);
+      const res = await formService.publishForm(idForm, payload);
       if (!isOk(res)) {
         setError(res.error);
         return;

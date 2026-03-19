@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import PublishFormBtn from './navbar-btn/PublishFormBtn';
 import PreviewDialogBtn from './navbar-btn/preview/PreviewDialogBtn';
 import SaveFormBtn from './navbar-btn/SaveFormBtn';
 import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import PublishFormBtn from './navbar-btn/publish/PublishFormBtn';
 
 const NavbarDesigner = () => {
   const { formSelected } = useFormStore();
