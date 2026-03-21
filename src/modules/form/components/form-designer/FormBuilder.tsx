@@ -8,24 +8,30 @@ import {
   useSensors,
   closestCenter,
 } from '@dnd-kit/core';
+import { useCallback, useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 
 import Designer from './component/canva/Designer';
 import SectionsTabs from './component/SectionsTabs';
 import useFormStore from '../../hooks/useFormStore';
-import { useCallback, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import useDesigner from './context/useDesigner';
-import DesignerSidebar from './component/sidebar/DesignerSidebar';
 import DragPreviewOverlay from './hook/DragPreviewOverlay';
+import { Button } from '@/common/libs/ui/button';
+import DesignerDrawer from './component/sidebar/DesignerDrawer';
 
 type FormBuilderProps = {
   idForm?: string | null | undefined;
 };
 
+type DesignerDrawerMode = 'add' | 'edit' | null;
+
 const FormBuilder = ({ idForm }: FormBuilderProps) => {
   const { getFormDetail, error, handleClearFormSelected } = useFormStore();
-  const { setFormStructure } = useDesigner();
+  const { setFormStructure, handleSelectedField } = useDesigner();
   const { toast } = useToast();
+
+  const [drawerMode, setDrawerMode] = useState<DesignerDrawerMode>(null);
 
   useEffect(() => {
     return () => {
@@ -71,25 +77,48 @@ const FormBuilder = ({ idForm }: FormBuilderProps) => {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
+  const handleOpenAddDrawer = useCallback(() => {
+    handleSelectedField(null);
+    setDrawerMode('add');
+  }, [handleSelectedField]);
+
+  const handleOpenEditDrawer = useCallback(
+    (sectionId: string, fieldId: string) => {
+      handleSelectedField({ sectionId, fieldId });
+      setDrawerMode('edit');
+    },
+    [handleSelectedField]
+  );
+
+  const handleCloseDrawer = useCallback(() => {
+    setDrawerMode(null);
+    handleSelectedField(null);
+  }, [handleSelectedField]);
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter}>
-      {/* ✅ min-w-0 evita que el grid se expanda por hijos */}
-      <div className="w-full h-full min-w-0 grid grid-cols-12 gap-2">
-        {/* ✅ overflow-x-hidden corta desbordes horizontales */}
-        <div className="col-span-12 md:col-span-8 min-w-0 bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-auto overflow-x-hidden">
-          <div className="grid h-full w-full min-w-0 grid-rows-[auto_1fr]">
-            <SectionsTabs />
-            <div className="min-h-0 w-full min-w-0">
-              <Designer />
-            </div>
-          </div>
-        </div>
+      <div className="grid h-full w-full min-w-0 grid-rows-[auto_1fr]">
+        <SectionsTabs />
 
-        {/* sidebar */}
-        <div className="col-span-12 md:col-span-4 min-w-0 overflow-auto">
-          <DesignerSidebar />
+        <div className="relative min-h-0 w-full min-w-0 bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-auto overflow-x-hidden">
+          <Designer onEditField={handleOpenEditDrawer} />
+
+          <Button
+            type="button"
+            className="absolute bottom-4 right-4 z-20 gap-2 shadow-lg"
+            onClick={handleOpenAddDrawer}
+          >
+            <Plus className="h-4 w-4" />
+            Add field
+          </Button>
         </div>
       </div>
+
+      <DesignerDrawer
+        open={drawerMode !== null}
+        mode={drawerMode}
+        onClose={handleCloseDrawer}
+      />
 
       <DragPreviewOverlay />
     </DndContext>

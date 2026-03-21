@@ -22,11 +22,12 @@ const DragPreviewOverlay = () => {
     onDragEnd: () => setDraggedItem(null),
   });
 
-  if (!draggedItem) return null;
+  if (!draggedItem) {
+    return <DragOverlay />;
+  }
 
   let node = <div>No drag overlay</div>;
 
-  // 1) Overlay para botones del sidebar
   const isSidebarBtnElement = draggedItem?.data?.current?.isDesignerBtnElement;
   if (isSidebarBtnElement) {
     const type = draggedItem?.data?.current?.type as FieldTypeEnum;
@@ -40,15 +41,12 @@ const DragPreviewOverlay = () => {
     );
   }
 
-  // 2) Overlay para fields dentro del designer
   const isDesignerField = draggedItem?.data?.current?.isDesignerField;
   if (isDesignerField) {
     const fieldId = String(draggedItem.id);
 
-    // primero intenta en sección activa
     let field = activeSection?.fields.find((f) => f.id === fieldId);
 
-    // fallback: buscar en todas las secciones
     if (!field) {
       for (const s of sections) {
         const found = s.fields.find((f) => f.id === fieldId);
@@ -64,8 +62,9 @@ const DragPreviewOverlay = () => {
     } else {
       const { properties, render } = field;
       const { Component } = render;
+
       node = (
-        <div className="bg-accent border rounded-md w-full p-2 opacity-60 pointer-events-none">
+        <div className="w-[min(920px,calc(100vw-4rem))] rounded-xl border bg-background px-4 py-2 shadow-2xl opacity-95 pointer-events-none">
           <Component {...properties} />
         </div>
       );

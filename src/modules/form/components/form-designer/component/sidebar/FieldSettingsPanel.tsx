@@ -1,4 +1,3 @@
-import { Button } from '@/common/libs/ui/button';
 import {
   Tabs,
   TabsContent,
@@ -6,8 +5,7 @@ import {
   TabsTrigger,
 } from '@/common/libs/ui/tabs';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
-import { AiOutlineClose } from 'react-icons/ai';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const FieldSettingsPanel = () => {
   const { selectedField, handleSelectedField, sections } = useDesigner();
@@ -21,10 +19,11 @@ const FieldSettingsPanel = () => {
     return section.fields.find((f) => f.id === selectedField.fieldId) ?? null;
   }, [selectedField, sections]);
 
-  if (selectedField && !field) {
-    handleSelectedField(null);
-    return null;
-  }
+  useEffect(() => {
+    if (selectedField && !field) {
+      handleSelectedField(null);
+    }
+  }, [selectedField, field, handleSelectedField]);
 
   if (!field) return null;
 
@@ -34,22 +33,10 @@ const FieldSettingsPanel = () => {
   return (
     <Tabs defaultValue="editable" className="w-full h-full">
       <div className="grid h-full w-full grid-rows-[auto_1fr]  ">
-        <div>
-          <div className="flex items-center">
-            <TabsList className="flex-grow flex justify-center">
-              <TabsTrigger value="editable">Properties</TabsTrigger>
-              <TabsTrigger value="rules">Rules</TabsTrigger>
-            </TabsList>
-
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => handleSelectedField(null)}
-            >
-              <AiOutlineClose />
-            </Button>
-          </div>
-        </div>
+        <TabsList className="flex-grow flex justify-center">
+          <TabsTrigger value="editable">Properties</TabsTrigger>
+          <TabsTrigger value="rules">Rules</TabsTrigger>
+        </TabsList>
 
         <div className="min-h-0 w-full overflow-y-auto   ">
           <TabsContent value="editable">

@@ -10,6 +10,15 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer base {
@@ -37,8 +46,17 @@ body {
     --accent: 199 89% 93%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
+    --warning: 43 96% 56%;
+    --warning-foreground: 222.2 47.4% 11.2%;
+
     --destructive: 0 72.2% 50.6%;
     --destructive-foreground: 210 40% 98%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -89,8 +107,17 @@ body {
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 40% 98%;
 
+    --warning: 43 96% 62%;
+    --warning-foreground: 222.2 47.4% 11.2%;
+
     --destructive: 0 62.8% 40.6%;
     --destructive-foreground: 210 40% 98%;
+
+    --success: 142 69% 42%;
+    --success-foreground: 210 40% 98%;
+
+    --info: 199 89% 60%;
+    --info-foreground: 222.2 47.4% 11.2%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
@@ -140,6 +167,10 @@ body {
     @apply rounded-2xl border bg-secondary text-secondary-foreground shadow-sm;
   }
 
+  .qf-surface-accent {
+    @apply rounded-2xl border bg-accent text-accent-foreground shadow-sm;
+  }
+
   .qf-field-label {
     @apply mb-1.5 block text-xs font-medium text-foreground/80;
   }
@@ -179,5 +210,83 @@ body {
 
   .qf-grid-card {
     @apply rounded-2xl border bg-card p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md;
+  }
+
+  .qf-builder-card {
+    @apply rounded-2xl border bg-card text-card-foreground shadow-sm transition duration-200;
+    @apply hover:shadow-qf-sm;
+  }
+
+  .qf-builder-card-selected {
+    @apply ring-2 ring-ring;
+  }
+
+  .qf-action-group {
+    @apply rounded-2xl  p-1;
+  }
+
+  .qf-action-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0;
+  }
+
+  .qf-action-btn-neutral {
+    @apply !border-border !bg-background !text-foreground hover:!bg-accent hover:!text-accent-foreground;
+  }
+
+  .qf-action-btn-warning {
+    @apply !border-warning !bg-warning !text-warning-foreground hover:!opacity-90;
+  }
+
+  .qf-action-btn-destructive {
+    @apply !border-destructive !bg-destructive !text-destructive-foreground hover:!opacity-90;
+  }
+
+  .qf-action-btn-success {
+    @apply !border-success !bg-success !text-success-foreground hover:!opacity-90;
+  }
+
+  .qf-action-btn-info {
+    @apply !border-info !bg-info !text-info-foreground hover:!opacity-90;
+  }
+
+  .qf-badge-warning {
+    @apply inline-flex items-center rounded-full border border-warning/30 bg-warning/15 px-2.5 py-1 text-xs font-medium text-warning;
+  }
+
+  .qf-badge-destructive {
+    @apply inline-flex items-center rounded-full border border-destructive/30 bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive;
+  }
+
+  .qf-badge-success {
+    @apply inline-flex items-center rounded-full border border-success/30 bg-success/15 px-2.5 py-1 text-xs font-medium text-success;
+  }
+
+  .qf-badge-info {
+    @apply inline-flex items-center rounded-full border border-info/30 bg-info/15 px-2.5 py-1 text-xs font-medium text-info;
+  }
+
+  .qf-panel {
+    @apply rounded-2xl border bg-card p-4 text-card-foreground shadow-sm;
+  }
+
+  .qf-panel-header {
+    @apply mb-4 flex items-center justify-between gap-3;
+  }
+
+  .qf-panel-title {
+    @apply text-base font-semibold text-foreground;
+  }
+
+  .qf-panel-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .qf-toolbar {
+    @apply flex items-center gap-2 rounded-2xl border bg-card p-2 shadow-sm;
+  }
+
+  .qf-toolbar-separator {
+    @apply h-8 w-px bg-border;
   }
 }

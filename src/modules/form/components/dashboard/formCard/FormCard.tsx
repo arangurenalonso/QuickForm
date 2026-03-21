@@ -52,6 +52,11 @@ const FormCard = ({ form }: FormCardProps) => {
             </Link>
           </Button>
         </ActionGuard>
+        <Button asChild className="w-full mt-2 text-md gap-4">
+          <Link href={`/dashboard/builder/${form.id}`}>
+            Edit form <FaEdit />
+          </Link>
+        </Button>
 
         <ActionGuard
           currentActions={form.status.allowedActions}

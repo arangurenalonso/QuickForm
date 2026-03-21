@@ -5,6 +5,7 @@ import { Button } from '@/common/libs/ui/button';
 import { useSortable } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
 import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
+import { Pencil } from 'lucide-react';
 
 type HoverStateProps = {
   isHover: boolean;
@@ -15,6 +16,8 @@ type CanvasFieldHoverOverlayProps = {
   element: FormFieldConfigType;
   sortable: ReturnType<typeof useSortable>;
   children: (args: HoverStateProps) => JSX.Element;
+
+  onEdit: (sectionId: string, fieldId: string) => void;
 };
 
 const CanvasFieldHoverOverlay = ({
@@ -22,13 +25,14 @@ const CanvasFieldHoverOverlay = ({
   element,
   sortable,
   children,
+  onEdit,
 }: CanvasFieldHoverOverlayProps) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { removeField } = useDesigner();
 
   return (
     <div
-      className="relative flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
+      className="relative flex flex-col text-foreground  "
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
@@ -39,13 +43,18 @@ const CanvasFieldHoverOverlay = ({
             ref={sortable.setActivatorNodeRef}
             {...sortable.attributes}
             {...sortable.listeners}
-            className="absolute left-0 top-0 z-20
-                           h-full w-14
-                           flex items-center justify-center
-                           border-r
-                           bg-slate-800/80
-                           hover:bg-background
-                           cursor-grab"
+            className="
+                absolute left-0 top-1/2 z-20
+                flex  py-4 -translate-x-1/2 -translate-y-1/2
+                items-center justify-center
+                rounded-xl border bg-background/95 text-muted-foreground
+                shadow-qf-sm backdrop-blur-sm
+                transition-colors
+                hover:bg-accent hover:text-accent-foreground
+                active:cursor-grabbing
+                cursor-grab
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0
+  "
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -53,26 +62,36 @@ const CanvasFieldHoverOverlay = ({
             aria-label="Drag"
             type="button"
           >
-            <GripVertical className="h-44 w-4" />
+            <GripVertical className="h-5 w-5" />
           </button>
-          {/* 🗑 Delete Handler*/}
-          <div className="absolute right-0 h-full">
-            <Button
-              className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                removeField(sectionId, element.id);
-              }}
-            >
-              <BiSolidTrash className="h-6 w-6" />
-            </Button>
-          </div>
-          {/* 💡 Hint */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse">
-            <p className="text-muted-foreground font-bold text-m">
-              Click for properties · Drag using the left handle
-            </p>
+
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="qf-action-group flex flex-col gap-2">
+              <Button
+                type="button"
+                size="icon"
+                className="qf-action-btn qf-action-btn-warning"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(sectionId, element.id);
+                }}
+              >
+                <Pencil className="h-5 w-5" />
+              </Button>
+
+              <Button
+                type="button"
+                size="icon"
+                className="qf-action-btn qf-action-btn-destructive"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeField(sectionId, element.id);
+                }}
+              >
+                <BiSolidTrash className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       )}

@@ -9,9 +9,13 @@ import {
 } from '@dnd-kit/sortable';
 import CanvasField from './designer-element/CanvasField';
 
-const Designer = () => {
+type DesignerProps = {
+  onEditField: (sectionId: string, fieldId: string) => void;
+};
+
+const Designer = ({ onEditField }: DesignerProps) => {
   const { sections, activeSectionId, handleSelectedField } = useDesigner();
-  useDragAndDropManager();
+  const { dropIndicator } = useDragAndDropManager();
 
   const activeSection = useMemo(
     () => sections.find((s) => s.id === activeSectionId),
@@ -19,6 +23,7 @@ const Designer = () => {
   );
 
   const fields = activeSection?.fields ?? [];
+
   const droppable = useDroppable({
     id: 'designer-drop-area',
     data: { isDesignerDropArea: true, sectionId: activeSectionId },
@@ -33,6 +38,7 @@ const Designer = () => {
       </div>
     );
   }
+
   return (
     <div
       className="p-4 w-full h-full"
@@ -41,7 +47,7 @@ const Designer = () => {
       <div
         ref={droppable.setNodeRef}
         className={cn(
-          'bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto',
+          'bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col items-center justify-start overflow-y-auto',
           droppable.isOver && 'ring-2 ring-primary ring-inset'
         )}
       >
@@ -53,7 +59,7 @@ const Designer = () => {
 
         {droppable.isOver && fields.length === 0 && (
           <div className="p-4 w-full">
-            <div className="h-[120px] rounded-md bg-primary/20"></div>
+            <div className="h-[120px] rounded-md bg-primary/20" />
           </div>
         )}
 
@@ -68,6 +74,12 @@ const Designer = () => {
                   key={field.id}
                   sectionId={activeSectionId}
                   element={field}
+                  onEdit={onEditField}
+                  dropIndicatorPosition={
+                    dropIndicator?.fieldId === field.id
+                      ? dropIndicator.position
+                      : null
+                  }
                 />
               ))}
             </SortableContext>
