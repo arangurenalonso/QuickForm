@@ -8,7 +8,7 @@ import {
   useSensors,
   closestCenter,
 } from '@dnd-kit/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 
 import Designer from './component/canva/Designer';
@@ -18,20 +18,22 @@ import { useToast } from '@/hooks/use-toast';
 import useDesigner from './context/useDesigner';
 import DragPreviewOverlay from './hook/DragPreviewOverlay';
 import { Button } from '@/common/libs/ui/button';
-import DesignerDrawer from './component/sidebar/DesignerDrawer';
+import FormElementSidebar from './component/sidebar/FormElementSidebar';
+import { useBoundStore } from '@/store';
+import DrawerHost from '@/modules/ui/components/DrawerHost';
+import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
+import { FORM_ACTION } from '../../enum/form.enum';
 
 type FormBuilderProps = {
   idForm?: string | null | undefined;
 };
 
-type DesignerDrawerMode = 'add' | 'edit' | null;
-
 const FormBuilder = ({ idForm }: FormBuilderProps) => {
-  const { getFormDetail, error, handleClearFormSelected } = useFormStore();
+  const { getFormDetail, error, handleClearFormSelected, formSelected } =
+    useFormStore();
+  const openDrawer = useBoundStore((s) => s.openDrawer);
   const { setFormStructure, handleSelectedField } = useDesigner();
   const { toast } = useToast();
-
-  const [drawerMode, setDrawerMode] = useState<DesignerDrawerMode>(null);
 
   useEffect(() => {
     return () => {
@@ -79,21 +81,15 @@ const FormBuilder = ({ idForm }: FormBuilderProps) => {
 
   const handleOpenAddDrawer = useCallback(() => {
     handleSelectedField(null);
-    setDrawerMode('add');
-  }, [handleSelectedField]);
-
-  const handleOpenEditDrawer = useCallback(
-    (sectionId: string, fieldId: string) => {
-      handleSelectedField({ sectionId, fieldId });
-      setDrawerMode('edit');
-    },
-    [handleSelectedField]
-  );
-
-  const handleCloseDrawer = useCallback(() => {
-    setDrawerMode(null);
-    handleSelectedField(null);
-  }, [handleSelectedField]);
+    openDrawer({
+      id: 'designer-add-field',
+      title: 'Add field',
+      titleDescription: 'Choose an element to add to the active section.',
+      content: <FormElementSidebar />,
+      side: 'left',
+      showOverlay: false,
+    });
+  }, [handleSelectedField, openDrawer]);
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter}>
@@ -101,24 +97,26 @@ const FormBuilder = ({ idForm }: FormBuilderProps) => {
         <SectionsTabs />
 
         <div className="relative min-h-0 w-full min-w-0 bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-auto overflow-x-hidden">
-          <Designer onEditField={handleOpenEditDrawer} />
+          <Designer />
 
-          <Button
-            type="button"
-            className="absolute bottom-4 right-4 z-20 gap-2 shadow-lg"
-            onClick={handleOpenAddDrawer}
-          >
-            <Plus className="h-4 w-4" />
-            Add field
-          </Button>
+          {formSelected && (
+            <ActionGuard
+              currentActions={formSelected.status.allowedActions}
+              allowedActions={[FORM_ACTION.Edit]}
+            >
+              <Button
+                type="button"
+                className="absolute bottom-4 right-4 z-20 gap-2 shadow-lg"
+                onClick={handleOpenAddDrawer}
+              >
+                <Plus className="h-4 w-4" />
+                Add field
+              </Button>
+            </ActionGuard>
+          )}
         </div>
       </div>
-
-      <DesignerDrawer
-        open={drawerMode !== null}
-        mode={drawerMode}
-        onClose={handleCloseDrawer}
-      />
+      <DrawerHost />
 
       <DragPreviewOverlay />
     </DndContext>

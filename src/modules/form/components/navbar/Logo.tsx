@@ -3,13 +3,15 @@ import React from 'react';
 
 const Logo = () => {
   return (
-    <Link
-      href={'/'}
-      className="font-bold text-3xl bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text 
+    <>
+      <Link
+        href={'/'}
+        className="font-bold text-3xl bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text 
         hover:cursos-pointer"
-    >
-      Quick Form
-    </Link>
+      >
+        Quick Form
+      </Link>
+    </>
   );
 };
 

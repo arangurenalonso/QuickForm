@@ -19,3 +19,11 @@ export type formStatsType = {
 };
 
 export type CreateFormRequest = { name: string; description?: string };
+
+export type FormWorkspaceTabSegment = 'builder' | 'settings' | 'publish';
+
+export enum FormWorkspaceTab {
+  builder = 'builder',
+  settings = 'settings',
+  publish = 'publish',
+}

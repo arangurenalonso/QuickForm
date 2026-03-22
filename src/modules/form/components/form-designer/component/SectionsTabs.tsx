@@ -16,6 +16,9 @@ import {
 import { Input } from '@/common/libs/ui/input';
 import { Textarea } from '@/common/libs/ui/textarea';
 import { cn } from '@/common/libs/utils';
+import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import useFormStore from '@/modules/form/hooks/useFormStore';
 
 const SCROLL_STEP = 260;
 
@@ -28,6 +31,7 @@ const SectionsTabs = () => {
     removeSection,
     updateSectionMeta,
   } = useDesigner();
+  const { formSelected } = useFormStore();
 
   const [open, setOpen] = useState(false);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
@@ -143,41 +147,48 @@ const SectionsTabs = () => {
                       <span className="truncate">{section.title}</span>
                     </TabsTrigger>
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 shrink-0"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openEditModal(section.id);
-                      }}
-                      aria-label="Edit section"
-                      title="Edit section"
-                    >
-                      <Pencil className="h-4 w-4 text-yellow-500 " />
-                    </Button>
+                    {formSelected && (
+                      <ActionGuard
+                        currentActions={formSelected.status.allowedActions}
+                        allowedActions={[FORM_ACTION.Edit]}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openEditModal(section.id);
+                          }}
+                          aria-label="Edit section"
+                          title="Edit section"
+                        >
+                          <Pencil className="h-4 w-4 text-yellow-500 " />
+                        </Button>
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 shrink-0"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        removeSection(section.id);
-                      }}
-                      disabled={sections.length === 1}
-                      title={
-                        sections.length === 1
-                          ? 'You need at least 1 section'
-                          : 'Delete section'
-                      }
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeSection(section.id);
+                          }}
+                          disabled={sections.length === 1}
+                          title={
+                            sections.length === 1
+                              ? 'You need at least 1 section'
+                              : 'Delete section'
+                          }
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </ActionGuard>
+                    )}
                   </div>
                 ))}
               </TabsList>
@@ -202,15 +213,22 @@ const SectionsTabs = () => {
         </Button>
 
         {/* Add section */}
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2 shrink-0"
-          onClick={() => addSection(`Section ${sections.length + 1}`)}
-        >
-          <Plus className="h-4 w-4" />
-          Add
-        </Button>
+        {formSelected && (
+          <ActionGuard
+            currentActions={formSelected.status.allowedActions}
+            allowedActions={[FORM_ACTION.Edit]}
+          >
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2 shrink-0"
+              onClick={() => addSection(`Section ${sections.length + 1}`)}
+            >
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </ActionGuard>
+        )}
       </div>
 
       {/* Modal */}

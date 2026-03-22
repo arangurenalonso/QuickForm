@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type ModalItem = {
   id: string;
   title: string | React.ReactNode;
@@ -16,7 +18,20 @@ export type FormStatusType<T> = {
   color: ColorType;
   allowedActions: T[];
 };
+export type DrawerSide = 'top' | 'right' | 'bottom' | 'left';
 
+export interface DrawerItem {
+  id: string;
+  title: string;
+  titleDescription?: string;
+  content: ReactNode;
+  actions?: ReactNode;
+  side?: DrawerSide;
+  className?: string;
+  isOpen?: boolean;
+  showOverlay?: boolean;
+  onClose?: () => void;
+}
 export type ColorType = 'info' | 'primary' | 'success' | 'warning' | 'error';
 
 export const COLOR_BADGE_CLASSES: Record<ColorType, string> = {

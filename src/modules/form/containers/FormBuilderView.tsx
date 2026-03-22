@@ -4,6 +4,7 @@ import FormBuilder from '../components/form-designer/FormBuilder';
 
 type FormBuilderContainerProps = {
   idForm?: string | null | undefined;
+  tab?: string | null | undefined;
 };
 
 const FormBuilderView = ({ idForm }: FormBuilderContainerProps) => {

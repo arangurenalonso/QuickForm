@@ -29,9 +29,12 @@ const useDragAndDropManager = () => {
 
     const isDraggingDesignerBtnElement =
       active.data?.current?.isDesignerBtnElement;
-    const isDraggingDesignerField = active.data?.current?.isDesignerField;
+    // const isDraggingDesignerField = active.data?.current?.isDesignerField;
 
-    if (!isDraggingDesignerBtnElement && !isDraggingDesignerField) {
+    if (
+      !isDraggingDesignerBtnElement
+      // && !isDraggingDesignerField
+    ) {
       setDropIndicator(null);
       return;
     }
@@ -45,14 +48,13 @@ const useDragAndDropManager = () => {
     }
 
     // When dragging a field over itself, do not show a line
-    if (isDraggingDesignerField && String(active.id) === overId) {
-      setDropIndicator(null);
-      return;
-    }
+    // if (isDraggingDesignerField && String(active.id) === overId) {
+    //   setDropIndicator(null);
+    //   return;
+    // }
 
     const activeRect = active.rect.current.translated;
     const overRect = over.rect;
-
     if (!activeRect || !overRect) {
       setDropIndicator({
         fieldId: overId,
@@ -122,7 +124,6 @@ const useDragAndDropManager = () => {
     },
     onDragEnd(event) {
       const { active, over } = event;
-
       setDropIndicator(null);
 
       if (!active || !over) return;

@@ -58,7 +58,7 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
       return;
     }
 
-    const url = `/dashboard/builder/${res.data}`;
+    const url = `/builder/${res.data}`;
 
     toast({
       title: 'Success',

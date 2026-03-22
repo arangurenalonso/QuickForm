@@ -9,11 +9,7 @@ import {
 } from '@dnd-kit/sortable';
 import CanvasField from './designer-element/CanvasField';
 
-type DesignerProps = {
-  onEditField: (sectionId: string, fieldId: string) => void;
-};
-
-const Designer = ({ onEditField }: DesignerProps) => {
+const Designer = () => {
   const { sections, activeSectionId, handleSelectedField } = useDesigner();
   const { dropIndicator } = useDragAndDropManager();
 
@@ -74,7 +70,6 @@ const Designer = ({ onEditField }: DesignerProps) => {
                   key={field.id}
                   sectionId={activeSectionId}
                   element={field}
-                  onEdit={onEditField}
                   dropIndicatorPosition={
                     dropIndicator?.fieldId === field.id
                       ? dropIndicator.position

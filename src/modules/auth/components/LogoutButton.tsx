@@ -4,6 +4,7 @@ import { LOGIN_PATH } from '@/common/libs/auth/auth.constants';
 import { Button } from '@/common/libs/ui/button';
 import useAuthStore from '@/modules/auth/hooks/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { LogOut } from 'lucide-react';
 
 export default function LogoutButton() {
   const { logoutProcess } = useAuthStore();
@@ -14,5 +15,9 @@ export default function LogoutButton() {
     router.replace(LOGIN_PATH);
   };
 
-  return <Button onClick={handleLogout}>Logout</Button>;
+  return (
+    <Button variant="ghost" size="icon" onClick={handleLogout}>
+      <LogOut className="h-5 w-5" />
+    </Button>
+  );
 }

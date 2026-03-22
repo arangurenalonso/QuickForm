@@ -16,7 +16,6 @@ import {
   ListFilter,
   Menu,
   Moon,
-  MousePointerClick,
   PencilLine,
   Plus,
   Search,
@@ -33,6 +32,7 @@ import {
   CardTitle,
 } from '@/common/libs/ui/card';
 import { Input } from '@/common/libs/ui/input';
+import AppLogo from './AppLogo';
 
 type AppView = 'dashboard' | 'forms' | 'builder' | 'submissions' | 'settings';
 
@@ -161,26 +161,6 @@ const submissionRows = [
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
-}
-
-function BrandMark() {
-  return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
-      <MousePointerClick className="h-5 w-5" />
-    </div>
-  );
-}
-
-function AppLogo() {
-  return (
-    <div className="flex items-center gap-3">
-      <BrandMark />
-      <div>
-        <p className="text-sm font-semibold text-foreground">QuickForm</p>
-        <p className="text-xs text-muted-foreground">Workspace</p>
-      </div>
-    </div>
-  );
 }
 
 function StatusBadge({
