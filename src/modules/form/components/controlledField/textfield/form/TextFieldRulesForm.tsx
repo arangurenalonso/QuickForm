@@ -16,7 +16,7 @@ import { TextFieldValidationRulesWithMessage } from '../type/TextFieldValidation
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../common/methods/common.methods';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 
 type TextRuleMessageTemplate = string;
 

@@ -1,5 +1,6 @@
 import { FormStatusType } from '@/modules/ui/type/ui.type';
 import { FORM_ACTION } from '../enum/form.enum';
+import { SectionType } from '../store/designer/designer.model';
 
 export type FormType = {
   id: string;
@@ -27,3 +28,8 @@ export enum FormWorkspaceTab {
   settings = 'settings',
   publish = 'publish',
 }
+
+export type FormTemplateType = {
+  sections: SectionType[];
+  form: FormType;
+};

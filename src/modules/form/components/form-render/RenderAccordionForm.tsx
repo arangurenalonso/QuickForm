@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import type { SectionType } from '@/modules/form/components/form-designer/context/designer-context.type';
 
 import { Button } from '@/common/libs/ui/button';
 import {
@@ -16,6 +15,7 @@ import { cn } from '@/common/libs/utils';
 import SectionFieldsRenderer from './SectionFieldsRenderer';
 import type { DynamicFormValues } from './type/form-rende.type';
 import { hasError } from './method/form-render.type';
+import { SectionType } from '../../store/designer/designer.model';
 
 type RenderAccordionFormProps = {
   sections: SectionType[];

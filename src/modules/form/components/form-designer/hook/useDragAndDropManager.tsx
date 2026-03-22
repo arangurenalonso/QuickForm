@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import { Active, Over, useDndMonitor } from '@dnd-kit/core';
 import { generateFieldElement } from '../../controlledField/generateFieldElement';
 import { FieldTypeEnum } from '../../controlledField/common/enum/FieldType';

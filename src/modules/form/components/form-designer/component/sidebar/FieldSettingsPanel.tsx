@@ -4,7 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/common/libs/ui/tabs';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import { useEffect, useMemo } from 'react';
 
 const FieldSettingsPanel = () => {

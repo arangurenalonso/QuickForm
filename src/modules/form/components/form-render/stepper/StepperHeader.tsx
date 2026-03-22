@@ -1,6 +1,6 @@
 'use client';
 
-import type { SectionType } from '@/modules/form/components/form-designer/context/designer-context.type';
+import { SectionType } from '@/modules/form/store/designer/designer.model';
 
 type StepperHeaderProps = {
   sections: SectionType[];

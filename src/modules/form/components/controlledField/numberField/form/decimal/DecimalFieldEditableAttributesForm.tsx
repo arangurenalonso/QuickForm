@@ -12,10 +12,10 @@ import {
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/common/libs/ui/switch';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableProps from '../../type/decimal/DecimalFieldEditableProps';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;

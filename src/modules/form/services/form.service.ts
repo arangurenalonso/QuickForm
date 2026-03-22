@@ -5,11 +5,11 @@ import { ok } from '@/common/types/result';
 import { Result } from '@/common/types/result';
 import { ResultResponse, ResultTResponse } from '@/common/types/resultResponse';
 import { AuthError } from '@/common/libs/axios/type/error.type';
-import { CreateFormRequest, FormType } from '../types/form.types';
 import {
+  CreateFormRequest,
   FormTemplateType,
-  SectionType,
-} from '../components/form-designer/context/designer-context.type';
+  FormType,
+} from '../types/form.types';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
 import {
   AppliedFilterType,
@@ -20,6 +20,7 @@ import {
   DynamicTableRowType,
 } from '@/common/components/dynamic-table/dynamic-table.types';
 import { PaginationResultType } from '@/common/components/pagination/pagination.types';
+import { SectionType } from '../store/designer/designer.model';
 
 export const formService = {
   async createForm(

@@ -10,6 +10,7 @@ type LayoutProps = {
 
 export default function Layout({ children }: Readonly<LayoutProps>) {
   const { formSelected } = useFormStore();
+  console.log('formSelected in layout', formSelected);
 
   return (
     <div className="grid h-dvh w-full grid-rows-[auto_1fr]">

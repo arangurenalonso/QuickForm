@@ -8,7 +8,7 @@ import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthError
 import { useToast } from '@/hooks/use-toast';
 import { useBoundStore } from '@/store';
 import ActionButton from '@/common/components/molecules/ActionButton';
-import useDesigner from '../../../../context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 
 type PublishFormBtnProps = {
   idForm: string;

@@ -1,12 +1,9 @@
-import { createContext } from 'react';
-import { SectionType, SelectedFieldType } from './designer-context.type';
-import { UpdatedTypeEnum } from '../../controlledField/common/enum/FieldType';
-import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
+import { UpdatedTypeEnum } from '@/modules/form/components/controlledField/common/enum/FieldType';
+import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
+import { SectionType, SelectedFieldType } from './designer.model';
 
-type DesignerContextType = {
+export type DesignerAction = {
   // Sections Management
-  sections: SectionType[];
-  activeSectionId: string;
   setActiveSection: (sectionId: string) => void;
   addSection: (title?: string) => void;
   removeSection: (sectionId: string) => void;
@@ -16,7 +13,6 @@ type DesignerContextType = {
   ) => void;
 
   // Fields Management
-  selectedField: SelectedFieldType;
   handleSelectedField: (payload: SelectedFieldType) => void;
   addElement: (
     sectionId: string,
@@ -34,6 +30,13 @@ type DesignerContextType = {
     overFieldId: string
   ) => void;
   setFormStructure: (sections: SectionType[]) => void;
+  resetDesigner: () => void;
 };
 
-export const DesignerContext = createContext<DesignerContextType | null>(null);
+// type DesignerContextType = {
+//   // Sections Management
+//   sections: SectionType[];
+//   activeSectionId: string;
+//   // Fields Management
+//   selectedField: SelectedFieldType;
+// };

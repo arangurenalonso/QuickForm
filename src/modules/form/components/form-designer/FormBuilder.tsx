@@ -8,14 +8,12 @@ import {
   useSensors,
   closestCenter,
 } from '@dnd-kit/core';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { Plus } from 'lucide-react';
 
 import Designer from './component/canva/Designer';
 import SectionsTabs from './component/SectionsTabs';
-import useFormStore from '../../hooks/useFormStore';
-import { useToast } from '@/hooks/use-toast';
-import useDesigner from './context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import DragPreviewOverlay from './hook/DragPreviewOverlay';
 import { Button } from '@/common/libs/ui/button';
 import FormElementSidebar from './component/sidebar/FormElementSidebar';
@@ -23,51 +21,12 @@ import { useBoundStore } from '@/store';
 import DrawerHost from '@/modules/ui/components/DrawerHost';
 import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
 import { FORM_ACTION } from '../../enum/form.enum';
+import useFormStore from '../../hooks/useFormStore';
 
-type FormBuilderProps = {
-  idForm?: string | null | undefined;
-};
-
-const FormBuilder = ({ idForm }: FormBuilderProps) => {
-  const { getFormDetail, error, handleClearFormSelected, formSelected } =
-    useFormStore();
+const FormBuilder = () => {
+  const { formSelected } = useFormStore();
   const openDrawer = useBoundStore((s) => s.openDrawer);
-  const { setFormStructure, handleSelectedField } = useDesigner();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    return () => {
-      handleClearFormSelected();
-    };
-  }, [handleClearFormSelected]);
-
-  const handleGetFormStructure = useCallback(async () => {
-    if (!idForm) {
-      setFormStructure([]);
-      return;
-    }
-
-    const data = await getFormDetail(idForm);
-    if (!data) return;
-
-    setFormStructure(data.structure);
-  }, [idForm, getFormDetail, setFormStructure]);
-
-  useEffect(() => {
-    handleGetFormStructure();
-  }, [handleGetFormStructure]);
-
-  useEffect(() => {
-    if (!error) return;
-
-    const message = error.message ?? JSON.stringify(error);
-
-    toast({
-      title: 'Error',
-      description: `Something went wrong, please try again later. ${message}`,
-      variant: 'destructive',
-    });
-  }, [error, toast]);
+  const { handleSelectedField } = useDesigner();
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },

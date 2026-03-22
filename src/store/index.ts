@@ -6,9 +6,16 @@ import { immer } from 'zustand/middleware/immer';
 
 import { createUiSlice, UiSlice } from '@/modules/ui/store/ui.slice';
 import { AuthSlice, createAuthSlice } from '@/modules/auth/store/auth.slice';
-import { createFormSlice, FormSlice } from '@/modules/form/store/form.slice';
+import {
+  createFormSlice,
+  FormSlice,
+} from '@/modules/form/store/form/form.slice';
+import {
+  createDesignerSlice,
+  DesignerSlice,
+} from '@/modules/form/store/designer/designer.slice';
 
-export type BoundState = AuthSlice & UiSlice & FormSlice;
+export type BoundState = AuthSlice & UiSlice & FormSlice & DesignerSlice;
 
 export const useBoundStore = create<BoundState>()(
   // devtools(
@@ -17,6 +24,7 @@ export const useBoundStore = create<BoundState>()(
       ...createAuthSlice(set, get, api),
       ...createUiSlice(set, get, api),
       ...createFormSlice(set, get, api),
+      ...createDesignerSlice(set, get, api),
     })),
     {
       name: 'quick-form-storage',

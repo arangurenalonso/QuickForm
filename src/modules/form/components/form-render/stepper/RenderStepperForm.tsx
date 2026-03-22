@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 
-import type { SectionType } from '@/modules/form/components/form-designer/context/designer-context.type';
-
 import { Button } from '@/common/libs/ui/button';
 import {
   Card,
@@ -18,6 +16,7 @@ import StepperHeader from './StepperHeader';
 import { hasError } from '../method/form-render.type';
 import SectionFieldsRenderer from '../SectionFieldsRenderer';
 import { DynamicFormValues } from '../type/form-rende.type';
+import { SectionType } from '@/modules/form/store/designer/designer.model';
 
 type RenderStepperFormProps = {
   sections: SectionType[];

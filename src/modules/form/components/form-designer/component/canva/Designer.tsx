@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { cn } from '@/common/libs/utils';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import { useDroppable } from '@dnd-kit/core';
 import useDragAndDropManager from '../../hook/useDragAndDropManager';
 import {

@@ -4,10 +4,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { isOk } from '@/common/types/result';
 import { AuthError } from '@/common/libs/axios/type/error.type';
 import { formService } from '../services/form.service';
-import { SectionType } from '../components/form-designer/context/designer-context.type';
 import { useBoundStore } from '@/store';
 import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
 import { AppliedFilterType } from '@/common/components/filters/filters.types';
+import { SectionType } from '../store/designer/designer.model';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
@@ -45,6 +45,7 @@ export default function useFormStore() {
     },
     [clearError]
   );
+
   const getForms = useCallback(async () => {
     clearError();
     const res = await formService.getForms();
@@ -67,6 +68,7 @@ export default function useFormStore() {
     },
     [clearError]
   );
+
   const getFormDetail = useCallback(
     async (idForm: string) => {
       clearError();
@@ -84,6 +86,10 @@ export default function useFormStore() {
         setError(structureRes.error);
         return;
       }
+      console.log('Form detail fetched:', {
+        form: formRes.value,
+        structure: structureRes.value,
+      });
       setFormSelected(formRes.value);
       return {
         structure: structureRes.value,
@@ -92,6 +98,7 @@ export default function useFormStore() {
     },
     [clearError, setFormSelected]
   );
+
   const saveFormStructure = useCallback(
     async (payload: SectionType[], idForm: string) => {
       clearError();
@@ -104,6 +111,7 @@ export default function useFormStore() {
     },
     [clearError]
   );
+
   const handleClearFormSelected = useCallback(() => {
     clearFormSelected();
   }, [clearFormSelected]);
@@ -178,6 +186,7 @@ export default function useFormStore() {
     },
     [clearError]
   );
+
   const getDynamicHeaderListSubmissions = useCallback(
     async (idForm: string) => {
       clearError();

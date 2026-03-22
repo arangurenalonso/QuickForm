@@ -3,7 +3,7 @@ import CanvasFieldHoverOverlay from './CanvasFieldHoverOverlay';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/common/libs/utils';
-import useDesigner from '../../../context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import DropIndicator from './DropIndicator';
 
 type DropIndicatorPosition = 'top' | 'bottom' | null;

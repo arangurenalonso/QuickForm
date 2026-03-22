@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import { Button } from '@/common/libs/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/common/libs/ui/tabs';
 import { Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';

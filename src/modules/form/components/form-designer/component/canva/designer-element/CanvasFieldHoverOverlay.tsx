@@ -1,4 +1,4 @@
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
+import useDesigner from '@/modules/form/hooks/useDesigner';
 import { useCallback, useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
 import { Button } from '@/common/libs/ui/button';

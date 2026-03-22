@@ -1,4 +1,4 @@
-import type { FormType } from '../types/form.types';
+import type { FormType } from '../../types/form.types';
 
 export type FormActions = {
   setFormSelected: (formSelected: FormType) => void;

@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import RenderTabsForm from '@/modules/form/components/form-render/RenderTabsForm';
 import useFormStore from '../hooks/useFormStore';
-import { SectionType } from '../components/form-designer/context/designer-context.type';
 import { FormType } from '../types/form.types';
 import { Alert } from '@/common/libs/ui/alert';
 import { useBoundStore } from '@/store';
 import FormSubmissionSkeleton from './FormSkeleton';
+import { SectionType } from '../store/designer/designer.model';
 type FormSubmitViewProps = {
   idForm?: string | null | undefined;
 };

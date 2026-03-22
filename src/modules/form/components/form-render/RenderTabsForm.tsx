@@ -15,12 +15,12 @@ import {
 } from '@/common/libs/ui/tabs';
 import { Button } from '@/common/libs/ui/button';
 import { useForm, useFormState } from 'react-hook-form';
-import type { SectionType } from '@/modules/form/components/form-designer/context/designer-context.type';
 import SectionFieldsRenderer from './SectionFieldsRenderer';
 import { cn } from '@/common/libs/utils';
 
 import type { DynamicFormValues } from './type/form-rende.type';
 import { hasError } from './method/form-render.type';
+import { SectionType } from '../../store/designer/designer.model';
 
 type RenderTabsFormProps = {
   sections: SectionType[];
