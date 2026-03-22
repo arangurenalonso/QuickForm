@@ -13,13 +13,14 @@ import {
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams } from 'next/navigation';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
 import { useState } from 'react';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
 import { useBoundStore } from '@/store';
 import { toRHFValidate, makePasswordRules } from '../../types/auth.method';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
 
 type ResetPasswordFormFormInputs = {
   email: string;
@@ -34,9 +35,9 @@ export default function ResetPasswordForm() {
 
   const { openModal } = useBoundStore.getState();
   const { resetPasswordProcess, error, clearError } = useAuthStore();
-  AuthErrorModalWatcher({
+  useAuthErrorModalWatcher({
     error,
-    id: 'email-confirmation-error-modal',
+    id: ModalErrorType.RESET_PASSWORD_ERROR,
     onClose: clearError,
   });
 
@@ -66,7 +67,7 @@ export default function ResetPasswordForm() {
 
     if (result) {
       openModal({
-        id: 'reset-password-success-modal',
+        id: ModalId.RESET_PASSWORD_SUCCESS,
         title: 'Password Reset Successful',
         content: (
           <CustomAlert

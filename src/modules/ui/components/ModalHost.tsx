@@ -9,11 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/common/libs/ui/dialog';
-import { useBoundStore } from '@/store';
+import useModalhook from '../store/modal/useModalhook';
 
 export default function ModalHost() {
-  const modals = useBoundStore((s) => s.modals);
-  const closeModal = useBoundStore((s) => s.closeModal);
+  const { closeModal, modals } = useModalhook();
 
   if (!modals?.length) return null;
 

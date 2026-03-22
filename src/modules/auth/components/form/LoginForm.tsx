@@ -14,8 +14,9 @@ import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useRouter, useSearchParams } from 'next/navigation';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
 
 type LoginFormInputs = {
   email: string;
@@ -40,9 +41,9 @@ const LoginForm = () => {
     }
   };
 
-  AuthErrorModalWatcher({
+  useAuthErrorModalWatcher({
     error,
-    id: 'login-error-modal',
+    id: ModalErrorType.LOGIN_ERROR,
     onClose: clearError,
   });
 

@@ -13,10 +13,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/common/libs/ui/form';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import useAuthStore from '../../hooks/useAuthStore';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
 import { useBoundStore } from '@/store';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
 
 const ForgotPasswordSchema = z.object({
   email: z
@@ -31,9 +32,9 @@ type ForgotPasswordFormInputs = {
 };
 const ForgotPasswordForm = () => {
   const { forgotPasswordProcess, error, clearError } = useAuthStore();
-  AuthErrorModalWatcher({
+  useAuthErrorModalWatcher({
     error,
-    id: 'email-confirmation-error-modal',
+    id: ModalErrorType.FORGOT_PASSWORD_ERROR,
     onClose: clearError,
   });
   const { openModal } = useBoundStore.getState();
@@ -51,7 +52,7 @@ const ForgotPasswordForm = () => {
 
     if (result) {
       openModal({
-        id: 'resend-verification-success-modal',
+        id: ModalId.FORGOT_PASSWORD_SUCCESS,
         title: 'Verification Email Sent',
         content: (
           <CustomAlert

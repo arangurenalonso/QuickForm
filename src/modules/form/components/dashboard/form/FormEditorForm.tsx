@@ -12,18 +12,13 @@ import {
 import { Input } from '@/common/libs/ui/input';
 import { Textarea } from '@/common/libs/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { Button } from '@/common/libs/ui/button';
 import { ImSpinner2 } from 'react-icons/im';
-import { useBoundStore } from '@/store';
-import useFormStore from '@/modules/form/hooks/useFormStore';
-import { useRouter } from 'next/navigation';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 
 export type FormCreatedValues = {
   name: string;
-  description?: string;
+  description: string;
 };
 
 const formSchema = z.object({
@@ -31,42 +26,24 @@ const formSchema = z.object({
   description: z.string().min(1).max(250),
 });
 
-type FormCreateFormProps = {
-  modalId: string;
+type FormEditorFormProps = {
+  submitCallback?: (values: FormCreatedValues) => void;
+  cancelCallback?: () => void;
 };
 
-const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
-  const { createFormProcess, error } = useFormStore();
-  const closeModal = useBoundStore((s) => s.closeModal);
-  const { toast } = useToast();
-  const router = useRouter();
-
+const FormEditorForm = ({
+  submitCallback,
+  cancelCallback,
+}: FormEditorFormProps) => {
   const form = useForm<FormCreatedValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: '', description: '' },
   });
 
-  AuthErrorModalWatcher({ error, id: 'resend-verify-email-error-modal' });
-
   const onSubmit = async () => {
-    const res = await createFormProcess(
-      form.getValues().name,
-      form.getValues().description
-    );
-
-    if (!res) {
-      return;
+    if (submitCallback) {
+      await submitCallback(form.getValues());
     }
-
-    const url = `/builder/${res.data}`;
-
-    toast({
-      title: 'Success',
-      description: 'Form created successfully',
-    });
-
-    closeModal(modalId);
-    router.push(url);
   };
 
   return (
@@ -101,14 +78,20 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
         />
 
         <div className="flex space-x-4">
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full"
-            onClick={() => closeModal(modalId)}
-          >
-            Close
-          </Button>
+          {cancelCallback && (
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full"
+              onClick={() => {
+                if (cancelCallback) {
+                  cancelCallback();
+                }
+              }}
+            >
+              Close
+            </Button>
+          )}
 
           <Button
             type="submit"
@@ -127,4 +110,4 @@ const FormCreateForm = ({ modalId }: FormCreateFormProps) => {
   );
 };
 
-export default FormCreateForm;
+export default FormEditorForm;

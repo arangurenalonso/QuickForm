@@ -12,9 +12,10 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { LOGIN_PATH } from '@/common/libs/auth/auth.constants';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
 
 type EmailConfirmationFormInputs = {
   email: string;
@@ -25,9 +26,9 @@ export default function EmailConfirmationForm() {
   const { emailConfirmationProcess, error, clearError } = useAuthStore();
   const router = useRouter();
 
-  AuthErrorModalWatcher({
+  useAuthErrorModalWatcher({
     error,
-    id: 'email-confirmation-error-modal',
+    id: ModalErrorType.EMAIL_CONFIRMATION_ERROR,
     onClose: clearError,
   });
 

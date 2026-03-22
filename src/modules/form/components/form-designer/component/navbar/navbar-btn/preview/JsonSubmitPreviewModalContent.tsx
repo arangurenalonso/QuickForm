@@ -3,8 +3,8 @@
 import React from 'react';
 import { Button } from '@/common/libs/ui/button';
 import { Badge } from '@/common/libs/ui/badge';
-import { useBoundStore } from '@/store';
 import JsonViewer from './JsonViewer';
+import useModalhook from '@/modules/ui/store/modal/useModalhook';
 
 type Props = {
   modalId: string;
@@ -15,7 +15,7 @@ export default function JsonSubmitPreviewModalContent({
   modalId,
   payload,
 }: Props) {
-  const closeModal = useBoundStore((s) => s.closeModal);
+  const { closeModal } = useModalhook();
 
   return (
     <div className="space-y-4">

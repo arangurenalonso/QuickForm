@@ -24,6 +24,7 @@ import JsonSubmitPreviewModalContent from './JsonSubmitPreviewModalContent';
 import RenderAccordionForm from '@/modules/form/components/form-render/RenderAccordionForm';
 import RenderTabsForm from '@/modules/form/components/form-render/RenderTabsForm';
 import RenderStepperForm from '@/modules/form/components/form-render/stepper/RenderStepperForm';
+import { ModalId } from '@/modules/ui/store/modal/modal.type';
 
 type PreviewMode = 'tabs' | 'accordion' | 'stepper';
 
@@ -35,14 +36,15 @@ const PreviewDialogBtn = () => {
 
   const onSubmit = useCallback(
     (values: unknown) => {
-      const modalId = `submit-preview-${Date.now()}`;
-
       openModal({
-        id: modalId,
+        id: ModalId.SUBMIT_PREVIEW,
         title: 'Submit payload preview',
         titleDescription: 'This is exactly what will be sent to the API.',
         content: (
-          <JsonSubmitPreviewModalContent modalId={modalId} payload={values} />
+          <JsonSubmitPreviewModalContent
+            modalId={ModalId.SUBMIT_PREVIEW}
+            payload={values}
+          />
         ),
       });
     },

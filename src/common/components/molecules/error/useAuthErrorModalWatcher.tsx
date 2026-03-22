@@ -1,12 +1,12 @@
 'use client';
 
-import { useBoundStore } from '@/store';
 import AuthErrorAlertBody from './AuthErrorAlertBody';
 import AuthErrorAlertTitle from './AuthErrorAlertTitle';
 import { AuthError } from '@/common/libs/axios/type/error.type';
 import { useEffect } from 'react';
 import { SHOW_ERROR_TYPE } from './auth-error.enum';
 import { useToast } from '@/hooks/use-toast';
+import useModalhook from '@/modules/ui/store/modal/useModalhook';
 
 type AuthErrorModalWatcherProps = {
   error: AuthError | null | undefined;
@@ -16,14 +16,14 @@ type AuthErrorModalWatcherProps = {
   showErrorType?: SHOW_ERROR_TYPE | undefined;
 };
 
-const AuthErrorModalWatcher = ({
+const useAuthErrorModalWatcher = ({
   error,
   id,
   onClose,
   showProperties = false,
   showErrorType = SHOW_ERROR_TYPE.Modal,
 }: AuthErrorModalWatcherProps) => {
-  const openModal = useBoundStore((s) => s.openModal);
+  const { openModal } = useModalhook();
 
   const { toast } = useToast();
 
@@ -56,4 +56,4 @@ const AuthErrorModalWatcher = ({
   return null;
 };
 
-export default AuthErrorModalWatcher;
+export default useAuthErrorModalWatcher;

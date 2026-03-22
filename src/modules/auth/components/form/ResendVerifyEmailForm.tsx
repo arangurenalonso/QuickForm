@@ -12,10 +12,11 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import { Button } from '@/common/libs/ui/button';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { useSearchParams } from 'next/navigation';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
 import { useBoundStore } from '@/store';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
 
 type ResendVerifyEmailFormInputs = {
   email: string;
@@ -37,7 +38,7 @@ const ResendVerifyEmailForm = () => {
 
     if (result) {
       openModal({
-        id: 'resend-verification-success-modal',
+        id: ModalId.RESEND_VERIFICATION_SUCCESS,
         title: 'Verification Email Sent',
         content: (
           <CustomAlert
@@ -50,7 +51,10 @@ const ResendVerifyEmailForm = () => {
     }
   };
 
-  AuthErrorModalWatcher({ error, id: 'resend-verify-email-error-modal' });
+  useAuthErrorModalWatcher({
+    error,
+    id: ModalErrorType.RESENT_VERIFY_EMAIL_ERROR,
+  });
 
   return (
     <Form {...form}>

@@ -1,23 +1,55 @@
 'use client';
-import { useBoundStore } from '@/store';
 import React from 'react';
-
+import useFormStore from '@/modules/form/hooks/useFormStore';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/common/libs/ui/button';
 import { BsFileEarmarkPlus } from 'react-icons/bs';
-import FormCreateForm from '../form/FormCreateForm';
+import FormEditorForm, { FormCreatedValues } from '../form/FormEditorForm';
+import { useRouter } from 'next/navigation';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
+import useModalhook from '@/modules/ui/store/modal/useModalhook';
 
 const FormCreateCard = () => {
-  const openModal = useBoundStore((s) => s.openModal);
+  const router = useRouter();
+  const { openModal, closeModal } = useModalhook();
+  const { toast } = useToast();
+
+  const { createFormProcess, error } = useFormStore();
+
+  useAuthErrorModalWatcher({ error, id: ModalErrorType.CREATE_FORM_ERROR });
 
   const handleOpenCreateFormModal = () => {
-    const modalId = 'create-form-modal';
+    const handleSubmit = async (values: FormCreatedValues) => {
+      const res = await createFormProcess(values.name, values.description);
+
+      if (!res) {
+        return;
+      }
+
+      const url = `/builder/${res.data}`;
+      toast({
+        title: 'Success',
+        description: 'Form created successfully',
+      });
+
+      router.push(url);
+      closeModal(ModalId.CREATE_FORM);
+    };
+
     openModal({
-      id: modalId,
+      id: ModalId.CREATE_FORM,
       title: 'Create new form',
       titleDescription: 'Create a new form to start collecting responses.',
-      content: <FormCreateForm modalId={modalId} />,
+      content: (
+        <FormEditorForm
+          submitCallback={handleSubmit}
+          cancelCallback={() => closeModal(ModalId.CREATE_FORM)}
+        />
+      ),
     });
   };
+
   return (
     <Button
       variant="outline"

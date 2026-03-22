@@ -17,8 +17,9 @@ import useAuthStore from '../../hooks/useAuthStore';
 import { useBoundStore } from '@/store';
 import InputRulesChecklist from '@/common/components/molecules/inputRule/InputRulesChecklist';
 import CustomAlert from '@/common/components/atoms/CustomAlert';
-import AuthErrorModalWatcher from '@/common/components/molecules/error/AuthErrorModalWatcher';
 import { toRHFValidate, makePasswordRules } from '../../types/auth.method';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
 
 type RegisterFormInputs = {
   email: string;
@@ -41,9 +42,9 @@ const RegisterForm = () => {
   });
   const password = useWatch({ control: form.control, name: 'password' }) ?? '';
 
-  AuthErrorModalWatcher({
+  useAuthErrorModalWatcher({
     error,
-    id: 'register-error-modal',
+    id: ModalErrorType.REGISTER_ERROR,
     onClose: clearError,
   });
   const onSubmit = async (data: RegisterFormInputs) => {
@@ -54,7 +55,7 @@ const RegisterForm = () => {
     );
     if (result) {
       openModal({
-        id: 'Successful-Registration-Modal',
+        id: ModalId.REGISTER_SUCCESS,
         title: 'User created successfully',
         content: (
           <CustomAlert
