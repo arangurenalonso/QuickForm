@@ -18,6 +18,19 @@ export type FieldType =
   | FieldTypeEnum.InputTypeText
   | FieldTypeEnum.InputTypeInteger
   | FieldTypeEnum.InputTypeDecimal;
+
+export const getFriendlyFieldTypeName = (type: FieldTypeEnum): string => {
+  switch (type) {
+    case FieldTypeEnum.InputTypeText:
+      return 'Text';
+    case FieldTypeEnum.InputTypeInteger:
+      return 'Integer';
+    case FieldTypeEnum.InputTypeDecimal:
+      return 'Decimal';
+    default:
+      return 'Field';
+  }
+};
 // TextArea="TextArea",
 // | FieldTypeEnum.Select
 // DatePicker="DatePicker",

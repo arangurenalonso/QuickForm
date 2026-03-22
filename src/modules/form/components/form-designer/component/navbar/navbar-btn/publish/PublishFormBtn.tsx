@@ -32,7 +32,6 @@ const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
     const modalId = 'submit-form-modal';
     const funcSubmit = async () => {
       const result = await publishForm(idForm, sections);
-      console.log('Publish form result:', result);
       if (!result) {
         closeModal(modalId);
         return;

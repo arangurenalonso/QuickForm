@@ -1,11 +1,14 @@
+'use client';
+
 import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
-import CanvasFieldHoverOverlay from './CanvasFieldHoverOverlay';
+
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/common/libs/utils';
 import useDesigner from '@/modules/form/hooks/useDesigner';
 import DropIndicator from './DropIndicator';
-
+import CanvasFieldHoverOverlay from './CanvasFieldHoverOverlay';
+import { getFriendlyFieldTypeName } from '@/modules/form/components/controlledField/common/enum/FieldType';
 type DropIndicatorPosition = 'top' | 'bottom' | null;
 
 type CanvasFieldProps = {
@@ -19,10 +22,9 @@ const CanvasField = ({
   element,
   dropIndicatorPosition = null,
 }: CanvasFieldProps) => {
-  const { properties, render } = element;
-  const { Component } = render;
-
   const { selectedField } = useDesigner();
+
+  const isSelected = selectedField?.fieldId === element.id;
 
   const sortable = useSortable({
     id: element.id,
@@ -38,13 +40,16 @@ const CanvasField = ({
     transform: CSS.Transform.toString(sortable.transform),
     transition: sortable.transition,
   };
+  if (!element) return null;
+  const { properties, render } = element;
+  const { Component } = render;
 
   return (
     <div
       ref={sortable.setNodeRef}
       className={cn(
         'group relative',
-        selectedField?.fieldId === element.id && 'ring-2 ring-ring'
+        isSelected && 'ring-2 ring-ring rounded-lg'
       )}
       style={style}
     >
@@ -64,11 +69,22 @@ const CanvasField = ({
           >
             <div
               className={cn(
-                'w-full rounded-md bg-accent/40 px-4 py-2 pointer-events-none opacity-100',
-                isHover && !sortable.isDragging && 'opacity-60'
+                'relative w-full rounded-md bg-accent/40 px-4 py-3 pointer-events-none opacity-100 transition-all',
+                isHover && !sortable.isDragging && 'opacity-80',
+                isSelected && 'bg-accent/55'
               )}
             >
-              <Component {...properties} />
+              <div
+                className="
+                absolute left-[-24px] top-[10px] z-10 
+                -rotate-45 
+                rounded-sm border bg-background px-5  text-[9px] font-semibold  tracking-[0.08em] text-muted-foreground shadow-sm"
+              >
+                {getFriendlyFieldTypeName(element.type)}
+              </div>
+              <div className="pl-3">
+                <Component {...properties} />
+              </div>
             </div>
           </div>
         )}

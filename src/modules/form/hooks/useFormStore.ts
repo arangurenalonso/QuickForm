@@ -86,10 +86,6 @@ export default function useFormStore() {
         setError(structureRes.error);
         return;
       }
-      console.log('Form detail fetched:', {
-        form: formRes.value,
-        structure: structureRes.value,
-      });
       setFormSelected(formRes.value);
       return {
         structure: structureRes.value,

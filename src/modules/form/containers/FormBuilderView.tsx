@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import useFormStore from '../hooks/useFormStore';
 import { useToast } from '@/hooks/use-toast';
 import useDesigner from '@/modules/form/hooks/useDesigner';
+import FormSettingsPage from '../components/form-setting/FormSettingsPage';
 
 type FormBuilderContainerProps = {
   idForm?: string | null | undefined;
@@ -58,7 +59,7 @@ const FormBuilderView = ({
       case FormWorkspaceTab.builder:
         return <FormBuilder />;
       case FormWorkspaceTab.settings:
-        return <div>Settings</div>;
+        return <FormSettingsPage />;
       case FormWorkspaceTab.publish:
         return <div>Publish</div>;
       default:

@@ -36,7 +36,6 @@ const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
       <div className="flex h-full items-stretch">
         {tabs.map((tab) => {
           const href = `${basePath}?tab=${tab.segment}`;
-          console.log(href);
           const isActive = currentTab === tab.segment;
 
           return (
