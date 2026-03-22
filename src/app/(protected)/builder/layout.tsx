@@ -12,7 +12,7 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
   const { formSelected } = useFormStore();
 
   return (
-    <div className="grid h-dvh w-full grid-rows-[auto_auto_1fr]">
+    <div className="grid h-dvh w-full grid-rows-[auto_1fr]">
       <header>
         <Navbar />
         <div className="border-b" />
@@ -22,7 +22,7 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
         <div className="border-b" />
       </header>
 
-      <main className="min-h-0 overflow-hidden bg-red-200">{children}</main>
+      <main className="min-h-0 overflow-hidden">{children}</main>
     </div>
   );
 }
