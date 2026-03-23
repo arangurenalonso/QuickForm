@@ -11,7 +11,7 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
         <Navbar />
         <div className="border-b" />
       </header>
-      <main className="min-h-0 overflow-hidden">{children}</main>
+      <main className="h-full ">{children}</main>
     </div>
   );
 }

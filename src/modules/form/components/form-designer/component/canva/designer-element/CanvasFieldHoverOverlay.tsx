@@ -3,14 +3,13 @@ import { useCallback, useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
 import { Button } from '@/common/libs/ui/button';
 import { useSortable } from '@dnd-kit/sortable';
-import { GripVertical } from 'lucide-react';
 import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
-import { Pencil } from 'lucide-react';
 import { useBoundStore } from '@/store';
 import FieldSettingsPanel from '../../sidebar/FieldSettingsPanel';
 import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
 import { FORM_ACTION } from '@/modules/form/enum/form.enum';
 import useFormStore from '@/modules/form/hooks/useFormStore';
+import { Eye, GripVertical, Pencil } from 'lucide-react';
 
 type HoverStateProps = {
   isHover: boolean;
@@ -35,6 +34,20 @@ const CanvasFieldHoverOverlay = ({
   const { formSelected } = useFormStore();
   const openDrawer = useBoundStore((s) => s.openDrawer);
 
+  const handleOpenViewDrawer = useCallback(() => {
+    handleSelectedField({ sectionId, fieldId: element.id });
+    openDrawer({
+      id: 'designer-view-field',
+      title: 'View field',
+      titleDescription: 'View the selected field.',
+
+      content: <FieldSettingsPanel />,
+      side: 'left',
+      showOverlay: true,
+      onClose: () => handleSelectedField(null),
+    });
+  }, [sectionId, element.id, openDrawer, handleSelectedField]);
+
   const handleOpenEditDrawer = useCallback(() => {
     handleSelectedField({ sectionId, fieldId: element.id });
     openDrawer({
@@ -58,16 +71,17 @@ const CanvasFieldHoverOverlay = ({
       {isHover && (
         <div className="z-10">
           {formSelected && (
-            <ActionGuard
-              currentActions={formSelected.status.allowedActions}
-              allowedActions={[FORM_ACTION.Edit]}
-            >
-              {/* Drag handle */}
-              <button
-                ref={sortable.setActivatorNodeRef}
-                {...sortable.attributes}
-                {...sortable.listeners}
-                className="
+            <>
+              <ActionGuard
+                currentActions={formSelected.status.allowedActions}
+                allowedActions={[FORM_ACTION.Edit]}
+              >
+                {/* Drag handle */}
+                <button
+                  ref={sortable.setActivatorNodeRef}
+                  {...sortable.attributes}
+                  {...sortable.listeners}
+                  className="
                         absolute left-0 top-1/2 z-20
                         flex  py-4 -translate-x-1/2 -translate-y-1/2
                         items-center justify-center
@@ -79,45 +93,65 @@ const CanvasFieldHoverOverlay = ({
                         cursor-grab
                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0
                 "
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-label="Drag"
-                type="button"
-              >
-                <GripVertical className="h-5 w-5" />
-              </button>
-
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  aria-label="Drag"
+                  type="button"
+                >
+                  <GripVertical className="h-5 w-5" />
+                </button>
+              </ActionGuard>
               <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
                 <div className="qf-action-group flex flex-col gap-2">
-                  <Button
-                    type="button"
-                    size="icon"
-                    className="qf-action-btn qf-action-btn-warning"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenEditDrawer();
-                    }}
+                  <ActionGuard
+                    currentActions={formSelected.status.allowedActions}
+                    allowedActions={[FORM_ACTION.Edit]}
                   >
-                    <Pencil className="h-5 w-5" />
-                  </Button>
+                    <Button
+                      type="button"
+                      size="icon"
+                      className="qf-action-btn qf-action-btn-warning"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEditDrawer();
+                      }}
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </Button>
 
-                  <Button
-                    type="button"
-                    size="icon"
-                    className="qf-action-btn qf-action-btn-destructive"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      removeField(sectionId, element.id);
-                    }}
-                  >
-                    <BiSolidTrash className="h-5 w-5" />
-                  </Button>
+                    <Button
+                      type="button"
+                      size="icon"
+                      className="qf-action-btn qf-action-btn-destructive"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeField(sectionId, element.id);
+                      }}
+                    >
+                      <BiSolidTrash className="h-5 w-5" />
+                    </Button>
+                  </ActionGuard>
+                  {!formSelected.status.allowedActions.includes(
+                    FORM_ACTION.Edit
+                  ) && (
+                    <Button
+                      type="button"
+                      size="icon"
+                      className="qf-action-btn qf-action-btn-info"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenViewDrawer();
+                      }}
+                    >
+                      <Eye className="h-5 w-5" />
+                    </Button>
+                  )}
                 </div>
               </div>
-            </ActionGuard>
+            </>
           )}
         </div>
       )}
