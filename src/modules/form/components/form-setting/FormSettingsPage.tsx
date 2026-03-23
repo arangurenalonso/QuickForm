@@ -1,16 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Settings, ChevronRight, Rocket, FileCheck2 } from 'lucide-react';
-import { Button } from '@/common/libs/ui/button';
-import { Input } from '@/common/libs/ui/input';
+import { Settings, ChevronRight, FileCheck2 } from 'lucide-react';
 import StatusBadge from '@/common/components/molecules/StatusBadge';
 import useFormStore from '@/modules/form/hooks/useFormStore';
+import FormEditorForm from '../dashboard/form/FormEditorForm';
+import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
+import { FORM_ACTION } from '../../enum/form.enum';
+import PublishFormBtn from '../form-designer/component/navbar/navbar-btn/publish/PublishFormBtn';
+import PreviewDialogBtn from '../form-designer/component/navbar/navbar-btn/preview/PreviewDialogBtn';
 
 const FormSettingsPage = () => {
   const { formSelected } = useFormStore();
 
-  const formName = formSelected?.name ?? '';
   const formStatus = formSelected?.status;
 
   return (
@@ -38,32 +40,39 @@ const FormSettingsPage = () => {
           </div>
 
           <div className="flex items-center gap-2 self-start">
-            <Button className="gap-2">
-              <Rocket className="h-4 w-4" />
-              Publish
-            </Button>
+            <PreviewDialogBtn />
+
+            {formSelected && (
+              <ActionGuard
+                currentActions={formSelected.status.allowedActions}
+                allowedActions={[FORM_ACTION.Publish]}
+              >
+                <PublishFormBtn idForm={formSelected.id} />
+              </ActionGuard>
+            )}
           </div>
         </header>
 
         <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
           <div className="border-b px-6 py-8">
-            <div className="max-w-3xl space-y-4">
-              <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-foreground">Title</h2>
-                <p className="text-sm text-muted-foreground">
-                  Enter a name for your form
-                </p>
-              </div>
-
-              <Input
-                value={formName}
-                placeholder="Enter form title"
-                className="h-12"
-                readOnly
-              />
-            </div>
+            <FormEditorForm
+              canEdit={
+                formSelected
+                  ? formSelected.status.allowedActions.includes(
+                      FORM_ACTION.Edit
+                    )
+                  : false
+              }
+              initialValues={
+                formSelected
+                  ? {
+                      name: formSelected.name,
+                      description: formSelected.description,
+                    }
+                  : undefined
+              }
+            />
           </div>
-
           <div className="px-6 py-8">
             <div className="max-w-3xl space-y-4">
               <div className="space-y-1">

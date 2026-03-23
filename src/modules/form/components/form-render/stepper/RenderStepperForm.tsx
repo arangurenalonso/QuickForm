@@ -2,14 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/common/libs/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from '@/common/libs/ui/card';
 import { cn } from '@/common/libs/utils';
 
 import StepperHeader from './StepperHeader';
@@ -33,7 +28,6 @@ export default function RenderStepperForm({
 
   const { watch, control, reset, trigger, getValues } =
     useForm<DynamicFormValues>({
-      // ✅ para que el rojo se quite mientras escribes
       mode: 'onChange',
       reValidateMode: 'onChange',
       shouldUnregister: false,
@@ -44,14 +38,14 @@ export default function RenderStepperForm({
   const isLastStep = stepIndex >= sections.length - 1;
   const isFirstStep = stepIndex <= 0;
 
-  // ✅ detectar cambios reales de estructura
   const sectionsKey = useMemo(() => {
     return sections
-      .map((s) => {
-        const fieldNames = s.fields
-          .map((f) => (f.properties.name as string | undefined) ?? '')
+      .map((section) => {
+        const fieldNames = section.fields
+          .map((field) => (field.properties.name as string | undefined) ?? '')
           .join(',');
-        return `${s.id}:${fieldNames}`;
+
+        return `${section.id}:${fieldNames}`;
       })
       .join('|');
   }, [sections]);
@@ -68,40 +62,40 @@ export default function RenderStepperForm({
 
   const currentSection = sections[stepIndex];
 
-  // ✅ SOLO los fields del step actual (para Continuar)
   const currentFieldNames = useMemo(() => {
     if (!currentSection) return [];
+
     return currentSection.fields
-      .map((f) => f.properties.name)
-      .filter((n): n is string => !!n);
+      .map((field) => field.properties.name)
+      .filter((name): name is string => !!name);
   }, [currentSection]);
 
-  // ✅ errores por sección (para pintar rojo)
-  const sectionHasErrors = (s: SectionType) =>
-    s.fields.some((f) => {
-      const fieldName = f.properties.name;
+  const sectionHasErrors = (section: SectionType) =>
+    section.fields.some((field) => {
+      const fieldName = field.properties.name;
       if (!fieldName) return false;
       return hasError(errors, fieldName);
     });
 
-  const validateCurrentStep = async () => {
-    if (currentFieldNames.length === 0) return true;
-    return trigger(currentFieldNames, { shouldFocus: true });
-  };
-
   const handleNext = async () => {
-    const ok = await validateCurrentStep();
-    if (!ok) return;
-    setStepIndex((prev) => Math.min(prev + 1, sections.length - 1));
+    const isValid =
+      currentFieldNames.length === 0
+        ? true
+        : await trigger(currentFieldNames, { shouldFocus: true });
+
+    if (!isValid) return;
+
+    setStepIndex((previous) => Math.min(previous + 1, sections.length - 1));
   };
 
   const handleBack = () => {
-    setStepIndex((prev) => Math.max(prev - 1, 0));
+    setStepIndex((previous) => Math.max(previous - 1, 0));
   };
 
   const handleFinalSubmit = async () => {
-    const ok = await trigger(undefined, { shouldFocus: true });
-    if (!ok) return;
+    const isValid = await trigger(undefined, { shouldFocus: true });
+    if (!isValid) return;
+
     onSubmit?.(getValues());
   };
 
@@ -109,68 +103,101 @@ export default function RenderStepperForm({
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        // ✅ solo submit en el último paso
+      onSubmit={(event) => {
+        event.preventDefault();
+
         if (isLastStep && onSubmit) {
           handleFinalSubmit();
         }
       }}
-      className="flex flex-col gap-4"
+      className="space-y-5"
     >
-      {/* ✅ Stepper tipo imagen (no clickable) */}
+      <div className="space-y-2">
+        <span className="qf-badge-info">Stepper layout</span>
+        <div>
+          <h2 className="qf-section-title text-lg">Guided completion</h2>
+          <p className="qf-section-description">
+            Best for long forms that should feel simple and progressive.
+          </p>
+        </div>
+      </div>
+
       <StepperHeader
         sections={sections}
         currentIndex={stepIndex}
         hasErrors={sectionHasErrors}
       />
 
-      {/* ✅ Render ALL steps mounted, hide inactive (para no perder valores) */}
-      {sections.map((s, idx) => {
-        const active = idx === stepIndex;
-        const hasErr = sectionHasErrors(s);
+      {sections.map((section, index) => {
+        const isActive = index === stepIndex;
+        const hasSectionErrors = sectionHasErrors(section);
 
         return (
-          <div key={s.id} className={cn(!active && 'hidden')}>
-            <Card className={cn('rounded-2xl', hasErr && 'border-destructive')}>
-              <CardHeader>
-                <CardDescription>{s.description}</CardDescription>
-              </CardHeader>
+          <section key={section.id} className={cn(!isActive && 'hidden')}>
+            <div
+              className={cn(
+                'qf-surface overflow-hidden',
+                hasSectionErrors && 'border-destructive'
+              )}
+            >
+              <div className="border-b bg-muted/40 px-6 py-4">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                  Step {index + 1} of {sections.length}
+                </p>
 
-              <CardContent className="space-y-4">
+                <h3 className="mt-2 text-lg font-semibold text-foreground">
+                  {section.title}
+                </h3>
+
+                {section.description && (
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    {section.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="px-6 py-6">
                 <SectionFieldsRenderer
-                  section={s}
+                  section={section}
                   control={control}
                   watch={watch}
                 />
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </section>
         );
       })}
 
-      {/* ✅ Actions */}
-      <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleBack}
-          disabled={isFirstStep}
-        >
-          Atrás
-        </Button>
-
-        {!isLastStep && (
-          <Button type="button" className="ml-auto" onClick={handleNext}>
-            Continuar
+      <div className="sticky bottom-0 z-10 rounded-2xl border bg-background/95 p-3 backdrop-blur">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleBack}
+            disabled={isFirstStep}
+            className="sm:min-w-32"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
           </Button>
-        )}
 
-        {isLastStep && showSubmitButton && !!onSubmit && (
-          <Button type="submit" className="ml-auto">
-            Submit
-          </Button>
-        )}
+          {!isLastStep && (
+            <Button
+              type="button"
+              onClick={handleNext}
+              className="sm:ml-auto sm:min-w-32"
+            >
+              Next
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+
+          {isLastStep && showSubmitButton && !!onSubmit && (
+            <Button type="submit" className="sm:ml-auto sm:min-w-32">
+              Submit
+            </Button>
+          )}
+        </div>
       </div>
     </form>
   );

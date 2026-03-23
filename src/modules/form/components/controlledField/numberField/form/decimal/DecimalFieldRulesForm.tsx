@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -17,6 +17,8 @@ import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../../common/methods/common.methods';
 import useDesigner from '@/modules/form/hooks/useDesigner';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import useFormStore from '@/modules/form/hooks/useFormStore';
 
 type RuleMessageTemplate = string;
 
@@ -48,6 +50,14 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
   const { updateField } = useDesigner();
+
+  const { formSelected } = useFormStore();
+
+  const canEdit = useMemo(() => {
+    return (
+      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
+    );
+  }, [formSelected]);
 
   const form = useForm<DecimalFieldRulesFormValues>({
     mode: 'onBlur',
@@ -142,6 +152,7 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="required"
             render={({ field }) => (
               <FormItem className="flex items-center justify-between gap-4">
@@ -165,6 +176,7 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
 
           <FormField
             control={control}
+            disabled={!canEdit}
             name="requiredMessage"
             render={({ field }) => (
               <FormItem>
@@ -189,6 +201,7 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="min"
             render={({ field }) => (
               <FormItem>
@@ -250,6 +263,7 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="max"
             render={({ field }) => (
               <FormItem>

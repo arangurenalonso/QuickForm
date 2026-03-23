@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { Button } from '@/common/libs/ui/button';
-import { MdOutlinePublish } from 'react-icons/md';
+import { Rocket } from 'lucide-react';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 import { SHOW_ERROR_TYPE } from '@/common/components/molecules/error/auth-error.enum';
 import { useToast } from '@/hooks/use-toast';
@@ -60,11 +60,8 @@ const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
   }, [idForm, publishForm, toast, router, openModal, closeModal, sections]);
 
   return (
-    <Button
-      className="gap-2 text-white bg-gradient-to-r from-indigo-400 to-cyan-400"
-      onClick={handlePublishForm}
-    >
-      <MdOutlinePublish className="h-4 w-4" />
+    <Button className="gap-2  " onClick={handlePublishForm}>
+      <Rocket className="h-4 w-4" />
       Publish
     </Button>
   );

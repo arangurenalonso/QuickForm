@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -16,6 +16,8 @@ import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableProps from '../../type/decimal/DecimalFieldEditableProps';
 import useDesigner from '@/modules/form/hooks/useDesigner';
+import useFormStore from '@/modules/form/hooks/useFormStore';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
 
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
@@ -24,6 +26,14 @@ interface DecimalFieldEditableAttributesFormProps {
 const DecimalFieldEditableAttributesForm: React.FC<
   DecimalFieldEditableAttributesFormProps
 > = ({ formFieldConfig }) => {
+  const { formSelected } = useFormStore();
+
+  const canEdit = useMemo(() => {
+    return (
+      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
+    );
+  }, [formSelected]);
+
   const form = useForm<DecimalFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -78,6 +88,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
       <div onBlur={handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={control}
+          disabled={!canEdit}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -103,6 +114,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
         <FormField
           control={control}
           name="label"
+          disabled={!canEdit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Label</FormLabel>
@@ -126,6 +138,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
         <FormField
           control={control}
           name="placeholder"
+          disabled={!canEdit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Placeholder</FormLabel>
@@ -147,6 +160,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
         <FormField
           control={control}
           name="helperText"
+          disabled={!canEdit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Helper Text</FormLabel>
@@ -171,6 +185,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
         <FormField
           control={control}
           name="informationText"
+          disabled={!canEdit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Information Text</FormLabel>
@@ -193,6 +208,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="prefix"
           render={({ field }) => (
             <FormItem>
@@ -216,6 +232,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="suffix"
           render={({ field }) => (
             <FormItem>
@@ -239,6 +256,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="decimalScale"
           render={({ field }) => (
             <FormItem>
@@ -271,6 +289,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="allowNegative"
           render={({ field }) => (
             <FormItem>

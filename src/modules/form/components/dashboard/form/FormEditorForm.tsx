@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -18,31 +19,49 @@ import { ImSpinner2 } from 'react-icons/im';
 
 export type FormCreatedValues = {
   name: string;
-  description: string;
+  description?: string | undefined;
 };
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().min(1).max(250),
+  name: z.string().min(1, 'Name is required'),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(250, 'Description must be at most 250 characters'),
 });
 
 type FormEditorFormProps = {
-  submitCallback?: (values: FormCreatedValues) => void;
+  initialValues?: FormCreatedValues;
+  canEdit?: boolean;
+  submitCallback?: (values: FormCreatedValues) => void | Promise<void>;
   cancelCallback?: () => void;
 };
 
+const emptyValues: FormCreatedValues = {
+  name: '',
+  description: '',
+};
+
 const FormEditorForm = ({
+  initialValues,
+  canEdit = true,
   submitCallback,
   cancelCallback,
 }: FormEditorFormProps) => {
   const form = useForm<FormCreatedValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: '', description: '' },
+    defaultValues: initialValues ?? emptyValues,
   });
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    form.reset(initialValues ?? emptyValues);
+  }, [initialValues, form]);
+
+  const onSubmit = async (values: FormCreatedValues) => {
+    if (!canEdit) return;
+
     if (submitCallback) {
-      await submitCallback(form.getValues());
+      await submitCallback(values);
     }
   };
 
@@ -51,12 +70,13 @@ const FormEditorForm = ({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} readOnly={!canEdit} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,11 +86,12 @@ const FormEditorForm = ({
         <FormField
           control={form.control}
           name="description"
+          disabled={!canEdit}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea rows={5} {...field} />
+                <Textarea {...field} rows={5} readOnly={!canEdit} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,27 +104,25 @@ const FormEditorForm = ({
               type="button"
               variant="secondary"
               className="w-full"
-              onClick={() => {
-                if (cancelCallback) {
-                  cancelCallback();
-                }
-              }}
+              onClick={cancelCallback}
             >
               Close
             </Button>
           )}
 
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            className="w-full"
-          >
-            {!form.formState.isSubmitting ? (
-              <span>Save</span>
-            ) : (
-              <ImSpinner2 className="animate-spin" />
-            )}
-          </Button>
+          {canEdit && (
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className="w-full"
+            >
+              {!form.formState.isSubmitting ? (
+                <span>Save</span>
+              ) : (
+                <ImSpinner2 className="animate-spin" />
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </Form>

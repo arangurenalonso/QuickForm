@@ -1,5 +1,7 @@
 'use client';
 
+import { Check, AlertCircle } from 'lucide-react';
+import { cn } from '@/common/libs/utils';
 import { SectionType } from '@/modules/form/store/designer/designer.model';
 
 type StepperHeaderProps = {
@@ -8,38 +10,73 @@ type StepperHeaderProps = {
   hasErrors: (section: SectionType) => boolean;
 };
 
-export default function StepperHeader({
+const StepperHeader = ({
   sections,
   currentIndex,
-}: StepperHeaderProps) {
-  const total = Math.max(sections.length, 1);
-  const progress = ((currentIndex + 1) / total) * 100;
-
+  hasErrors,
+}: StepperHeaderProps) => {
   return (
-    <div className="rounded-2xl border bg-card p-4 shadow-sm">
-      {/* Top info */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Paso {currentIndex + 1} de {sections.length}
-          </p>
-          <p className="text-base font-semibold truncate">
-            {sections[currentIndex]?.title}
-          </p>
-        </div>
+    <div className="qf-surface px-4 py-5">
+      <div className="flex flex-wrap items-center gap-3 md:gap-0">
+        {sections.map((section, index) => {
+          const isCompleted = index < currentIndex;
+          const isCurrent = index === currentIndex;
+          const hasSectionErrors = hasErrors(section);
 
-        <div className="text-sm font-medium tabular-nums">
-          {Math.round(progress)}%
-        </div>
-      </div>
+          return (
+            <div key={section.id} className="flex min-w-0 flex-1 items-center">
+              <div className="flex min-w-0 items-center gap-3">
+                <div
+                  className={cn(
+                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition-colors',
+                    isCompleted &&
+                      'border-success bg-success text-success-foreground',
+                    isCurrent &&
+                      !hasSectionErrors &&
+                      'border-primary bg-primary text-primary-foreground',
+                    hasSectionErrors &&
+                      'border-destructive bg-destructive text-destructive-foreground',
+                    !isCompleted &&
+                      !isCurrent &&
+                      !hasSectionErrors &&
+                      'border-border bg-background text-muted-foreground'
+                  )}
+                >
+                  {isCompleted ? (
+                    <Check className="h-4 w-4" />
+                  ) : hasSectionErrors ? (
+                    <AlertCircle className="h-4 w-4" />
+                  ) : (
+                    index + 1
+                  )}
+                </div>
 
-      {/* Progress bar */}
-      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full bg-primary transition-all"
-          style={{ width: `${progress}%` }}
-        />
+                <div className="min-w-0">
+                  <p
+                    className={cn(
+                      'truncate text-sm font-medium',
+                      isCurrent ? 'text-foreground' : 'text-muted-foreground'
+                    )}
+                  >
+                    {section.title || `Step ${index + 1}`}
+                  </p>
+                </div>
+              </div>
+
+              {index < sections.length - 1 && (
+                <div
+                  className={cn(
+                    'mx-3 hidden h-px flex-1 md:block',
+                    isCompleted ? 'bg-success' : 'bg-border'
+                  )}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
-}
+};
+
+export default StepperHeader;

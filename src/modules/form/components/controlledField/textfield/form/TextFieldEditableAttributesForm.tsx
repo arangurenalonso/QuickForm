@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -15,6 +15,8 @@ import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 
 import useDesigner from '@/modules/form/hooks/useDesigner';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import useFormStore from '@/modules/form/hooks/useFormStore';
 
 interface TextFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
@@ -23,6 +25,14 @@ interface TextFieldEditableAttributesFormProps {
 const TextFieldEditableAttributesForm: React.FC<
   TextFieldEditableAttributesFormProps
 > = ({ formFieldConfig }) => {
+  const { formSelected } = useFormStore();
+
+  const canEdit = useMemo(() => {
+    return (
+      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
+    );
+  }, [formSelected]);
+
   const form = useForm<TextFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -72,6 +82,7 @@ const TextFieldEditableAttributesForm: React.FC<
       <div onBlur={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -96,6 +107,7 @@ const TextFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="label"
           render={({ field }) => (
             <FormItem>
@@ -119,6 +131,7 @@ const TextFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="placeholder"
           render={({ field }) => (
             <FormItem>
@@ -140,6 +153,7 @@ const TextFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="helperText"
           render={({ field }) => (
             <FormItem>
@@ -164,6 +178,7 @@ const TextFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={form.control}
+          disabled={!canEdit}
           name="informationText"
           render={({ field }) => (
             <FormItem>

@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Eye } from 'lucide-react';
-import { Button } from '@/common/libs/ui/button';
 import { cn } from '@/common/libs/utils';
 import {
   FormWorkspaceTab,
   FormWorkspaceTabSegment,
 } from '../../types/form.types';
+import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
+import { FORM_ACTION } from '../../enum/form.enum';
+import SaveFormBtn from '../form-designer/component/navbar/navbar-btn/SaveFormBtn';
+import useFormStore from '../../hooks/useFormStore';
 
 type FormWorkspaceTabsProps = {
   basePath: string;
@@ -27,6 +29,7 @@ const tabs: FormWorkspaceTabType[] = [
 
 const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
   const searchParams = useSearchParams();
+  const { formSelected } = useFormStore();
   const currentTab = searchParams.get('tab') ?? FormWorkspaceTab.builder;
 
   return (
@@ -54,13 +57,16 @@ const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
           );
         })}
       </div>
-
-      <div className="flex items-center justify-end px-4">
-        <Button variant="outline" size="sm" className="gap-2">
-          <Eye className="h-4 w-4" />
-          Preview
-        </Button>
-      </div>
+      {currentTab === FormWorkspaceTab.builder && formSelected && (
+        <div className="flex items-center justify-end px-4">
+          <ActionGuard
+            currentActions={formSelected?.status.allowedActions}
+            allowedActions={[FORM_ACTION.Edit]}
+          >
+            <SaveFormBtn />
+          </ActionGuard>
+        </div>
+      )}
     </div>
   );
 };

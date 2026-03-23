@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -17,6 +17,8 @@ import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../common/methods/common.methods';
 import useDesigner from '@/modules/form/hooks/useDesigner';
+import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import useFormStore from '@/modules/form/hooks/useFormStore';
 
 type TextRuleMessageTemplate = string;
 
@@ -48,6 +50,14 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   formFieldConfig,
 }) => {
   const { updateField } = useDesigner();
+
+  const { formSelected } = useFormStore();
+
+  const canEdit = useMemo(() => {
+    return (
+      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
+    );
+  }, [formSelected]);
 
   const form = useForm<TextFieldRulesFormValues>({
     mode: 'onBlur',
@@ -146,6 +156,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={form.control}
+            disabled={!canEdit}
             name="required"
             render={({ field }) => (
               <FormItem className="flex items-center justify-between gap-4">
@@ -169,6 +180,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
 
           <FormField
             control={form.control}
+            disabled={!canEdit}
             name="requiredMessage"
             render={({ field }) => (
               <FormItem>
@@ -193,6 +205,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={form.control}
+            disabled={!canEdit}
             name="minLength"
             render={({ field }) => (
               <FormItem>
@@ -257,6 +270,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={form.control}
+            disabled={!canEdit}
             name="maxLength"
             render={({ field }) => (
               <FormItem>
@@ -286,6 +300,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
           <FormField
             control={form.control}
             name="maxLengthMessage"
+            disabled={!canEdit}
             render={({ field }) => {
               const maxLength = form.watch('maxLength');
               const preview = applyTemplate(field.value, {

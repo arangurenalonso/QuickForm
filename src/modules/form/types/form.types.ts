@@ -1,6 +1,7 @@
 import { FormStatusType } from '@/modules/ui/type/ui.type';
 import { FORM_ACTION } from '../enum/form.enum';
 import { SectionType } from '../store/designer/designer.model';
+import { FormRenderMode } from '../components/form-render/type/form-rende.type';
 
 export type FormType = {
   id: string;
@@ -8,6 +9,7 @@ export type FormType = {
   description?: string;
   createdAt: string;
   status: FormStatusType<FORM_ACTION>;
+  renderMode: FormRenderMode;
   // visits: number;
   // submissions: number;
 };

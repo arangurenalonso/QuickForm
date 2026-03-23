@@ -69,7 +69,6 @@ const FormBuilderView = ({
 
   return (
     <div className="grid h-full w-full min-w-0 grid-rows-[auto]  ">
-      {/* <NavbarDesigner /> */}
       <div className="min-h-0 w-full min-w-0">{RenderSection}</div>
     </div>
   );

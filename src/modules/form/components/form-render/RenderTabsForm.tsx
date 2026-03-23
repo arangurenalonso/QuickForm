@@ -1,23 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from '@/common/libs/ui/card';
+import { useForm, useFormState } from 'react-hook-form';
+import { Button } from '@/common/libs/ui/button';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@/common/libs/ui/tabs';
-import { Button } from '@/common/libs/ui/button';
-import { useForm, useFormState } from 'react-hook-form';
-import SectionFieldsRenderer from './SectionFieldsRenderer';
 import { cn } from '@/common/libs/utils';
 
+import SectionFieldsRenderer from './SectionFieldsRenderer';
 import type { DynamicFormValues } from './type/form-rende.type';
 import { hasError } from './method/form-render.type';
 import { SectionType } from '../../store/designer/designer.model';
@@ -33,13 +27,14 @@ export default function RenderTabsForm({
   onSubmit,
   showSubmitButton = true,
 }: RenderTabsFormProps) {
-  const firstId = sections[0]?.id;
+  const firstId = sections[0]?.id ?? '';
   const [tab, setTab] = useState(firstId);
 
   const { watch, control, handleSubmit, reset } = useForm<DynamicFormValues>({
     mode: 'onTouched',
     shouldUnregister: false,
   });
+
   const { errors, submitCount } = useFormState({ control });
 
   useEffect(() => {
@@ -49,7 +44,7 @@ export default function RenderTabsForm({
     }
 
     setTab((current) =>
-      current && sections.some((s) => s.id === current)
+      current && sections.some((section) => section.id === current)
         ? current
         : sections[0].id
     );
@@ -63,8 +58,8 @@ export default function RenderTabsForm({
     (section: SectionType) => {
       if (submitCount <= 0) return false;
 
-      return section.fields.some((f) => {
-        const fieldName = f.properties.name;
+      return section.fields.some((field) => {
+        const fieldName = field.properties.name;
         if (!fieldName) return false;
         return hasError(errors, fieldName);
       });
@@ -72,79 +67,99 @@ export default function RenderTabsForm({
     [submitCount, errors]
   );
 
-  const handleTabChange = useCallback((value: string) => {
-    setTab(value);
-  }, []);
-
-  const handlePreventDefaultSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-    },
-    []
-  );
-
   const sectionsWithErrorFlag = useMemo(
     () =>
-      sections.map((s) => ({
-        section: s,
-        hasErrors: sectionHasErrors(s),
+      sections.map((section) => ({
+        section,
+        hasErrors: sectionHasErrors(section),
       })),
     [sections, sectionHasErrors]
   );
 
   return (
     <form
-      onSubmit={onSubmit ? handleSubmit(onSubmit) : handlePreventDefaultSubmit}
-      className="flex flex-col gap-4"
+      onSubmit={onSubmit ? handleSubmit(onSubmit) : (e) => e.preventDefault()}
+      className="space-y-5"
     >
-      <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="w-full flex flex-wrap justify-start">
-          {sectionsWithErrorFlag.map(({ section: s, hasErrors }) => (
+      <div className="space-y-2">
+        <span className="qf-badge-info">Tabbed layout</span>
+        <div>
+          <h2 className="qf-section-title text-lg">Organized navigation</h2>
+          <p className="qf-section-description">
+            Users can jump between sections quickly without losing context.
+          </p>
+        </div>
+      </div>
+
+      <Tabs value={tab} onValueChange={setTab} className="w-full">
+        <TabsList className="h-auto w-full flex-wrap justify-start gap-2 rounded-2xl border bg-muted/40 p-2">
+          {sectionsWithErrorFlag.map(({ section, hasErrors }) => (
             <TabsTrigger
-              key={s.id}
-              value={s.id}
+              key={section.id}
+              value={section.id}
               className={cn(
-                'max-w-[220px] flex items-center gap-2',
-                hasErrors && 'text-destructive border-destructive'
+                'min-h-11 rounded-xl border bg-background px-4 py-2 text-sm transition-colors',
+                'data-[state=active]:border-ring data-[state=active]:bg-accent data-[state=active]:text-foreground',
+                hasErrors &&
+                  'border-destructive text-destructive data-[state=active]:border-destructive data-[state=active]:bg-destructive/10'
               )}
             >
-              <span className="truncate">{s.title}</span>
+              <span className="truncate">{section.title}</span>
 
               {hasErrors && (
-                <span className="h-2 w-2 rounded-full bg-destructive shrink-0" />
+                <span className="ml-2 h-2 w-2 shrink-0 rounded-full bg-destructive" />
               )}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {sections.map((s) => (
-          <TabsContent
-            key={s.id}
-            value={s.id}
-            forceMount
-            className="mt-4 data-[state=inactive]:hidden"
-          >
-            <Card className="rounded-2xl">
-              <CardHeader>
-                <CardDescription>{s.description}</CardDescription>
-              </CardHeader>
+        {sections.map((section) => {
+          const hasSectionErrors = sectionHasErrors(section);
 
-              <CardContent className="space-y-4">
-                <SectionFieldsRenderer
-                  section={s}
-                  control={control}
-                  watch={watch}
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        ))}
+          return (
+            <TabsContent
+              key={section.id}
+              value={section.id}
+              forceMount
+              className="mt-4 data-[state=inactive]:hidden"
+            >
+              <section
+                className={cn(
+                  'qf-surface overflow-hidden',
+                  hasSectionErrors && 'border-destructive'
+                )}
+              >
+                <div className="border-b bg-muted/40 px-6 py-4">
+                  <h3 className="text-base font-semibold text-foreground">
+                    {section.title}
+                  </h3>
+
+                  {section.description && (
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                      {section.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="px-6 py-6">
+                  <SectionFieldsRenderer
+                    section={section}
+                    control={control}
+                    watch={watch}
+                  />
+                </div>
+              </section>
+            </TabsContent>
+          );
+        })}
       </Tabs>
 
       {showSubmitButton && !!onSubmit && (
-        <Button type="submit" className="w-full mt-2">
-          Submit
-        </Button>
+        <div className="sticky bottom-0 z-10 rounded-2xl border bg-background/95 p-3 backdrop-blur">
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
+        </div>
       )}
     </form>
   );
