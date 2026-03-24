@@ -61,7 +61,7 @@ const DataTable = ({
   }, [queryState, onChange]);
 
   return (
-    <section className="space-y-4 p-4 md:p-6">
+    <section className="min-w-0 space-y-4">
       <div>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           {title}

@@ -22,5 +22,5 @@ export default async function ProtectedLayout({
     redirect(LOGIN_PATH);
   }
 
-  return <div className="w-full min-h-screen">{children}</div>;
+  return <div className="w-full min-h-screen min-w-0">{children}</div>;
 }
