@@ -32,8 +32,8 @@ const DynamicTable = ({
     columnsByOrder.find((column) => column.isKey) ?? columnsByOrder[0];
 
   return (
-    <div className={clsx('w-full', className)}>
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+    <div className={clsx('w-full min-w-0', className)}>
+      <div className="w-full max-w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <table className="w-max min-w-full border-separate border-spacing-0">
           <DynamicTableHeader
             columns={visibleOrderedColumns}
