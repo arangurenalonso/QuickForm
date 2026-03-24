@@ -1,13 +1,21 @@
 import { Input } from '@/common/libs/ui/input';
-import { UiControlType } from './filters.types';
+import {
+  FilterInputValueType,
+  FilterPrimitiveValueType,
+  SelectOptionType,
+  UiControlType,
+} from './filters.types';
 import { NumericFormat } from 'react-number-format';
+import { isSelectOptionArray } from './filters.utils';
+import MultiSelectWithCheckbox from './Component/MultiSelectWithCheckbox';
 
 type FilterValueInputProps = {
   uiControlType: UiControlType;
-  value?: string | number | boolean | null;
-  secondValue?: string | number | boolean | null;
-  onChange: (value: string | number | boolean | null) => void;
-  onSecondChange: (value: string | number | boolean | null) => void;
+  value?: FilterInputValueType;
+  secondValue?: FilterPrimitiveValueType;
+  onChange: (value: FilterInputValueType) => void;
+  onSecondChange: (value: FilterPrimitiveValueType) => void;
+  options?: SelectOptionType[];
 };
 
 const FilterValueInput = ({
@@ -16,6 +24,7 @@ const FilterValueInput = ({
   secondValue,
   onChange,
   onSecondChange,
+  options = [],
 }: FilterValueInputProps) => {
   if (uiControlType === 'none') {
     return null;
@@ -77,6 +86,50 @@ const FilterValueInput = ({
         type="time"
         value={String(value ?? '')}
         onChange={(event) => onChange(event.target.value)}
+      />
+    );
+  }
+
+  if (uiControlType === 'select') {
+    return (
+      <select
+        value={value == null ? '' : String(value)}
+        onChange={(event) => {
+          const selectedValue = event.target.value;
+          console.log('Selected value:', selectedValue);
+          if (selectedValue === '') {
+            onChange(null);
+            return;
+          }
+
+          const selectedOption = options.find(
+            (option) => String(option.key) === selectedValue
+          );
+
+          onChange(selectedOption ?? null);
+        }}
+        className="qf-select"
+      >
+        <option value="">Select value</option>
+
+        {options.map((option) => (
+          <option key={String(option.key)} value={String(option.key)}>
+            {option.value}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
+  if (uiControlType === 'multi-select') {
+    const selectedOptions = isSelectOptionArray(value) ? value : [];
+
+    return (
+      <MultiSelectWithCheckbox
+        options={options}
+        value={selectedOptions}
+        onChange={onChange}
+        placeholder="Select values"
       />
     );
   }

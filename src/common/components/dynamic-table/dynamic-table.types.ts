@@ -5,7 +5,9 @@ export type DynamicColumnType =
   | 'InputTypeDate'
   | 'InputTypeDatetime'
   | 'InputTypeTime'
-  | 'InputTypeBoolean';
+  | 'InputTypeBoolean'
+  | 'Status'
+  | 'Action';
 
 export type DynamicTablePinnedType = 'left' | 'right' | null;
 
@@ -18,6 +20,7 @@ export type DynamicTableColumnType = {
   isKey: boolean;
   showInTable: boolean;
   pinned?: DynamicTablePinnedType;
+  options?: { key: string; value: string }[];
 };
 
 export type DynamicTableRowType = Record<string, unknown>;

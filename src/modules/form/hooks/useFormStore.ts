@@ -200,6 +200,20 @@ export default function useFormStore() {
     [clearError]
   );
 
+  const getFormColumns = useCallback(async () => {
+    clearError();
+    const result = await withGlobalLoading(
+      () => formService.getFormColumns(),
+      'Loading form columns...'
+    );
+
+    if (!isOk(result)) {
+      setError(result.error);
+      return;
+    }
+    return result.value;
+  }, [clearError]);
+
   return useMemo(
     () => ({
       formSelected,
@@ -216,6 +230,7 @@ export default function useFormStore() {
       submitForm,
       getSubmissions,
       getDynamicHeaderListSubmissions,
+      getFormColumns,
       getQuestionTypeFiltersCatalog,
     }),
     [
@@ -233,6 +248,7 @@ export default function useFormStore() {
       submitForm,
       getSubmissions,
       getDynamicHeaderListSubmissions,
+      getFormColumns,
       getQuestionTypeFiltersCatalog,
     ]
   );

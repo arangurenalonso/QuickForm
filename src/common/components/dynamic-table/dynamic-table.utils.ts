@@ -1,6 +1,8 @@
+import { PaginationResultType } from '../pagination/pagination.types';
 import {
   DynamicTableColumnType,
   DynamicTablePinnedOffsetsType,
+  DynamicTableRowType,
 } from './dynamic-table.types';
 
 export type ColumnSize = {
@@ -9,6 +11,16 @@ export type ColumnSize = {
   align: 'left' | 'center' | 'right';
 };
 
+export const DEFAULT_EMPTY_PAGINATION: PaginationResultType<DynamicTableRowType> =
+  {
+    items: [],
+    totalCount: 0,
+    pageSize: 10,
+    currentPage: 1,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+  };
 const DEFAULT_SIZE: ColumnSize = {
   minWidth: 160,
   maxWidth: 240,

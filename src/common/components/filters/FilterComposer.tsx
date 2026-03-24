@@ -1,12 +1,15 @@
 import { Button } from '@/common/libs/ui/button';
 import {
   AppliedFilterType,
+  FilterInputValueType,
+  FilterPrimitiveValueType,
   QuestionTypeFilterOptionType,
   QuestionTypeFiltersGroupType,
 } from './filters.types';
 import { useEffect, useMemo, useState } from 'react';
 import { DynamicTableColumnType } from '../dynamic-table/dynamic-table.types';
 import FilterValueInput from './FilterValueInput';
+// import { normalizeFilterValue } from './filters.utils';
 
 type FilterComposerProps = {
   columns: DynamicTableColumnType[];
@@ -30,13 +33,13 @@ const FilterComposer = ({
   const [selectedOperator, setSelectedOperator] = useState<
     QuestionTypeFilterOptionType | undefined
   >(undefined);
-  const [value, setValue] = useState<string | number | boolean | null>(null);
-  const [secondValue, setSecondValue] = useState<
-    string | number | boolean | null
-  >(null);
+  const [value, setValue] = useState<FilterInputValueType>(null);
+  const [secondValue, setSecondValue] =
+    useState<FilterPrimitiveValueType>(null);
 
   const handleSelectColumn = (columnKey: string) => {
     const column = columns.find((column) => column.key === columnKey);
+    console.log('Selected column:', column);
     setSelectedColumn(column);
   };
 
@@ -163,6 +166,7 @@ const FilterComposer = ({
                 secondValue={secondValue}
                 onChange={(value) => setValue(value)}
                 onSecondChange={(secondValue) => setSecondValue(secondValue)}
+                options={selectedColumn?.options ?? []}
               />
             </>
           )}

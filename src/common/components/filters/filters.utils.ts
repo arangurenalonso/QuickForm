@@ -1,86 +1,30 @@
-import { AppliedFilterType } from './filters.types';
-
-// export function createEmptyDraft(): FilterDraftType {
-//   return {
-//     columnKey: '',
-//     operatorId: '',
-//     value: '',
-//     secondValue: '',
-//   };
-// }
-
-// export function getColumnByKey(
-//   columns: DynamicTableColumnType[],
-//   key: string
-// ): DynamicTableColumnType | undefined {
-//   return columns.find((column) => column.key === key);
-// }
-
-// export function getOperatorsByColumnType(
-//   catalog: QuestionTypeFiltersGroupType[],
-//   questionTypeKey: string
-// ): QuestionTypeFilterOptionType[] {
-//   return (
-//     catalog.find((item) => item.questionTypeKey === questionTypeKey)
-//       ?.operators ?? []
-//   );
-// }
-
-// export function getOperatorById(
-//   catalog: QuestionTypeFiltersGroupType[],
-//   questionTypeKey: string,
-//   operatorId: string
-// ): QuestionTypeFilterOptionType | undefined {
-//   return getOperatorsByColumnType(catalog, questionTypeKey).find(
-//     (operator) => operator.id === operatorId
-//   );
-// }
-
-// export function requiresValue(uiControlType: UiControlType): boolean {
-//   return uiControlType !== 'none';
-// }
-
-// export function buildAppliedFilter(
-//   columns: DynamicTableColumnType[],
-//   catalog: QuestionTypeFiltersGroupType[],
-//   draft: FilterDraftType
-// ): AppliedFilterType | null {
-//   const selectedColumn = getColumnByKey(columns, draft.columnKey);
-
-//   if (!selectedColumn) {
-//     return null;
-//   }
-
-//   const selectedOperator = getOperatorById(
-//     catalog,
-//     selectedColumn.questionTypeKey,
-//     draft.operatorId
-//   );
-
-//   if (!selectedOperator) {
-//     return null;
-//   }
-
-//   return {
-//     id: crypto.randomUUID(),
-//     columnKey: selectedColumn.key,
-//     columnLabel: selectedColumn.label,
-//     questionTypeId: selectedColumn.questionTypeId,
-//     questionTypeKey: selectedColumn.questionTypeKey,
-//     operatorId: selectedOperator.id,
-//     operatorKey: selectedOperator.key,
-//     operatorLabel: selectedOperator.label,
-//     uiControlType: selectedOperator.uiControlType,
-//     value: draft.value ?? '',
-//     secondValue: draft.secondValue ?? '',
-//   };
-// }
+import {
+  AppliedFilterType,
+  FilterInputValueType,
+  SelectOptionType,
+  UiControlType,
+} from './filters.types';
 
 export function formatFilterValue(filter: AppliedFilterType): string {
   if (filter.uiControlType === 'none') {
     return '';
   }
 
+  if (
+    filter.uiControlType === 'select' &&
+    filter.value &&
+    isSelectOption(filter.value)
+  ) {
+    return filter.value.value;
+  }
+
+  if (
+    filter.uiControlType === 'multi-select' &&
+    filter.value &&
+    isSelectOptionArray(filter.value)
+  ) {
+    return filter.value.map((item) => item.value).join(', ');
+  }
   if (
     filter.uiControlType === 'range-number' ||
     filter.uiControlType === 'range-date' ||
@@ -100,42 +44,34 @@ export function formatFilterValue(filter: AppliedFilterType): string {
   return String(filter.value ?? '').trim();
 }
 
-// export function isDraftValid(
-//   columns: DynamicTableColumnType[],
-//   catalog: QuestionTypeFiltersGroupType[],
-//   draft: FilterDraftType
-// ): boolean {
-//   const selectedColumn = getColumnByKey(columns, draft.columnKey);
+export const isSelectOption = (value: unknown): value is SelectOptionType => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'key' in value &&
+    'value' in value &&
+    typeof value.key === 'string' &&
+    typeof value.value === 'string'
+  );
+};
 
-//   if (!selectedColumn || !draft.operatorId) {
-//     return false;
-//   }
+export const isSelectOptionArray = (
+  value: unknown
+): value is SelectOptionType[] => {
+  return Array.isArray(value) && value.every(isSelectOption);
+};
 
-//   const selectedOperator = getOperatorById(
-//     catalog,
-//     selectedColumn.questionTypeKey,
-//     draft.operatorId
-//   );
+export const normalizeFilterValue = (
+  uiControlType: UiControlType,
+  value: FilterInputValueType
+): FilterInputValueType => {
+  if (uiControlType === 'select' && isSelectOption(value)) {
+    return value.key;
+  }
 
-//   if (!selectedOperator) {
-//     return false;
-//   }
+  if (uiControlType === 'multi-select' && isSelectOptionArray(value)) {
+    return value.map((item) => item.key).join(', ');
+  }
 
-//   if (!requiresValue(selectedOperator.uiControlType)) {
-//     return true;
-//   }
-
-//   if (
-//     selectedOperator.uiControlType === 'range-number' ||
-//     selectedOperator.uiControlType === 'range-date' ||
-//     selectedOperator.uiControlType === 'range-datetime' ||
-//     selectedOperator.uiControlType === 'range-time'
-//   ) {
-//     return (
-//       String(draft.value ?? '').trim().length > 0 &&
-//       String(draft.secondValue ?? '').trim().length > 0
-//     );
-//   }
-
-//   return String(draft.value ?? '').trim().length > 0;
-// }
+  return value as FilterInputValueType;
+};

@@ -11,7 +11,26 @@ export type UiControlType =
   | 'range-number'
   | 'range-date'
   | 'range-datetime'
-  | 'range-time';
+  | 'range-time'
+  | 'select'
+  | 'multi-select';
+
+export type SelectOptionType = {
+  key: string;
+  value: string;
+};
+
+export type FilterPrimitiveValueType =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
+
+export type FilterInputValueType =
+  | FilterPrimitiveValueType
+  | SelectOptionType
+  | SelectOptionType[];
 
 export type QuestionTypeFilterOptionType = {
   id: string;
@@ -19,6 +38,7 @@ export type QuestionTypeFilterOptionType = {
   label: string;
   uiControlType: UiControlType;
   uiControlLabel: string;
+  options?: SelectOptionType[];
 };
 
 export type QuestionTypeFiltersGroupType = {
@@ -31,8 +51,8 @@ export type QuestionTypeFiltersGroupType = {
 export type FilterDraftType = {
   columnKey: string;
   operatorId: string;
-  value?: string | number | boolean | null;
-  secondValue?: string | number | boolean | null;
+  value?: FilterInputValueType;
+  secondValue?: FilterPrimitiveValueType;
 };
 
 export type AppliedFilterType = {
@@ -45,8 +65,8 @@ export type AppliedFilterType = {
   operatorKey: string;
   operatorLabel: string;
   uiControlType: UiControlType;
-  value?: string | number | boolean | null | undefined;
-  secondValue?: string | number | boolean | null | undefined;
+  value?: FilterInputValueType;
+  secondValue?: FilterPrimitiveValueType;
 };
 
 export type FilterComposerProps = {

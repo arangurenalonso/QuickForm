@@ -34,6 +34,7 @@ const Filters = ({ columns, catalog, onApplyFilters }: FiltersProps) => {
 
   const handleApplyFilter = useCallback(
     (filter: AppliedFilterType) => {
+      console.log('Applying filter:', filter);
       setFilters((previous) => [...previous, filter]);
       setOpen(false);
     },

@@ -189,6 +189,16 @@ export const formService = {
     }
   },
 
+  async getFormColumns(): Promise<Result<DynamicTableColumnType[], AuthError>> {
+    try {
+      const { data } =
+        await api.protected.get<DynamicTableColumnType[]>(`/form/columns`);
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
   async getQuestionTypeFiltersCatalog(): Promise<
     Result<QuestionTypeFiltersGroupType[], AuthError>
   > {

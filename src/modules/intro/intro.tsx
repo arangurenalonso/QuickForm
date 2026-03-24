@@ -13,7 +13,6 @@ import {
   Filter,
   FolderKanban,
   LayoutDashboard,
-  ListFilter,
   Menu,
   Moon,
   PencilLine,
@@ -33,6 +32,7 @@ import {
 } from '@/common/libs/ui/card';
 import { Input } from '@/common/libs/ui/input';
 import AppLogo from './AppLogo';
+import FormsList from '../form/components/dashboard/formCard/FormsList';
 
 type AppView = 'dashboard' | 'forms' | 'builder' | 'submissions' | 'settings';
 
@@ -528,118 +528,6 @@ function DashboardView() {
   );
 }
 
-function FormsView() {
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Forms"
-        description="Manage all your forms, visibility, and publishing status from a single place."
-        action={
-          <Button className="rounded-xl">
-            <Plus className="mr-2 h-4 w-4" />
-            Create form
-          </Button>
-        }
-      />
-
-      <Card className="rounded-[28px] border-border bg-card shadow-sm">
-        <CardContent className="p-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="relative w-full sm:max-w-sm">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  className="h-11 rounded-xl pl-9"
-                  placeholder="Search forms..."
-                />
-              </div>
-              <Button variant="outline" className="rounded-xl">
-                <Filter className="mr-2 h-4 w-4" />
-                Status
-              </Button>
-              <Button variant="outline" className="rounded-xl">
-                <ListFilter className="mr-2 h-4 w-4" />
-                Visibility
-              </Button>
-            </div>
-            <Button variant="outline" className="rounded-xl">
-              Export list
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="overflow-hidden rounded-[28px] border-border bg-card shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[820px]">
-            <thead className="bg-muted/40">
-              <tr className="border-b border-border text-left text-sm text-muted-foreground">
-                <th className="px-6 py-4 font-medium">Form</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Updated</th>
-                <th className="px-6 py-4 font-medium">Submissions</th>
-                <th className="px-6 py-4 font-medium">Visibility</th>
-                <th className="px-6 py-4 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {forms.map((form) => (
-                <tr
-                  key={form.name}
-                  className="border-b border-border/70 last:border-0"
-                >
-                  <td className="px-6 py-5">
-                    <div>
-                      <p className="font-medium text-foreground">{form.name}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Structured workflow form
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5">
-                    <StatusBadge
-                      tone={form.status === 'Published' ? 'success' : 'warning'}
-                    >
-                      {form.status}
-                    </StatusBadge>
-                  </td>
-                  <td className="px-6 py-5 text-sm text-muted-foreground">
-                    {form.updated}
-                  </td>
-                  <td className="px-6 py-5 text-sm font-medium text-foreground">
-                    {form.submissions}
-                  </td>
-                  <td className="px-6 py-5 text-sm text-muted-foreground">
-                    {form.visibility}
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-xl"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="rounded-xl text-muted-foreground hover:text-foreground"
-                      >
-                        Open
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-    </div>
-  );
-}
-
 function BuilderView() {
   const fieldLibrary = [
     'Text input',
@@ -1040,7 +928,7 @@ function SettingsView() {
 function RenderView({ currentView }: { currentView: AppView }) {
   switch (currentView) {
     case 'forms':
-      return <FormsView />;
+      return <FormsList forms={[]} />;
     case 'builder':
       return <BuilderView />;
     case 'submissions':

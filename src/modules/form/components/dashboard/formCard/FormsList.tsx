@@ -1,191 +1,206 @@
 'use client';
-
-import React from 'react';
-import {
-  FileText,
-  Eye,
-  Pencil,
-  Send,
-  MoreHorizontal,
-  ClipboardList,
-  ShoppingBag,
-} from 'lucide-react';
-import { Button } from '@/common/libs/ui/button';
-import { cn } from '@/common/libs/utils';
+// import { Filter, ListFilter, Plus, Search } from 'lucide-react';
+// import { Button } from '@/common/libs/ui/button';
+// import { Card, CardContent } from '@/common/libs/ui/card';
+// import { Input } from '@/common/libs/ui/input';
+// import StatusBadge from '@/common/components/molecules/StatusBadge';
 import { FormType } from '@/modules/form/types/form.types';
+// import FormListHeader from './FormListHeader';
+import DataTable, {
+  DataTableQueryState,
+  DEFAULT_DATA_TABLE_QUERY_STATE,
+} from '@/common/components/dynamic-table/DataTable';
+import {
+  DynamicTableRowType,
+  DynamicTableColumnType,
+} from '@/common/components/dynamic-table/dynamic-table.types';
+import { DEFAULT_EMPTY_PAGINATION } from '@/common/components/dynamic-table/dynamic-table.utils';
+import { QuestionTypeFiltersGroupType } from '@/common/components/filters/filters.types';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { PaginationResultType } from '@/common/components/pagination/pagination.types';
+import useFormStore from '@/modules/form/hooks/useFormStore';
+import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
+import { useState, useCallback, useEffect } from 'react';
 
-type FormListItemType = {
-  id: string;
-  name: string;
-  submissionsCount: number;
-  lastEditedAt: string;
-  status?: 'draft' | 'published';
-  kind?: 'default' | 'registration' | 'order';
-};
+const FormsList = () => {
+  const {
+    getSubmissions,
+    getFormColumns,
+    getQuestionTypeFiltersCatalog,
+    error,
+  } = useFormStore();
 
-type FormsListProps = {
-  forms: FormType[];
-  selectedId?: string;
-  onView?: (formId: string) => void;
-  onEdit?: (formId: string) => void;
-  onPublish?: (formId: string) => void;
-  onMore?: (formId: string) => void;
-};
+  useAuthErrorModalWatcher({
+    error,
+    id: ModalErrorType.GET_SUBMISSIONS_ERROR,
+  });
 
-const getFormIcon = (kind?: FormListItemType['kind']) => {
-  switch (kind) {
-    case 'registration':
-      return ClipboardList;
-    case 'order':
-      return ShoppingBag;
-    default:
-      return FileText;
-  }
-};
+  const [catalog, setCatalog] = useState<QuestionTypeFiltersGroupType[]>([]);
 
-const getFormIconStyles = (status?: FormListItemType['status']) => {
-  if (status === 'published') {
-    return 'bg-success text-success-foreground';
-  }
+  const [data, setData] = useState<PaginationResultType<DynamicTableRowType>>(
+    DEFAULT_EMPTY_PAGINATION
+  );
+  const [column, setColumn] = useState<DynamicTableColumnType[]>([]);
 
-  return 'bg-warning text-warning-foreground';
-};
+  const handleLoadCatalog = useCallback(async () => {
+    const result = await getQuestionTypeFiltersCatalog();
+    if (!result) {
+      return;
+    }
+    setCatalog(result);
+    console.log('Catalog loaded:', result);
+  }, [getQuestionTypeFiltersCatalog]);
 
-const formatMeta = (submissionsCount: number, lastEditedAt: string) => {
-  const submissionLabel =
-    submissionsCount === 1 ? '1 submission' : `${submissionsCount} submissions`;
+  const handleLoadColumns = useCallback(async () => {
+    const result = await getFormColumns();
+    if (!result) {
+      return;
+    }
+    setColumn(result);
+  }, [getFormColumns]);
 
-  return `${submissionLabel} · Last edited on ${lastEditedAt}`;
-};
+  const handleGetSubmissions = useCallback(
+    async (queryState: DataTableQueryState) => {
+      // const { page, pageSize, filters } = queryState;
 
-const FormsList = ({
-  forms,
-  selectedId,
-  onView,
-  onEdit,
-  onPublish,
-  onMore,
-}: FormsListProps) => {
-  if (!forms.length) {
-    return (
-      <div className="qf-surface flex min-h-[240px] flex-col items-center justify-center px-6 py-10 text-center">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
-          <FileText className="h-6 w-6" />
-        </div>
+      console.log('Fetching submissions with query:', queryState);
+    },
+    []
+  );
 
-        <h3 className="text-base font-semibold text-foreground">
-          No forms yet
-        </h3>
-        <p className="mt-1 max-w-md text-sm text-muted-foreground">
-          Once you create forms, they will appear here with their status,
-          submissions, and quick actions.
-        </p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    void handleLoadCatalog();
+  }, [handleLoadCatalog]);
+
+  useEffect(() => {
+    void handleLoadColumns();
+  }, [handleLoadColumns]);
+
+  useEffect(() => {
+    void handleGetSubmissions(DEFAULT_DATA_TABLE_QUERY_STATE);
+  }, [handleGetSubmissions]);
 
   return (
-    <div className="space-y-3">
-      {forms.map((form) => {
-        const Icon = getFormIcon(form.kind);
-        const isSelected = selectedId === form.id;
-
-        return (
-          <div
-            key={form.id}
-            className={cn(
-              'group qf-surface flex items-center gap-4 px-4 py-4 transition-all',
-              'hover:border-primary/30 hover:shadow-qf-sm',
-              isSelected && 'border-primary ring-1 ring-primary/20'
-            )}
-          >
-            {/* <div
-              className={cn(
-                'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-sm',
-                getFormIconStyles(form.status)
-              )}
-            >
-              <Icon className="h-5 w-5" />
-            </div> */}
-
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="truncate text-lg font-semibold text-foreground">
-                  {form.name}
-                </h3>
-
-                {form.status === 'draft' && (
-                  <span className="qf-badge-warning">Draft</span>
-                )}
-
-                {form.status === 'published' && (
-                  <span className="qf-badge-success">Published</span>
-                )}
-              </div>
-
-              <p className="mt-1 text-sm text-muted-foreground">
-                {formatMeta(form.submissionsCount, form.lastEditedAt)}
-              </p>
-            </div>
-
-            <div className="hidden items-center gap-2 md:flex">
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="qf-action-btn"
-                onClick={() => onView?.(form.id)}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="qf-action-btn qf-action-btn-warning"
-                onClick={() => onEdit?.(form.id)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="qf-action-btn"
-                onClick={() => onPublish?.(form.id)}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="qf-action-btn"
-                onClick={() => onMore?.(form.id)}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="md:hidden">
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                className="qf-action-btn"
-                onClick={() => onMore?.(form.id)}
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <section className="">
+      <DataTable
+        title="Submissions"
+        description="Review all responses submitted for this form."
+        columns={column}
+        data={data}
+        catalog={catalog}
+        onChange={handleGetSubmissions}
+      />
+    </section>
   );
+  // return (
+  //   <div className="space-y-6">
+  //     <FormListHeader
+  //       title="Forms"
+  //       description="Manage all your forms, visibility, and publishing status from a single place."
+  //       action={
+  //         <Button className="rounded-xl">
+  //           <Plus className="mr-2 h-4 w-4" />
+  //           Create form
+  //         </Button>
+  //       }
+  //     />
+
+  //     <Card className="rounded-[28px] border-border bg-card shadow-sm">
+  //       <CardContent className="p-5">
+  //         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+  //           <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+  //             <div className="relative w-full sm:max-w-sm">
+  //               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+  //               <Input
+  //                 className="h-11 rounded-xl pl-9"
+  //                 placeholder="Search forms..."
+  //               />
+  //             </div>
+  //             <Button variant="outline" className="rounded-xl">
+  //               <Filter className="mr-2 h-4 w-4" />
+  //               Status
+  //             </Button>
+  //             <Button variant="outline" className="rounded-xl">
+  //               <ListFilter className="mr-2 h-4 w-4" />
+  //               Visibility
+  //             </Button>
+  //           </div>
+  //           <Button variant="outline" className="rounded-xl">
+  //             Export list
+  //           </Button>
+  //         </div>
+  //       </CardContent>
+  //     </Card>
+
+  //     <Card className="overflow-hidden rounded-[28px] border-border bg-card shadow-sm">
+  //       <div className="overflow-x-auto">
+  //         <table className="w-full min-w-[820px]">
+  //           <thead className="bg-muted/40">
+  //             <tr className="border-b border-border text-left text-sm text-muted-foreground">
+  //               <th className="px-6 py-4 font-medium">Form</th>
+  //               <th className="px-6 py-4 font-medium">Status</th>
+  //               <th className="px-6 py-4 font-medium">Updated</th>
+  //               <th className="px-6 py-4 font-medium">Submissions</th>
+  //               <th className="px-6 py-4 font-medium">Visibility</th>
+  //               <th className="px-6 py-4 font-medium">Actions</th>
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             {forms.map((form) => (
+  //               <tr
+  //                 key={form.name}
+  //                 className="border-b border-border/70 last:border-0"
+  //               >
+  //                 <td className="px-6 py-5">
+  //                   <div>
+  //                     <p className="font-medium text-foreground">{form.name}</p>
+  //                     <p className="mt-1 text-sm text-muted-foreground">
+  //                       Structured workflow form
+  //                     </p>
+  //                   </div>
+  //                 </td>
+  //                 <td className="px-6 py-5">
+  //                   <StatusBadge
+  //                     tone={form.status === 'Published' ? 'success' : 'warning'}
+  //                   >
+  //                     {form.status}
+  //                   </StatusBadge>
+  //                 </td>
+  //                 <td className="px-6 py-5 text-sm text-muted-foreground">
+  //                   {form.updated}
+  //                 </td>
+  //                 <td className="px-6 py-5 text-sm font-medium text-foreground">
+  //                   {form.submissions}
+  //                 </td>
+  //                 <td className="px-6 py-5 text-sm text-muted-foreground">
+  //                   {form.visibility}
+  //                 </td>
+  //                 <td className="px-6 py-5">
+  //                   <div className="flex items-center gap-2">
+  //                     <Button
+  //                       variant="outline"
+  //                       size="sm"
+  //                       className="rounded-xl"
+  //                     >
+  //                       Edit
+  //                     </Button>
+  //                     <Button
+  //                       variant="ghost"
+  //                       size="sm"
+  //                       className="rounded-xl text-muted-foreground hover:text-foreground"
+  //                     >
+  //                       Open
+  //                     </Button>
+  //                   </div>
+  //                 </td>
+  //               </tr>
+  //             ))}
+  //           </tbody>
+  //         </table>
+  //       </div>
+  //     </Card>
+  //   </div>
+  // );
 };
 
 export default FormsList;

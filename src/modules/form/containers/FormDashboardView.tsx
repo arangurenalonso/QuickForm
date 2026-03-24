@@ -51,13 +51,13 @@ const FormDashboardView = () => {
   }, [handleGetForms]);
 
   return (
-    <div className="h-full space-y-6 overflow-auto">
-      <Tabs defaultValue="overview" className="w-full">
+    <div className="h-full space-y-6">
+      <FormsList />
+      {/* <Tabs defaultValue="overview" className="w-full">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="forms">Forms</TabsTrigger>
         </TabsList>
-        <FormsList forms={forms ?? []} />
         <TabsContent value="overview" className="mt-4">
           <Suspense fallback={<StatsCards loading={true} />}>
             <CardStatsWrapper />
@@ -70,7 +70,7 @@ const FormDashboardView = () => {
             <FormCards />
           </div>
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
     </div>
   );
 };
