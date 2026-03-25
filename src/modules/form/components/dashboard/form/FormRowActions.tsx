@@ -36,11 +36,11 @@ const FormRowActions = ({
         <Button
           type="button"
           size="icon"
+          className="qf-action-btn qf-action-btn-warning"
           onClick={(e) => {
             e.stopPropagation();
             onEdit?.();
           }}
-          className="qf-action-btn qf-action-btn-warning h-8 w-8 rounded-md"
         >
           <Pencil className="h-4 w-4" />
         </Button>
@@ -50,12 +50,11 @@ const FormRowActions = ({
         <Button
           type="button"
           size="icon"
-          variant="outline"
+          className="qf-action-btn qf-action-btn-info"
           onClick={(e) => {
             e.stopPropagation();
             onView?.();
           }}
-          className="qf-action-btn h-8 w-8 rounded-md border-border bg-background text-foreground hover:bg-muted"
         >
           <Eye className="h-4 w-4" />
         </Button>
@@ -65,12 +64,11 @@ const FormRowActions = ({
         <Button
           type="button"
           size="icon"
-          variant="outline"
           onClick={(e) => {
             e.stopPropagation();
             onViewSubmissions?.();
           }}
-          className="qf-action-btn h-8 w-8 rounded-md border-border bg-background text-foreground hover:bg-muted"
+          className="qf-action-btn qf-action-btn-neutral"
         >
           <FileText className="h-4 w-4" />
         </Button>
