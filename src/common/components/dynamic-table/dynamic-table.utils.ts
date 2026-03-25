@@ -31,8 +31,8 @@ export function getColumnSize(column: DynamicTableColumnType): ColumnSize {
   switch (column.questionTypeKey) {
     case 'InputTypeText':
       return {
-        minWidth: 180,
-        maxWidth: 320,
+        minWidth: 160,
+        maxWidth: 240,
         align: 'left',
       };
 
@@ -75,6 +75,19 @@ export function getColumnSize(column: DynamicTableColumnType): ColumnSize {
       return {
         minWidth: 100,
         maxWidth: 110,
+        align: 'center',
+      };
+
+    case 'InputTypeSelect':
+      return {
+        minWidth: 100,
+        maxWidth: 120,
+        align: 'center',
+      };
+    case 'Action':
+      return {
+        minWidth: 100,
+        maxWidth: 120,
         align: 'center',
       };
 
@@ -122,9 +135,6 @@ export function formatCellValue(value: unknown): string {
 export function shouldTruncate(type: string): boolean {
   switch (type) {
     case 'InputTypeText':
-    case 'InputTypeDate':
-    case 'InputTypeDatetime':
-    case 'InputTypeTime':
       return true;
     default:
       return false;

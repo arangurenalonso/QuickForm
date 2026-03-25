@@ -18,4 +18,5 @@ export enum ModalErrorType {
   LOGIN_ERROR = 'login-error-modal',
   PUBLISH_FORM_ERROR = 'publish-form-error-modal',
   GET_SUBMISSIONS_ERROR = 'get-submissions-error-modal',
+  GET_FORMS_ERROR = 'get-forms-error-modal',
 }

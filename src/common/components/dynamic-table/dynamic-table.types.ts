@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type DynamicColumnType =
   | 'InputTypeText'
   | 'InputTypeInteger'
@@ -11,6 +13,12 @@ export type DynamicColumnType =
 
 export type DynamicTablePinnedType = 'left' | 'right' | null;
 
+export type renderCellParamsType = {
+  value: unknown;
+  row: DynamicTableRowType;
+  column: DynamicTableColumnType;
+};
+
 export type DynamicTableColumnType = {
   key: string;
   label: string;
@@ -21,6 +29,8 @@ export type DynamicTableColumnType = {
   showInTable: boolean;
   pinned?: DynamicTablePinnedType;
   options?: { key: string; value: string }[];
+  showInFilter: boolean;
+  renderCell?: (params: renderCellParamsType) => ReactNode;
 };
 
 export type DynamicTableRowType = Record<string, unknown>;

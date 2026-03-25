@@ -33,6 +33,7 @@ type DataTableProps = {
   data: PaginationResultType<DynamicTableRowType>;
   catalog: QuestionTypeFiltersGroupType[];
   onChange: (properties: DataTableQueryState) => void;
+  action?: React.ReactNode;
 };
 
 const DataTable = ({
@@ -42,6 +43,7 @@ const DataTable = ({
   data,
   catalog,
   onChange,
+  action,
 }: DataTableProps) => {
   const [queryState, setQueryState] = useState<DataTableQueryState>(
     DEFAULT_DATA_TABLE_QUERY_STATE
@@ -62,13 +64,18 @@ const DataTable = ({
 
   return (
     <section className="min-w-0 space-y-4">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          {title}
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {description}
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            {title}
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {description}
+          </p>
+        </div>
+        {action ? (
+          <div className="flex items-center gap-3">{action}</div>
+        ) : null}
       </div>
 
       <Filters

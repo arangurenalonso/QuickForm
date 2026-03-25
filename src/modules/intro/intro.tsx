@@ -32,7 +32,7 @@ import {
 } from '@/common/libs/ui/card';
 import { Input } from '@/common/libs/ui/input';
 import AppLogo from './AppLogo';
-import FormsList from '../form/components/dashboard/formCard/FormsList';
+import FormsList from '../form/containers/FormsList';
 
 type AppView = 'dashboard' | 'forms' | 'builder' | 'submissions' | 'settings';
 
@@ -928,7 +928,7 @@ function SettingsView() {
 function RenderView({ currentView }: { currentView: AppView }) {
   switch (currentView) {
     case 'forms':
-      return <FormsList forms={[]} />;
+      return <FormsList />;
     case 'builder':
       return <BuilderView />;
     case 'submissions':

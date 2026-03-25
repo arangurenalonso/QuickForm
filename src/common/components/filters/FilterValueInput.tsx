@@ -96,7 +96,6 @@ const FilterValueInput = ({
         value={value == null ? '' : String(value)}
         onChange={(event) => {
           const selectedValue = event.target.value;
-          console.log('Selected value:', selectedValue);
           if (selectedValue === '') {
             onChange(null);
             return;

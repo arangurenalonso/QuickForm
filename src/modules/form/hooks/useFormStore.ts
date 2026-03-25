@@ -160,6 +160,22 @@ export default function useFormStore() {
     [clearError]
   );
 
+  const searchForms = useCallback(
+    async (page: number, pageSize: number, filters: AppliedFilterType[]) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.searchForms(page, pageSize, filters),
+        'Loading forms...'
+      );
+
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      return result.value;
+    },
+    [clearError]
+  );
   const getSubmissions = useCallback(
     async (
       idForm: string,
@@ -232,6 +248,7 @@ export default function useFormStore() {
       getDynamicHeaderListSubmissions,
       getFormColumns,
       getQuestionTypeFiltersCatalog,
+      searchForms,
     }),
     [
       formSelected,
@@ -250,6 +267,7 @@ export default function useFormStore() {
       getDynamicHeaderListSubmissions,
       getFormColumns,
       getQuestionTypeFiltersCatalog,
+      searchForms,
     ]
   );
 }

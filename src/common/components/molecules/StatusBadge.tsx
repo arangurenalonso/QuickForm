@@ -27,7 +27,27 @@ type FormStatusDto = {
   icon?: string | null;
   color?: string | null;
 };
+export function isFormStatusDto(value: unknown): value is FormStatusDto {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
 
+  const candidate = value as Record<string, unknown>;
+
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.name === 'string' &&
+    (candidate.description === undefined ||
+      candidate.description === null ||
+      typeof candidate.description === 'string') &&
+    (candidate.icon === undefined ||
+      candidate.icon === null ||
+      typeof candidate.icon === 'string') &&
+    (candidate.color === undefined ||
+      candidate.color === null ||
+      typeof candidate.color === 'string')
+  );
+}
 type StatusBadgeProps = {
   status?: FormStatusDto | null;
   className?: string;

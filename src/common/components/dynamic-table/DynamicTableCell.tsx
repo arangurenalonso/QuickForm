@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import {
   DynamicTableColumnType,
   DynamicTablePinnedOffsetsType,
+  DynamicTableRowType,
 } from './dynamic-table.types';
 import {
   formatCellValue,
@@ -8,22 +10,55 @@ import {
   getColumnSize,
   shouldTruncate,
 } from './dynamic-table.utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/common/libs/ui/tooltip';
 
 type Props = {
   column: DynamicTableColumnType;
+  row: DynamicTableRowType;
   value: unknown;
   pinnedOffsets: DynamicTablePinnedOffsetsType;
 };
 
-const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
+const DynamicTableCell = ({ column, row, value, pinnedOffsets }: Props) => {
   const size = getColumnSize(column);
-  const displayValue = formatCellValue(value);
+
+  const customContent = column.renderCell?.({ value, row, column });
+  const displayValue = customContent ?? formatCellValue(value);
   const truncate = shouldTruncate(column.questionTypeKey);
-  const showPreview = truncate && displayValue.length > 20;
+
+  const textRef = useRef<HTMLSpanElement | null>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
 
   const isPinnedLeft = column.pinned === 'left';
   const isPinnedRight = column.pinned === 'right';
   const isPinned = isPinnedLeft || isPinnedRight;
+
+  useEffect(() => {
+    const element = textRef.current;
+
+    if (!element || !truncate) {
+      setIsTruncated(false);
+      return;
+    }
+
+    const checkTruncation = () => {
+      setIsTruncated(element.scrollWidth > element.clientWidth);
+    };
+
+    checkTruncation();
+
+    const resizeObserver = new ResizeObserver(checkTruncation);
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [displayValue, truncate, size.maxWidth, size.minWidth]);
 
   return (
     <td
@@ -46,26 +81,33 @@ const DynamicTableCell = ({ column, value, pinnedOffsets }: Props) => {
           : {}),
       }}
     >
-      <div className="relative overflow-visible">
-        <span
-          className={
-            truncate
-              ? 'block overflow-hidden text-ellipsis whitespace-nowrap'
-              : 'block whitespace-nowrap'
-          }
-          title={displayValue}
-        >
-          {displayValue || '—'}
-        </span>
+      <TooltipProvider delayDuration={150}>
+        <Tooltip>
+          <TooltipTrigger asChild disabled={!isTruncated}>
+            <span
+              ref={textRef}
+              className={
+                truncate
+                  ? 'block overflow-hidden text-ellipsis whitespace-nowrap'
+                  : 'block whitespace-nowrap'
+              }
+              title={undefined}
+            >
+              {displayValue || '—'}
+            </span>
+          </TooltipTrigger>
 
-        {showPreview ? (
-          <div className="pointer-events-none absolute left-0 top-full z-30 mt-2 hidden w-max max-w-[420px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-xl group-hover/cell:block dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-            <div className="whitespace-pre-wrap break-words">
+          {isTruncated ? (
+            <TooltipContent
+              side="bottom"
+              align={isPinnedRight ? 'end' : 'start'}
+              className="max-w-[420px] whitespace-pre-wrap break-words"
+            >
               {displayValue}
-            </div>
-          </div>
-        ) : null}
-      </div>
+            </TooltipContent>
+          ) : null}
+        </Tooltip>
+      </TooltipProvider>
     </td>
   );
 };

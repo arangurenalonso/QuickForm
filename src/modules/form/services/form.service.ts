@@ -9,6 +9,7 @@ import {
   CreateFormRequest,
   FormTemplateType,
   FormType,
+  SearchFormType,
 } from '../types/form.types';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
 import {
@@ -151,6 +152,21 @@ export const formService = {
         `/form/${idForm}/submit`,
         payload
       );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async searchForms(
+    page: number,
+    pageSize: number,
+    filters: AppliedFilterType[]
+  ): Promise<Result<PaginationResultType<SearchFormType>, AuthError>> {
+    try {
+      const { data } = await api.protected.post<
+        PaginationResultType<SearchFormType>
+      >(`/me/forms/search?page=${page}&pageSize=${pageSize}`, filters);
       return ok(data);
     } catch (e) {
       return err(mapAxiosToAuthError(e));

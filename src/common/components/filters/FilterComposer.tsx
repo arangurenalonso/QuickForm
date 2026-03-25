@@ -39,7 +39,7 @@ const FilterComposer = ({
 
   const handleSelectColumn = (columnKey: string) => {
     const column = columns.find((column) => column.key === columnKey);
-    console.log('Selected column:', column);
+
     setSelectedColumn(column);
   };
 
@@ -131,11 +131,13 @@ const FilterComposer = ({
             className="qf-select"
           >
             <option value="">Select options</option>
-            {columns.map((column) => (
-              <option key={column.key} value={column.key}>
-                {column.label}
-              </option>
-            ))}
+            {columns
+              .filter((column) => column.showInFilter)
+              .map((column) => (
+                <option key={column.key} value={column.key}>
+                  {column.label}
+                </option>
+              ))}
           </select>
         </div>
 

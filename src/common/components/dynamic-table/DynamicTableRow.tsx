@@ -28,6 +28,7 @@ const DynamicTableRow = ({ columns, row, pinnedOffsets }: Props) => {
         <DynamicTableCell
           key={column.key}
           column={column}
+          row={row}
           value={row[column.key]}
           pinnedOffsets={pinnedOffsets}
         />

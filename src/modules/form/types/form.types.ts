@@ -11,7 +11,12 @@ export type FormType = {
   status: FormStatusType<FORM_ACTION>;
   renderMode: FormRenderMode;
   // visits: number;
-  // submissions: number;
+  submissions: number;
+};
+
+export type SearchFormType = FormType & {
+  updated: string;
+  actions: FORM_ACTION[];
 };
 
 export type formStatsType = {
