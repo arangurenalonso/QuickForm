@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useMemo, useState, ReactNode, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { UpdatedTypeEnum } from '@/modules/form/components/controlledField/common/enum/FieldType';
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
@@ -24,11 +24,18 @@ const createSection = (title?: string): SectionType => {
 
 type DesignerProviderProps = {
   children: ReactNode;
+  initialSections?: SectionType[];
 };
 
-export default function DesignerProvider({ children }: DesignerProviderProps) {
-  const [sections, setSections] = useState<SectionType[]>([]);
-  const [activeSectionId, setActiveSectionId] = useState<string>('');
+export default function DesignerProvider({
+  children,
+  initialSections,
+}: DesignerProviderProps) {
+  const [sections, setSections] = useState<SectionType[]>(() => {
+    if (initialSections && initialSections.length > 0) return initialSections;
+    return [createSection('Section 1')];
+  });
+  const [activeSectionId, setActiveSectionId] = useState(sections[0]?.id ?? '');
   const [selectedField, setSelectedField] = useState<SelectedFieldType>(null);
 
   const setActiveSection = useCallback((sectionId: string) => {
@@ -36,33 +43,34 @@ export default function DesignerProvider({ children }: DesignerProviderProps) {
     setSelectedField(null);
   }, []);
 
-  const addSection = useCallback((title?: string) => {
-    const newSection = createSection(title);
+  const addSection = useCallback(
+    (title?: string) => {
+      const newSection = createSection(title);
 
-    setSections((prev) => [...prev, newSection]);
-    setActiveSectionId(newSection.id);
-    setSelectedField(null);
-  }, []);
+      setSections((prev) => [...prev, newSection]);
+      setActiveSection(newSection.id);
+    },
+    [setActiveSection]
+  );
 
-  useEffect(() => {
-    if (sections.length === 0) {
-      addSection('Section 1');
-    }
-  }, [sections, addSection]);
-
-  const setFormStructure = useCallback((nextSections: SectionType[]) => {
-    if (nextSections.length === 0) {
-      const fallback = createSection('Section 1');
-      setSections([fallback]);
-      setActiveSectionId(fallback.id);
-      setSelectedField(null);
-      return;
-    }
-
-    setSections(nextSections);
-    setActiveSectionId(nextSections[0].id);
-    setSelectedField(null);
-  }, []);
+  const setFormStructure = useCallback(
+    (nextSections: SectionType[]) => {
+      if (nextSections.length === 0) {
+        const fallback = createSection('Section 1');
+        console.log(
+          'No sections provided, resetting to default with one section:',
+          fallback
+        );
+        setSections(() => [fallback]);
+        setActiveSection(fallback.id);
+        return;
+      }
+      console.log('Setting form structure with sections:', nextSections);
+      setSections(nextSections);
+      setActiveSection(nextSections[0].id);
+    },
+    [setActiveSection]
+  );
 
   const removeSection = useCallback((sectionId: string) => {
     setSections((prev) => {

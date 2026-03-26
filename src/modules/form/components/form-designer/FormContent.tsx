@@ -12,7 +12,7 @@ import { useCallback, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import DrawerHost from '@/modules/ui/components/DrawerHost';
 import { useBoundStore } from '@/store';
-import { Button } from 'react-day-picker';
+import { Button } from '@/common/libs/ui/button';
 import Designer from './component/canva/Designer';
 import SectionsTabs from './component/SectionsTabs';
 import FormElementSidebar from './component/sidebar/FormElementSidebar';
@@ -32,13 +32,13 @@ const FormContent = ({ canEdit, onChange, value }: FormContentProps) => {
   const { handleSelectedField, sections, setFormStructure } = useDesigner();
 
   useEffect(() => {
-    if (value) {
-      setFormStructure(value);
-    }
+    console.log('Setting form structure with value from props:', value);
+    setFormStructure(value);
   }, [value, setFormStructure]);
 
   useEffect(() => {
     if (onChange) {
+      console.log('Calling onChange with sections:', sections);
       onChange(sections);
     }
   }, [sections, onChange]);

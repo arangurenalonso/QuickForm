@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/common/libs/utils';
 import {
   FormWorkspaceTab,
@@ -14,6 +13,7 @@ import useFormStore from '../../hooks/useFormStore';
 
 type FormWorkspaceTabsProps = {
   basePath: string;
+  onBeforeTabChange?: (nextUrl: string) => void;
 };
 
 type FormWorkspaceTabType = {
@@ -27,10 +27,24 @@ const tabs: FormWorkspaceTabType[] = [
   { label: 'Publish', segment: FormWorkspaceTab.publish },
 ];
 
-const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
+const FormWorkspaceTabs = ({
+  basePath,
+  onBeforeTabChange,
+}: FormWorkspaceTabsProps) => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { formSelected } = useFormStore();
+
   const currentTab = searchParams.get('tab') ?? FormWorkspaceTab.builder;
+
+  const handleNavigate = (url: string) => {
+    if (onBeforeTabChange) {
+      onBeforeTabChange(url);
+      return;
+    }
+
+    router.push(url);
+  };
 
   return (
     <div className="grid h-12 w-full grid-cols-[1fr_auto_1fr] items-stretch">
@@ -42,9 +56,10 @@ const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
           const isActive = currentTab === tab.segment;
 
           return (
-            <Link
+            <button
               key={tab.segment}
-              href={href}
+              type="button"
+              onClick={() => handleNavigate(href)}
               className={cn(
                 'inline-flex min-w-[140px] items-center justify-center border-x px-6 text-sm font-semibold uppercase tracking-wide transition-colors',
                 isActive
@@ -53,10 +68,11 @@ const FormWorkspaceTabs = ({ basePath }: FormWorkspaceTabsProps) => {
               )}
             >
               {tab.label}
-            </Link>
+            </button>
           );
         })}
       </div>
+
       {currentTab === FormWorkspaceTab.builder && formSelected && (
         <div className="flex items-center justify-end px-4">
           <ActionGuard

@@ -8,11 +8,12 @@ type FormBuilderProps = {
   canEdit: boolean;
   onChange?: (structure: SectionType[]) => void;
   value: SectionType[];
+  onAfterDestroy?: () => void;
 };
 
 const FormBuilder = ({ canEdit, onChange, value }: FormBuilderProps) => {
   return (
-    <DesignerContextProvider>
+    <DesignerContextProvider initialSections={value}>
       <FormContent canEdit={canEdit} onChange={onChange} value={value} />
     </DesignerContextProvider>
   );
