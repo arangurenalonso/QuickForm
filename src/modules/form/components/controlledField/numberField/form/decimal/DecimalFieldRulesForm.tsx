@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -16,9 +16,7 @@ import { NumberFieldValidationRulesWithMessage } from '../../type/NumberFieldVal
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../../common/methods/common.methods';
-import useDesigner from '@/modules/form/hooks/useDesigner';
-import { FORM_ACTION } from '@/modules/form/enum/form.enum';
-import useFormStore from '@/modules/form/hooks/useFormStore';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 type RuleMessageTemplate = string;
 
@@ -44,20 +42,14 @@ const DEFAULTS: DecimalFieldRulesFormValues = {
 
 interface DecimalFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
   formFieldConfig,
+  canEdit,
 }) => {
   const { updateField } = useDesigner();
-
-  const { formSelected } = useFormStore();
-
-  const canEdit = useMemo(() => {
-    return (
-      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
-    );
-  }, [formSelected]);
 
   const form = useForm<DecimalFieldRulesFormValues>({
     mode: 'onBlur',

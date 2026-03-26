@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -14,25 +14,16 @@ import TextFieldEditableProps from '../type/TextFieldEditableProps';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 
-import useDesigner from '@/modules/form/hooks/useDesigner';
-import { FORM_ACTION } from '@/modules/form/enum/form.enum';
-import useFormStore from '@/modules/form/hooks/useFormStore';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 interface TextFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const TextFieldEditableAttributesForm: React.FC<
   TextFieldEditableAttributesFormProps
-> = ({ formFieldConfig }) => {
-  const { formSelected } = useFormStore();
-
-  const canEdit = useMemo(() => {
-    return (
-      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
-    );
-  }, [formSelected]);
-
+> = ({ formFieldConfig, canEdit }) => {
   const form = useForm<TextFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {

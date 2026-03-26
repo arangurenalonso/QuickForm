@@ -5,7 +5,7 @@ import { FormFieldConfigType } from '@/modules/form/components/controlledField/c
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/common/libs/utils';
-import useDesigner from '@/modules/form/hooks/useDesigner';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import DropIndicator from './DropIndicator';
 import CanvasFieldHoverOverlay from './CanvasFieldHoverOverlay';
 import { getFriendlyFieldTypeName } from '@/modules/form/components/controlledField/common/enum/FieldType';
@@ -15,12 +15,14 @@ type CanvasFieldProps = {
   sectionId: string;
   element: FormFieldConfigType;
   dropIndicatorPosition?: DropIndicatorPosition;
+  canEdit: boolean;
 };
 
 const CanvasField = ({
   sectionId,
   element,
   dropIndicatorPosition = null,
+  canEdit,
 }: CanvasFieldProps) => {
   const { selectedField } = useDesigner();
 
@@ -59,6 +61,7 @@ const CanvasField = ({
         sectionId={sectionId}
         element={element}
         sortable={sortable}
+        canEdit={canEdit}
       >
         {({ isHover }) => (
           <div

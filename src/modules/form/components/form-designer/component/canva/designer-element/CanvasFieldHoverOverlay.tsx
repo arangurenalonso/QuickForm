@@ -1,4 +1,3 @@
-import useDesigner from '@/modules/form/hooks/useDesigner';
 import { useCallback, useState } from 'react';
 import { BiSolidTrash } from 'react-icons/bi';
 import { Button } from '@/common/libs/ui/button';
@@ -6,10 +5,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
 import { useBoundStore } from '@/store';
 import FieldSettingsPanel from '../../sidebar/FieldSettingsPanel';
-import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
-import { FORM_ACTION } from '@/modules/form/enum/form.enum';
-import useFormStore from '@/modules/form/hooks/useFormStore';
 import { Eye, GripVertical, Pencil } from 'lucide-react';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 type HoverStateProps = {
   isHover: boolean;
@@ -20,6 +17,7 @@ type CanvasFieldHoverOverlayProps = {
   element: FormFieldConfigType;
   sortable: ReturnType<typeof useSortable>;
   children: (args: HoverStateProps) => JSX.Element;
+  canEdit: boolean;
 };
 
 const CanvasFieldHoverOverlay = ({
@@ -27,11 +25,11 @@ const CanvasFieldHoverOverlay = ({
   element,
   sortable,
   children,
+  canEdit,
 }: CanvasFieldHoverOverlayProps) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const { removeField, handleSelectedField } = useDesigner();
 
-  const { formSelected } = useFormStore();
   const openDrawer = useBoundStore((s) => s.openDrawer);
 
   const handleOpenViewDrawer = useCallback(() => {
@@ -41,12 +39,12 @@ const CanvasFieldHoverOverlay = ({
       title: 'View field',
       titleDescription: 'View the selected field.',
 
-      content: <FieldSettingsPanel />,
+      content: <FieldSettingsPanel canEdit={canEdit} />,
       side: 'left',
       showOverlay: true,
       onClose: () => handleSelectedField(null),
     });
-  }, [sectionId, element.id, openDrawer, handleSelectedField]);
+  }, [sectionId, element.id, openDrawer, handleSelectedField, canEdit]);
 
   const handleOpenEditDrawer = useCallback(() => {
     handleSelectedField({ sectionId, fieldId: element.id });
@@ -55,12 +53,12 @@ const CanvasFieldHoverOverlay = ({
       title: 'Edit field',
       titleDescription: 'Modify the selected field.',
 
-      content: <FieldSettingsPanel />,
+      content: <FieldSettingsPanel canEdit={canEdit} />,
       side: 'left',
       showOverlay: true,
       onClose: () => handleSelectedField(null),
     });
-  }, [sectionId, element.id, openDrawer, handleSelectedField]);
+  }, [sectionId, element.id, openDrawer, handleSelectedField, canEdit]);
 
   return (
     <div
@@ -70,12 +68,9 @@ const CanvasFieldHoverOverlay = ({
     >
       {isHover && (
         <div className="z-10">
-          {formSelected && (
-            <>
-              <ActionGuard
-                currentActions={formSelected.status.allowedActions}
-                allowedActions={[FORM_ACTION.Edit]}
-              >
+          <>
+            {canEdit && (
+              <>
                 {/* Drag handle */}
                 <button
                   ref={sortable.setActivatorNodeRef}
@@ -102,13 +97,12 @@ const CanvasFieldHoverOverlay = ({
                 >
                   <GripVertical className="h-5 w-5" />
                 </button>
-              </ActionGuard>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
-                <div className="qf-action-group flex flex-col gap-2">
-                  <ActionGuard
-                    currentActions={formSelected.status.allowedActions}
-                    allowedActions={[FORM_ACTION.Edit]}
-                  >
+              </>
+            )}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="qf-action-group flex flex-col gap-2">
+                {canEdit && (
+                  <>
                     <Button
                       type="button"
                       size="icon"
@@ -133,10 +127,10 @@ const CanvasFieldHoverOverlay = ({
                     >
                       <BiSolidTrash className="h-5 w-5" />
                     </Button>
-                  </ActionGuard>
-                  {!formSelected.status.allowedActions.includes(
-                    FORM_ACTION.Edit
-                  ) && (
+                  </>
+                )}
+                {!canEdit && (
+                  <>
                     <Button
                       type="button"
                       size="icon"
@@ -148,11 +142,11 @@ const CanvasFieldHoverOverlay = ({
                     >
                       <Eye className="h-5 w-5" />
                     </Button>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
-            </>
-          )}
+            </div>
+          </>
         </div>
       )}
 

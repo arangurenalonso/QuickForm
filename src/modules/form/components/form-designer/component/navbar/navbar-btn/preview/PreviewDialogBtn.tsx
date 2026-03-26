@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from '@/common/libs/ui/dialog';
 
-import useDesigner from '@/modules/form/hooks/useDesigner';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 import { useBoundStore } from '@/store';
 
@@ -21,8 +20,7 @@ import { ModalId } from '@/modules/ui/store/modal/modal.type';
 import { FormRenderMode } from '@/modules/form/components/form-render/type/form-rende.type';
 
 const PreviewDialogBtn = () => {
-  const { sections } = useDesigner();
-  const { formSelected } = useFormStore();
+  const { formSelected, draftStructure } = useFormStore();
   const openModal = useBoundStore((s) => s.openModal);
 
   const renderMode =
@@ -70,7 +68,7 @@ const PreviewDialogBtn = () => {
             <div className="qf-surface p-4 md:p-6">
               <FormPreviewRenderer
                 mode={renderMode}
-                sections={sections}
+                sections={draftStructure}
                 onSubmit={onSubmit}
               />
             </div>

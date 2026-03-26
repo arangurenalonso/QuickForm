@@ -11,18 +11,19 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import { Switch } from '@/common/libs/ui/switch';
-import useDesigner from '@/modules/form/hooks/useDesigner';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import IntegerFieldEditableProps from '../../type/integer/NumberFieldEditableProps';
 
 interface IntegerFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const IntegerFieldEditableAttributesForm: React.FC<
   IntegerFieldEditableAttributesFormProps
-> = ({ formFieldConfig }) => {
+> = ({ formFieldConfig, canEdit }) => {
   const form = useForm<IntegerFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -76,6 +77,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
       <div onBlur={handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={control}
+          disabled={!canEdit}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -100,6 +102,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="label"
           render={({ field }) => (
             <FormItem>
@@ -123,6 +126,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="placeholder"
           render={({ field }) => (
             <FormItem>
@@ -144,6 +148,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="helperText"
           render={({ field }) => (
             <FormItem>
@@ -168,6 +173,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="informationText"
           render={({ field }) => (
             <FormItem>
@@ -191,6 +197,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="prefix"
           render={({ field }) => (
             <FormItem>
@@ -214,6 +221,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="suffix"
           render={({ field }) => (
             <FormItem>
@@ -237,6 +245,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
         <FormField
           control={control}
+          disabled={!canEdit}
           name="allowNegative"
           render={({ field }) => (
             <FormItem>

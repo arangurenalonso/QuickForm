@@ -12,7 +12,7 @@ import {
 import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
-import useDesigner from '@/modules/form/hooks/useDesigner';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { NumberFieldValidationRulesWithMessage } from '../../type/NumberFieldValidationRules';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
@@ -42,10 +42,12 @@ const DEFAULTS: IntegerFieldRulesFormValues = {
 
 interface IntegerFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
   formFieldConfig,
+  canEdit,
 }) => {
   const { updateField } = useDesigner();
 
@@ -142,6 +144,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="required"
             render={({ field }) => (
               <FormItem className="flex items-center justify-between gap-4">
@@ -165,6 +168,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
 
           <FormField
             control={control}
+            disabled={!canEdit}
             name="requiredMessage"
             render={({ field }) => (
               <FormItem>
@@ -189,6 +193,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="min"
             render={({ field }) => (
               <FormItem>
@@ -250,6 +255,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
         <div className="rounded-md border p-3 space-y-3">
           <FormField
             control={control}
+            disabled={!canEdit}
             name="max"
             render={({ field }) => (
               <FormItem>

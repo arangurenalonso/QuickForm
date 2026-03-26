@@ -4,10 +4,14 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/common/libs/ui/tabs';
-import useDesigner from '@/modules/form/hooks/useDesigner';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { useEffect, useMemo } from 'react';
 
-const FieldSettingsPanel = () => {
+type FieldSettingsPanelProps = {
+  canEdit: boolean;
+};
+
+const FieldSettingsPanel = ({ canEdit }: FieldSettingsPanelProps) => {
   const { selectedField, handleSelectedField, sections } = useDesigner();
 
   const field = useMemo(() => {
@@ -40,10 +44,10 @@ const FieldSettingsPanel = () => {
 
         <div className="min-h-0 w-full overflow-y-auto   ">
           <TabsContent value="editable">
-            <EditablePropsForm formFieldConfig={field} />
+            <EditablePropsForm formFieldConfig={field} canEdit={canEdit} />
           </TabsContent>
           <TabsContent value="rules">
-            <RulesForm formFieldConfig={field} />
+            <RulesForm formFieldConfig={field} canEdit={canEdit} />
           </TabsContent>
         </div>
       </div>

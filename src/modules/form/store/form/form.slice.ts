@@ -15,10 +15,19 @@ export const createFormSlice: ImmerStateCreator<FormSlice> = (set) => ({
       state.formSelected = formSelected;
     });
   },
-
   clearFormSelected: () => {
     set((state) => {
       state.formSelected = null;
+    });
+  },
+  setPersistedStructure: (value) => {
+    set((state) => {
+      state.persistedStructure = value;
+    });
+  },
+  setDraftStructure: (value) => {
+    set((state) => {
+      state.draftStructure = value;
     });
   },
 });

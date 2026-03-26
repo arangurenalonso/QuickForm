@@ -6,7 +6,6 @@ import useFormStore from '@/modules/form/hooks/useFormStore';
 import { SHOW_ERROR_TYPE } from '@/common/components/molecules/error/auth-error.enum';
 import { useToast } from '@/hooks/use-toast';
 import ActionButton from '@/common/components/molecules/ActionButton';
-import useDesigner from '@/modules/form/hooks/useDesigner';
 import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
 import useModalhook from '@/modules/ui/store/modal/useModalhook';
 import { ModalErrorType, ModalId } from '@/modules/ui/store/modal/modal.type';
@@ -16,8 +15,7 @@ type PublishFormBtnProps = {
 };
 
 const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
-  const { sections } = useDesigner();
-  const { publishForm, error } = useFormStore();
+  const { publishForm, error, draftStructure } = useFormStore();
   const { openModal, closeModal } = useModalhook();
   const { toast } = useToast();
   const router = useRouter();
@@ -30,7 +28,7 @@ const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
 
   const handlePublishForm = useCallback(async () => {
     const funcSubmit = async () => {
-      const result = await publishForm(idForm, sections);
+      const result = await publishForm(idForm, draftStructure);
       if (!result) {
         closeModal(ModalId.SUBMIT_FORM);
         return;
@@ -57,7 +55,15 @@ const PublishFormBtn = ({ idForm }: PublishFormBtnProps) => {
         />
       ),
     });
-  }, [idForm, publishForm, toast, router, openModal, closeModal, sections]);
+  }, [
+    idForm,
+    publishForm,
+    toast,
+    router,
+    openModal,
+    closeModal,
+    draftStructure,
+  ]);
 
   return (
     <Button className="gap-2  " onClick={handlePublishForm}>

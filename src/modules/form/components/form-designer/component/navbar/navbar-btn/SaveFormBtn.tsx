@@ -1,16 +1,15 @@
 import { Button } from '@/common/libs/ui/button';
 import { FaSpinner } from 'react-icons/fa';
 import { useToast } from '@/hooks/use-toast';
-import useDesigner from '@/modules/form/hooks/useDesigner';
 import { useCallback, useEffect, useTransition } from 'react';
 import { HiSaveAs } from 'react-icons/hi';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 
 const SaveFormBtn = () => {
   const { toast } = useToast();
-  const { sections } = useDesigner();
   const [loading, startTransition] = useTransition();
-  const { saveFormStructure, formSelected, error } = useFormStore();
+  const { saveFormStructure, formSelected, error, draftStructure } =
+    useFormStore();
 
   useEffect(() => {
     if (!error) return;
@@ -26,7 +25,7 @@ const SaveFormBtn = () => {
 
   const updateFormContent = useCallback(async () => {
     try {
-      const payload = sections;
+      const payload = draftStructure;
       if (!formSelected) {
         throw new Error('Form not selected');
       }
@@ -45,7 +44,7 @@ const SaveFormBtn = () => {
         variant: 'destructive',
       });
     }
-  }, [sections, formSelected, saveFormStructure, toast]);
+  }, [draftStructure, formSelected, saveFormStructure, toast]);
 
   return (
     <Button

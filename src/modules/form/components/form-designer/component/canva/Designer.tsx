@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { cn } from '@/common/libs/utils';
-import useDesigner from '@/modules/form/hooks/useDesigner';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { useDroppable } from '@dnd-kit/core';
 import useDragAndDropManager from '../../hook/useDragAndDropManager';
 import {
@@ -8,8 +8,11 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import CanvasField from './designer-element/CanvasField';
+type DesignerProps = {
+  canEdit: boolean;
+};
 
-const Designer = () => {
+const Designer = ({ canEdit }: DesignerProps) => {
   const { sections, activeSectionId, handleSelectedField } = useDesigner();
   const { dropIndicator } = useDragAndDropManager();
 
@@ -68,6 +71,7 @@ const Designer = () => {
               {fields.map((field) => (
                 <CanvasField
                   key={field.id}
+                  canEdit={canEdit}
                   sectionId={activeSectionId}
                   element={field}
                   dropIndicatorPosition={

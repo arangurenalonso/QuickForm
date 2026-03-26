@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -15,25 +15,16 @@ import { Switch } from '@/common/libs/ui/switch';
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableProps from '../../type/decimal/DecimalFieldEditableProps';
-import useDesigner from '@/modules/form/hooks/useDesigner';
-import useFormStore from '@/modules/form/hooks/useFormStore';
-import { FORM_ACTION } from '@/modules/form/enum/form.enum';
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const DecimalFieldEditableAttributesForm: React.FC<
   DecimalFieldEditableAttributesFormProps
-> = ({ formFieldConfig }) => {
-  const { formSelected } = useFormStore();
-
-  const canEdit = useMemo(() => {
-    return (
-      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
-    );
-  }, [formSelected]);
-
+> = ({ formFieldConfig, canEdit }) => {
   const form = useForm<DecimalFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {

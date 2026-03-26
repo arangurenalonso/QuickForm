@@ -7,12 +7,18 @@ import { formService } from '../services/form.service';
 import { useBoundStore } from '@/store';
 import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
 import { AppliedFilterType } from '@/common/components/filters/filters.types';
-import { SectionType } from '../store/designer/designer.model';
+import { SectionType } from '../components/form-designer/context/designer-context.type';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
   const setFormSelected = useBoundStore((state) => state.setFormSelected);
   const clearFormSelected = useBoundStore((state) => state.clearFormSelected);
+  const persistedStructure = useBoundStore((state) => state.persistedStructure);
+  const draftStructure = useBoundStore((state) => state.draftStructure);
+  const setPersistedStructure = useBoundStore(
+    (state) => state.setPersistedStructure
+  );
+  const setDraftStructure = useBoundStore((state) => state.setDraftStructure);
 
   const [error, setError] = useState<AuthError | null>(null);
 
@@ -233,6 +239,8 @@ export default function useFormStore() {
   return useMemo(
     () => ({
       formSelected,
+      draftStructure,
+      persistedStructure,
       error,
       createFormProcess,
       getForms,
@@ -249,9 +257,13 @@ export default function useFormStore() {
       getFormColumns,
       getQuestionTypeFiltersCatalog,
       searchForms,
+      setPersistedStructure,
+      setDraftStructure,
     }),
     [
       formSelected,
+      draftStructure,
+      persistedStructure,
       error,
       createFormProcess,
       getForms,
@@ -268,6 +280,8 @@ export default function useFormStore() {
       getFormColumns,
       getQuestionTypeFiltersCatalog,
       searchForms,
+      setPersistedStructure,
+      setDraftStructure,
     ]
   );
 }

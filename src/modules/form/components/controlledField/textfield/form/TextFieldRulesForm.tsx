@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -16,10 +16,7 @@ import { TextFieldValidationRulesWithMessage } from '../type/TextFieldValidation
 import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../common/methods/common.methods';
-import useDesigner from '@/modules/form/hooks/useDesigner';
-import { FORM_ACTION } from '@/modules/form/enum/form.enum';
-import useFormStore from '@/modules/form/hooks/useFormStore';
-
+import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 type TextRuleMessageTemplate = string;
 
 interface TextFieldRulesFormValues {
@@ -44,20 +41,14 @@ const DEFAULTS: TextFieldRulesFormValues = {
 
 interface TextFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
+  canEdit: boolean;
 }
 
 const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   formFieldConfig,
+  canEdit,
 }) => {
   const { updateField } = useDesigner();
-
-  const { formSelected } = useFormStore();
-
-  const canEdit = useMemo(() => {
-    return (
-      formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ?? false
-    );
-  }, [formSelected]);
 
   const form = useForm<TextFieldRulesFormValues>({
     mode: 'onBlur',

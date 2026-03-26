@@ -4,9 +4,10 @@ import { FormWorkspaceTab } from '../types/form.types';
 import { useCallback, useEffect, useMemo } from 'react';
 import useFormStore from '../hooks/useFormStore';
 import { useToast } from '@/hooks/use-toast';
-import useDesigner from '@/modules/form/hooks/useDesigner';
 import FormSettingsPage from '../components/form-setting/FormSettingsPage';
 import FormPublishPage from '../components/form-publish/FormPublishPage';
+import { FORM_ACTION } from '../enum/form.enum';
+import { SectionType } from '../components/form-designer/context/designer-context.type';
 
 type FormBuilderContainerProps = {
   idForm?: string | null | undefined;
@@ -17,8 +18,15 @@ const FormBuilderView = ({
   idForm,
   tab = FormWorkspaceTab.builder,
 }: FormBuilderContainerProps) => {
-  const { getFormDetail, error, handleClearFormSelected } = useFormStore();
-  const { setFormStructure } = useDesigner();
+  const {
+    getFormDetail,
+    error,
+    handleClearFormSelected,
+    formSelected,
+    setPersistedStructure,
+    persistedStructure,
+    setDraftStructure,
+  } = useFormStore();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,15 +38,15 @@ const FormBuilderView = ({
 
   const handleGetFormStructure = useCallback(async () => {
     if (!idForm) {
-      setFormStructure([]);
+      setPersistedStructure([]);
       return;
     }
 
     const data = await getFormDetail(idForm);
     if (!data) return;
 
-    setFormStructure(data.structure);
-  }, [idForm, getFormDetail, setFormStructure]);
+    setPersistedStructure(data.structure);
+  }, [idForm, getFormDetail, setPersistedStructure]);
 
   useEffect(() => {
     handleGetFormStructure();
@@ -55,18 +63,35 @@ const FormBuilderView = ({
       variant: 'destructive',
     });
   }, [error, toast]);
+
+  const handleOnChangeStructure = useCallback(
+    (structure: SectionType[]) => {
+      setDraftStructure(structure);
+    },
+    [setDraftStructure]
+  );
+
   const RenderSection = useMemo(() => {
     switch (tab) {
       case FormWorkspaceTab.builder:
-        return <FormBuilder />;
+        return (
+          <FormBuilder
+            value={persistedStructure ?? []}
+            onChange={handleOnChangeStructure}
+            canEdit={
+              formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ??
+              false
+            }
+          />
+        );
       case FormWorkspaceTab.settings:
         return <FormSettingsPage />;
       case FormWorkspaceTab.publish:
         return <FormPublishPage />;
       default:
-        return <FormBuilder />;
+        return <></>;
     }
-  }, [tab]);
+  }, [tab, persistedStructure, formSelected, handleOnChangeStructure]);
 
   return (
     <div className="grid h-full w-full min-w-0 grid-rows-[auto]  ">
