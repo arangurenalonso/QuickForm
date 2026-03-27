@@ -8,8 +8,13 @@ import useFormStore from '@/modules/form/hooks/useFormStore';
 const SaveFormBtn = () => {
   const { toast } = useToast();
   const [loading, startTransition] = useTransition();
-  const { saveFormStructure, formSelected, error, draftStructure } =
-    useFormStore();
+  const {
+    saveFormStructure,
+    formSelected,
+    error,
+    draftStructure,
+    computedDirty,
+  } = useFormStore();
 
   useEffect(() => {
     if (!error) return;
@@ -49,15 +54,25 @@ const SaveFormBtn = () => {
   return (
     <Button
       variant="outline"
-      className="gap-2"
+      className="relative gap-2"
       disabled={loading}
       onClick={() => {
         startTransition(updateFormContent);
       }}
     >
+      {' '}
       <HiSaveAs className="h-4 w-4" />
       Save
-      {loading && <FaSpinner className="animate-spin h-4 w-4" />}
+      {computedDirty && !loading && (
+        <span
+          className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[11px] font-bold text-white animate-pulse"
+          aria-label="Unsaved changes"
+          title="You have unsaved changes"
+        >
+          !
+        </span>
+      )}
+      {loading && <FaSpinner className="h-4 w-4 animate-spin" />}
     </Button>
   );
 };
