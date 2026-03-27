@@ -40,7 +40,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
     },
   });
 
-  const { control, handleSubmit, setValue } = form;
+  const { control, handleSubmit } = form;
   const { updateField } = useDesigner();
 
   useEffect(() => {
@@ -260,12 +260,16 @@ const DecimalFieldEditableAttributesForm: React.FC<
                   getInputRef={field.ref}
                   placeholder="Enter decimal scale"
                   onValueChange={(values) => {
-                    setValue(field.name, values.floatValue);
+                    field.onChange(values.floatValue ?? '');
+                  }}
+                  isAllowed={(values) => {
+                    return (
+                      values.floatValue === undefined ||
+                      (values.floatValue >= 1 && values.floatValue <= 8)
+                    );
                   }}
                   className="flex-1 bg-transparent placeholder:text-muted-foreground"
                   allowNegative={false}
-                  min={1}
-                  max={8}
                   decimalScale={0}
                   customInput={Input}
                 />
@@ -289,9 +293,7 @@ const DecimalFieldEditableAttributesForm: React.FC<
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={(checked) =>
-                      setValue(field.name, !!checked)
-                    }
+                    onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>
               </div>

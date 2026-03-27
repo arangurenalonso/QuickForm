@@ -160,9 +160,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={(checked) =>
-                      form.setValue(field.name, !!checked)
-                    }
+                    onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>
               </FormItem>
@@ -209,7 +207,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                     getInputRef={field.ref}
                     placeholder="e.g. 3"
                     onValueChange={(values) => {
-                      form.setValue(field.name, values.floatValue);
+                      field.onChange(values.floatValue ?? '');
                     }}
                     allowNegative={false}
                     customInput={Input}
@@ -274,7 +272,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                     getInputRef={field.ref}
                     placeholder="e.g. 50"
                     onValueChange={(values) => {
-                      form.setValue(field.name, values.floatValue);
+                      field.onChange(values.floatValue ?? '');
                     }}
                     allowNegative={false}
                     customInput={Input}

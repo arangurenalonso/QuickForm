@@ -38,7 +38,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
     },
   });
 
-  const { control, handleSubmit, setValue } = form;
+  const { control, handleSubmit } = form;
   const { updateField } = useDesigner();
 
   useEffect(() => {
@@ -254,9 +254,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={(checked) =>
-                      setValue(field.name, !!checked)
-                    }
+                    onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>
               </div>

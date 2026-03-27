@@ -157,9 +157,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={(checked) =>
-                      form.setValue(field.name, !!checked)
-                    }
+                    onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>
               </FormItem>
@@ -206,7 +204,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
                     getInputRef={field.ref}
                     placeholder="e.g. 0"
                     onValueChange={(values) => {
-                      form.setValue(field.name, values.floatValue);
+                      field.onChange(values.floatValue ?? '');
                     }}
                     allowNegative
                     customInput={Input}
@@ -268,7 +266,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
                     getInputRef={field.ref}
                     placeholder="e.g. 100"
                     onValueChange={(values) => {
-                      form.setValue(field.name, values.floatValue);
+                      field.onChange(values.floatValue ?? '');
                     }}
                     allowNegative
                     customInput={Input}
