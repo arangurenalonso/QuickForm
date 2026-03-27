@@ -1,4 +1,5 @@
 'use client';
+
 import FormBuilder from '../components/form-designer/FormBuilder';
 import { FormWorkspaceTab } from '../types/form.types';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -8,10 +9,8 @@ import FormSettingsPage from '../components/form-setting/FormSettingsPage';
 import FormPublishPage from '../components/form-publish/FormPublishPage';
 import { FORM_ACTION } from '../enum/form.enum';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
-import useUnsavedChangesGuard from '@/hooks/useUnsavedChangeGuard';
-import UnsavedChangesDialog from '@/hooks/UnsavedChangesDialog';
-import FormWorkspaceTabs from '../components/navbar/FormWorkspaceTabs';
-import { useRouter } from 'next/navigation';
+import useUnsavedChangesStore from '@/modules/ui/store/unsaved-changes/useUnsavedChangesStore';
+import { UnsavedChangesScope } from '@/modules/ui/store/unsaved-changes/unsaved-changes.methods';
 
 type FormBuilderContainerProps = {
   idForm?: string | null | undefined;
@@ -22,7 +21,6 @@ const FormBuilderView = ({
   idForm,
   tab = FormWorkspaceTab.builder,
 }: FormBuilderContainerProps) => {
-  const router = useRouter();
   const {
     getFormDetail,
     error,
@@ -33,8 +31,24 @@ const FormBuilderView = ({
     setDraftStructure,
     draftStructure,
     saveFormStructure,
-    isDirty,
+    computedDirty,
   } = useFormStore();
+
+  const { toast } = useToast();
+  const scope = useMemo(() => {
+    return UnsavedChangesScope.formBuilder(idForm);
+  }, [idForm]);
+  const {
+    isDirty,
+    setDirty,
+    registerHandlers,
+    unregisterHandlers,
+    resetScope,
+  } = useUnsavedChangesStore(scope);
+
+  useEffect(() => {
+    setDirty(computedDirty);
+  }, [computedDirty, setDirty]);
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -51,45 +65,52 @@ const FormBuilderView = ({
     };
   }, [isDirty]);
 
-  const { toast } = useToast();
-
-  const handleSave = useCallback(async () => {
+  const handleSaveAndContinue = useCallback(async () => {
     if (!idForm) return false;
+
     const result = await saveFormStructure(draftStructure ?? [], idForm);
-    if (!result) {
-      return false;
-    }
+    if (!result) return false;
+
+    setPersistedStructure(draftStructure ?? []);
+
     toast({
       title: 'Success',
       description: 'Form saved successfully',
     });
-    return true;
-  }, [idForm, saveFormStructure, draftStructure, toast]);
 
-  const {
-    open,
-    requestAction,
-    handleCancel,
-    handleConfirmSave,
-    handleConfirmDiscard,
-  } = useUnsavedChangesGuard({
-    isDirty,
-    onSave: handleSave,
-  });
-  const handleBeforeTabChange = useCallback(
-    (nextUrl: string) => {
-      requestAction(() => {
-        router.push(nextUrl);
-      });
-    },
-    [requestAction, router]
-  );
+    return true;
+  }, [idForm, saveFormStructure, draftStructure, setPersistedStructure, toast]);
+
+  const handleDiscardAndContinue = useCallback(() => {
+    setDraftStructure(persistedStructure ?? []);
+  }, [setDraftStructure, persistedStructure]);
+
+  const handleStay = useCallback(() => {}, []);
+
+  useEffect(() => {
+    registerHandlers({
+      onSaveAndContinue: handleSaveAndContinue,
+      onDiscardAndContinue: handleDiscardAndContinue,
+      onStay: handleStay,
+    });
+
+    return () => {
+      unregisterHandlers();
+    };
+  }, [
+    registerHandlers,
+    unregisterHandlers,
+    handleSaveAndContinue,
+    handleDiscardAndContinue,
+    handleStay,
+  ]);
+
   useEffect(() => {
     return () => {
-      console.log('Cleaning up form selection');
+      resetScope();
       handleClearFormSelected();
     };
-  }, [handleClearFormSelected]);
+  }, [resetScope, handleClearFormSelected]);
 
   const handleGetFormStructure = useCallback(async () => {
     if (!idForm) {
@@ -101,8 +122,8 @@ const FormBuilderView = ({
     const data = await getFormDetail(idForm);
     if (!data) return;
 
-    setPersistedStructure(data.structure);
-    setDraftStructure(data.structure);
+    setPersistedStructure(data.structure ?? []);
+    setDraftStructure(data.structure ?? []);
   }, [idForm, getFormDetail, setPersistedStructure, setDraftStructure]);
 
   useEffect(() => {
@@ -146,29 +167,15 @@ const FormBuilderView = ({
       case FormWorkspaceTab.publish:
         return <FormPublishPage />;
       default:
-        return <></>;
+        return null;
     }
-  }, [tab, persistedStructure, formSelected, handleOnChangeStructure]);
+  }, [tab, formSelected, handleOnChangeStructure, persistedStructure]);
 
   return (
-    <>
-      {formSelected && (
-        <FormWorkspaceTabs
-          basePath={`/builder/${formSelected.id}`}
-          onBeforeTabChange={handleBeforeTabChange}
-        />
-      )}
-      <div className="border-b" />
-      <div className="grid h-full w-full min-w-0 grid-rows-[auto]  ">
-        <div className="min-h-0 w-full min-w-0">{RenderSection}</div>
-      </div>
-      <UnsavedChangesDialog
-        open={open}
-        onStay={handleCancel}
-        onSaveAndContinue={handleConfirmSave}
-        onDiscardAndContinue={handleConfirmDiscard}
-      />
-    </>
+    <div className="grid h-full w-full min-w-0 grid-rows-[auto]">
+      <div className="min-h-0 w-full min-w-0">{RenderSection}</div>
+    </div>
   );
 };
+
 export default FormBuilderView;

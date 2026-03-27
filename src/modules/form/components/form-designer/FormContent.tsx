@@ -32,13 +32,11 @@ const FormContent = ({ canEdit, onChange, value }: FormContentProps) => {
   const { handleSelectedField, sections, setFormStructure } = useDesigner();
 
   useEffect(() => {
-    console.log('Setting form structure with value from props:', value);
     setFormStructure(value);
   }, [value, setFormStructure]);
 
   useEffect(() => {
     if (onChange) {
-      console.log('Calling onChange with sections:', sections);
       onChange(sections);
     }
   }, [sections, onChange]);

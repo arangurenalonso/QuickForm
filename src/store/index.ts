@@ -10,8 +10,12 @@ import {
   createFormSlice,
   FormSlice,
 } from '@/modules/form/store/form/form.slice';
+import {
+  createUnsavedChangesSlice,
+  UnsavedChangesSlice,
+} from '@/modules/ui/store/unsaved-changes/unsaved-changes.slice';
 
-export type BoundState = AuthSlice & UiSlice & FormSlice;
+export type BoundState = AuthSlice & UiSlice & FormSlice & UnsavedChangesSlice;
 
 export const useBoundStore = create<BoundState>()(
   // devtools(
@@ -20,6 +24,7 @@ export const useBoundStore = create<BoundState>()(
       ...createAuthSlice(set, get, api),
       ...createUiSlice(set, get, api),
       ...createFormSlice(set, get, api),
+      ...createUnsavedChangesSlice(set, get, api),
     })),
     {
       name: 'quick-form-storage',

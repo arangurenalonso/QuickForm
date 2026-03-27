@@ -235,7 +235,8 @@ export default function useFormStore() {
     }
     return result.value;
   }, [clearError]);
-  const isDirty = useMemo(() => {
+
+  const computedDirty = useMemo(() => {
     return (
       JSON.stringify(draftStructure ?? []) !==
       JSON.stringify(persistedStructure ?? [])
@@ -247,7 +248,7 @@ export default function useFormStore() {
       draftStructure,
       persistedStructure,
       error,
-      isDirty,
+      computedDirty,
       createFormProcess,
       getForms,
       clearError,
@@ -271,7 +272,7 @@ export default function useFormStore() {
       draftStructure,
       persistedStructure,
       error,
-      isDirty,
+      computedDirty,
       createFormProcess,
       getForms,
       clearError,

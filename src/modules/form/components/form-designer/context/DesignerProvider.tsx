@@ -57,15 +57,10 @@ export default function DesignerProvider({
     (nextSections: SectionType[]) => {
       if (nextSections.length === 0) {
         const fallback = createSection('Section 1');
-        console.log(
-          'No sections provided, resetting to default with one section:',
-          fallback
-        );
         setSections(() => [fallback]);
         setActiveSection(fallback.id);
         return;
       }
-      console.log('Setting form structure with sections:', nextSections);
       setSections(nextSections);
       setActiveSection(nextSections[0].id);
     },
