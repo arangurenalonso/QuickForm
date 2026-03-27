@@ -78,10 +78,15 @@ export default function useFormStore() {
   const getFormDetail = useCallback(
     async (idForm: string) => {
       clearError();
-      const [structureRes, formRes] = await Promise.all([
-        formService.getFormStructureByIdForm(idForm),
-        formService.getFormById(idForm),
-      ]);
+
+      const [structureRes, formRes] = await withGlobalLoading(
+        () =>
+          Promise.all([
+            formService.getFormStructureByIdForm(idForm),
+            formService.getFormById(idForm),
+          ]),
+        'Loading form details...'
+      );
 
       if (!isOk(formRes)) {
         setError(formRes.error);
@@ -92,19 +97,25 @@ export default function useFormStore() {
         setError(structureRes.error);
         return;
       }
+
       setFormSelected(formRes.value);
+
       return {
         structure: structureRes.value,
         form: formRes.value,
       };
     },
-    [clearError, setFormSelected]
+    [clearError, setFormSelected, setError]
   );
 
   const saveFormStructure = useCallback(
     async (payload: SectionType[], idForm: string) => {
       clearError();
-      const res = await formService.saveFormStructure(payload, idForm);
+
+      const res = await withGlobalLoading(
+        () => formService.saveFormStructure(payload, idForm),
+        'Saving form structure...'
+      );
       if (!isOk(res)) {
         setError(res.error);
         return;

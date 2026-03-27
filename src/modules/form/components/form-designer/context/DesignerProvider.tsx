@@ -6,21 +6,7 @@ import { UpdatedTypeEnum } from '@/modules/form/components/controlledField/commo
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
 import { SectionType, SelectedFieldType } from './designer-context.type';
 import { DesignerContext } from './DesignerContext';
-
-const createSection = (title?: string): SectionType => {
-  // id simple; ideal: crypto.randomUUID() si lo tienes disponible
-  const id =
-    typeof crypto !== 'undefined' && 'randomUUID' in crypto
-      ? crypto.randomUUID()
-      : `section_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-
-  return {
-    id,
-    title: title?.trim() || 'New section',
-    description: '',
-    fields: [],
-  };
-};
+import { createSection } from './designe.method';
 
 type DesignerProviderProps = {
   children: ReactNode;

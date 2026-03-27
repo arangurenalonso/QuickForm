@@ -35,9 +35,11 @@ const FormBuilderView = ({
   } = useFormStore();
 
   const { toast } = useToast();
+
   const scope = useMemo(() => {
     return UnsavedChangesScope.formBuilder(idForm);
   }, [idForm]);
+
   const {
     isDirty,
     setDirty,
