@@ -5,7 +5,8 @@ import RenderTabsForm from './RenderTabsForm';
 import RenderAccordionForm from './RenderAccordionForm';
 import RenderStepperForm from './stepper/RenderStepperForm';
 import { SectionType } from '../form-designer/context/designer-context.type';
-import { FORM_RENDER_TYPE_DATA, RenderMode } from '../../types/form.types';
+import { RenderMode } from '../../types/form.types';
+import { FORM_RENDER_TYPE_DATA } from '../../utils/form.method';
 
 type FormPreviewRendererProps = {
   mode?: RenderMode;
@@ -18,11 +19,6 @@ const FormPreviewRenderer = ({
   sections,
   onSubmit,
 }: FormPreviewRendererProps) => {
-  console.log('mode?.id', mode?.id);
-  console.log('Accordion', FORM_RENDER_TYPE_DATA.Accordion.id);
-  console.log('Tabs', FORM_RENDER_TYPE_DATA.Tabs.id);
-  console.log('Stepper', FORM_RENDER_TYPE_DATA.Stepper.id);
-  console.log('Default', FORM_RENDER_TYPE_DATA.Default.id);
   switch (mode?.id.toUpperCase()) {
     case FORM_RENDER_TYPE_DATA.Tabs.id:
       return <RenderTabsForm sections={sections} onSubmit={onSubmit} />;

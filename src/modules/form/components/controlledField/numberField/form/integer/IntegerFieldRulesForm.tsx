@@ -95,7 +95,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
               value: true,
               message: data.requiredMessage?.trim() || DEFAULTS.requiredMessage,
               messageTemplate:
-                data.requiredMessage.trim() || DEFAULTS.requiredMessage,
+                data.requiredMessage?.trim() || DEFAULTS.requiredMessage,
             }
           : undefined,
 
@@ -157,6 +157,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
                 <FormControl>
                   <Switch
                     checked={field.value}
+                    disabled={field.disabled}
                     onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>

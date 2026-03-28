@@ -1,16 +1,15 @@
 'use client';
 
 import FormBuilder from '../components/form-designer/FormBuilder';
-import { FormWorkspaceTab } from '../types/form.types';
 import { useCallback, useEffect, useMemo } from 'react';
 import useFormStore from '../hooks/useFormStore';
 import { useToast } from '@/hooks/use-toast';
 import FormSettingsPage from '../components/form-setting/FormSettingsPage';
 import FormPublishPage from '../components/form-publish/FormPublishPage';
-import { FORM_ACTION } from '../enum/form.enum';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
 import useUnsavedChangesStore from '@/modules/ui/store/unsaved-changes/useUnsavedChangesStore';
 import { UnsavedChangesScope } from '@/modules/ui/store/unsaved-changes/unsaved-changes.methods';
+import { FormWorkspaceTab } from '../enum/form.enum';
 
 type FormBuilderContainerProps = {
   idForm?: string | null | undefined;
@@ -25,13 +24,13 @@ const FormBuilderView = ({
     getFormDetail,
     error,
     handleClearFormSelected,
-    formSelected,
     setPersistedStructure,
     persistedStructure,
     setDraftStructure,
     draftStructure,
     saveFormStructure,
     computedDirty,
+    canEdit,
   } = useFormStore();
 
   const { toast } = useToast();
@@ -158,10 +157,7 @@ const FormBuilderView = ({
           <FormBuilder
             value={persistedStructure ?? []}
             onChange={handleOnChangeStructure}
-            canEdit={
-              formSelected?.status.allowedActions.includes(FORM_ACTION.Edit) ??
-              false
-            }
+            canEdit={canEdit}
           />
         );
       case FormWorkspaceTab.settings:
@@ -171,7 +167,7 @@ const FormBuilderView = ({
       default:
         return null;
     }
-  }, [tab, formSelected, handleOnChangeStructure, persistedStructure]);
+  }, [tab, handleOnChangeStructure, persistedStructure, canEdit]);
 
   return (
     <div className="grid h-full w-full min-w-0 grid-rows-[auto]">

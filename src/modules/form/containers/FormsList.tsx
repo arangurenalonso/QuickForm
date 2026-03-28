@@ -23,11 +23,9 @@ import useModalhook from '@/modules/ui/store/modal/useModalhook';
 import FormEditorForm, {
   FormCreatedValues,
 } from '../components/dashboard/form/FormEditorForm';
-import StatusBadge, {
-  isFormStatusDto,
-} from '@/common/components/molecules/StatusBadge';
-import { isFormActionArray } from '@/modules/form/enum/form.enum';
+import StatusBadge from '@/common/components/molecules/StatusBadge';
 import FormRowActions from '../components/dashboard/form/FormRowActions';
+import { isFormStatusDto, isFormActionArray } from '../utils/form.method';
 
 const FormsList = () => {
   const {
@@ -55,12 +53,12 @@ const FormsList = () => {
       }
 
       const url = `/builder/${res.data}`;
+      router.push(url);
       toast({
         title: 'Success',
         description: 'Form created successfully',
       });
 
-      router.push(url);
       closeModal(ModalId.CREATE_FORM);
     };
 

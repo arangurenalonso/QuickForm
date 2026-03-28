@@ -81,7 +81,7 @@ export const formService = {
     }
   },
 
-  async editFormBasicInformation(
+  async updateFormBasicInformation(
     idForm: string,
     name: string,
     description?: string
@@ -120,9 +120,9 @@ export const formService = {
   async publishForm(
     idForm: string,
     payload: SectionType[]
-  ): Promise<Result<ResultResponse, AuthError>> {
+  ): Promise<Result<ResultTResponse<FormType>, AuthError>> {
     try {
-      const { data } = await api.protected.put<ResultResponse>(
+      const { data } = await api.protected.put<ResultTResponse<FormType>>(
         `/form/${idForm}/publish`,
         payload
       );

@@ -8,6 +8,7 @@ import { useBoundStore } from '@/store';
 import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
 import { AppliedFilterType } from '@/common/components/filters/filters.types';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
+import { FORM_ACTION } from '../enum/form.enum';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
@@ -35,20 +36,30 @@ export default function useFormStore() {
   const publishForm = useCallback(
     async (idForm: string, payload: SectionType[]) => {
       clearError();
-      const res = await formService.publishForm(idForm, payload);
+      const res = await withGlobalLoading(
+        () => formService.publishForm(idForm, payload),
+        'Publishing form...'
+      );
       if (!isOk(res)) {
         setError(res.error);
         return;
       }
+      const formType = res.value?.data ?? null;
+      if (formType) {
+        setFormSelected(formType);
+      }
       return res.value;
     },
-    [clearError]
+    [clearError, setFormSelected]
   );
 
   const createFormProcess = useCallback(
     async (name: string, description?: string) => {
       clearError();
-      const res = await formService.createForm({ name, description });
+      const res = await withGlobalLoading(
+        () => formService.createForm({ name, description }),
+        'Creating form...'
+      );
       if (!isOk(res)) {
         setError(res.error);
         return;
@@ -60,7 +71,11 @@ export default function useFormStore() {
 
   const getForms = useCallback(async () => {
     clearError();
-    const res = await formService.getForms();
+
+    const res = await withGlobalLoading(
+      () => formService.getForms(),
+      'Loading forms...'
+    );
     if (!isOk(res)) {
       setError(res.error);
       return;
@@ -71,7 +86,11 @@ export default function useFormStore() {
   const getFormForSubmission = useCallback(
     async (idForm: string) => {
       clearError();
-      const res = await formService.getFormById(idForm);
+
+      const res = await withGlobalLoading(
+        () => formService.getFormById(idForm),
+        'Loading form information...'
+      );
       if (!isOk(res)) {
         setError(res.error);
         return;
@@ -264,7 +283,7 @@ export default function useFormStore() {
     async (idForm: string, name: string, description?: string) => {
       clearError();
       const result = await withGlobalLoading(
-        () => formService.editFormBasicInformation(idForm, name, description),
+        () => formService.updateFormBasicInformation(idForm, name, description),
         'Updating form information...'
       );
       if (!isOk(result)) {
@@ -274,7 +293,7 @@ export default function useFormStore() {
       updateBasicInformation(name, description);
       return result.value;
     },
-    [clearError]
+    [clearError, updateBasicInformation]
   );
   const handleGetTypesRender = useCallback(async () => {
     clearError();
@@ -310,7 +329,16 @@ export default function useFormStore() {
     },
     [clearError, setRenderMode]
   );
-
+  const canEdit = useMemo(() => {
+    return formSelected
+      ? formSelected.status.allowedActions.includes(FORM_ACTION.Edit)
+      : false;
+  }, [formSelected]);
+  const isPublished = useMemo(() => {
+    console.log('formSelected?.status.name', formSelected?.status.name);
+    console.log('FORM_ACTION.Publish', FORM_ACTION.Publish);
+    return formSelected?.status.name === FORM_ACTION.Publish;
+  }, [formSelected]);
   return useMemo(
     () => ({
       formSelected,
@@ -338,6 +366,8 @@ export default function useFormStore() {
       editFormBasicInformation,
       handleGetTypesRender,
       updateRenderMode,
+      canEdit,
+      isPublished,
     }),
     [
       formSelected,
@@ -365,6 +395,8 @@ export default function useFormStore() {
       editFormBasicInformation,
       handleGetTypesRender,
       updateRenderMode,
+      canEdit,
+      isPublished,
     ]
   );
 }

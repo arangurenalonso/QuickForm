@@ -1,5 +1,5 @@
 import FormBuilderView from '@/modules/form/containers/FormBuilderView';
-import { FormWorkspaceTab } from '@/modules/form/types/form.types';
+import { FormWorkspaceTab } from '@/modules/form/enum/form.enum';
 
 async function BuilderPage({
   params,

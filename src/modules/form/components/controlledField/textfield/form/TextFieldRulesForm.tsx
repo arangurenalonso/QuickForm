@@ -89,7 +89,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
       const minLengthMessageTemplate =
         data.minLengthMessage?.trim() || DEFAULTS.minLengthMessage;
       const maxLengthMessageTemplate =
-        data.maxLengthMessage.trim() || DEFAULTS.maxLengthMessage;
+        data.maxLengthMessage?.trim() || DEFAULTS.maxLengthMessage;
       const requiredMessageTemplate =
         data.requiredMessage?.trim() || DEFAULTS.requiredMessage;
 
@@ -160,6 +160,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
                 <FormControl>
                   <Switch
                     checked={field.value}
+                    disabled={field.disabled}
                     onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>

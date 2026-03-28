@@ -254,6 +254,7 @@ const IntegerFieldEditableAttributesForm: React.FC<
                 <FormControl>
                   <Switch
                     checked={field.value}
+                    disabled={field.disabled}
                     onCheckedChange={(checked) => field.onChange(!!checked)}
                   />
                 </FormControl>

@@ -3,11 +3,8 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '@/common/libs/utils';
-import {
-  getRenderModeIcon,
-  RenderMode,
-  TypesRender,
-} from '../../types/form.types';
+import { RenderMode, TypesRender } from '../../types/form.types';
+import { getRenderModeIcon } from '../../utils/form.method';
 
 type FormRenderModeSelectorProps = {
   renderMode?: RenderMode;

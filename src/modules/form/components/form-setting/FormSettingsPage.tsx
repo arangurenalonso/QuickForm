@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Settings, LayoutTemplate } from 'lucide-react';
 import StatusBadge from '@/common/components/molecules/StatusBadge';
 import useFormStore from '@/modules/form/hooks/useFormStore';
@@ -22,6 +22,7 @@ const FormSettingsPage = () => {
     handleGetTypesRender,
     updateRenderMode,
     error,
+    canEdit,
   } = useFormStore();
 
   useAuthErrorModalWatcher({
@@ -55,12 +56,6 @@ const FormSettingsPage = () => {
   );
 
   const formStatus = formSelected?.status;
-
-  const canEdit = useMemo(() => {
-    return formSelected
-      ? formSelected.status.allowedActions.includes(FORM_ACTION.Edit)
-      : false;
-  }, [formSelected]);
 
   const submitSaveFormCallback = async (values: {
     name: string;
