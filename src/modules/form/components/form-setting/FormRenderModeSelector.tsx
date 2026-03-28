@@ -1,72 +1,39 @@
-// src/modules/form/components/form-settings/FormRenderModeSelector.tsx
 'use client';
 
 import React from 'react';
-import {
-  Check,
-  LayoutTemplate,
-  PanelsTopLeft,
-  Rows3,
-  ListOrdered,
-} from 'lucide-react';
+import { Check } from 'lucide-react';
 import { cn } from '@/common/libs/utils';
-import { FormRenderMode } from '../form-render/type/form-rende.type';
+import {
+  getRenderModeIcon,
+  RenderMode,
+  TypesRender,
+} from '../../types/form.types';
 
 type FormRenderModeSelectorProps = {
-  value?: FormRenderMode;
+  renderMode?: RenderMode;
   disabled?: boolean;
-  onChange?: (value: FormRenderMode) => void;
+  onChange?: (value: TypesRender) => void;
+  options: TypesRender[];
 };
 
-const options: Array<{
-  value: FormRenderMode;
-  title: string;
-  description: string;
-  icon: React.ElementType;
-}> = [
-  {
-    value: 'default',
-    title: 'Default',
-    description: 'A classic stacked layout with all sections shown naturally.',
-    icon: LayoutTemplate,
-  },
-  {
-    value: 'tabs',
-    title: 'Tabs',
-    description: 'Best when users need to jump between sections quickly.',
-    icon: PanelsTopLeft,
-  },
-  {
-    value: 'accordion',
-    title: 'Accordion',
-    description: 'Compact and clean for forms with many sections.',
-    icon: Rows3,
-  },
-  {
-    value: 'stepper',
-    title: 'Stepper',
-    description: 'Guided flow for longer forms and better completion.',
-    icon: ListOrdered,
-  },
-];
-
 const FormRenderModeSelector = ({
-  value = 'default',
+  renderMode,
   disabled = false,
   onChange,
+  options,
 }: FormRenderModeSelectorProps) => {
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {options.map((option) => {
-        const selected = option.value === value;
-        const Icon = option.icon;
+        const selected = option.id === renderMode?.id;
+        const Icon = getRenderModeIcon(option.icon);
 
         return (
           <button
-            key={option.value}
+            key={option.id}
             type="button"
             disabled={disabled}
-            onClick={() => onChange?.(option.value)}
+            onClick={() => onChange?.(option)}
             className={cn(
               'qf-grid-card relative p-0 text-left',
               'disabled:cursor-not-allowed disabled:opacity-60',
@@ -87,7 +54,7 @@ const FormRenderModeSelector = ({
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-foreground">
-                    {option.title}
+                    {option.keyName}
                   </p>
 
                   {selected && <span className="qf-badge-info">Selected</span>}

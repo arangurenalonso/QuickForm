@@ -7,7 +7,8 @@ import { FormType } from '../types/form.types';
 import { Alert } from '@/common/libs/ui/alert';
 import { useBoundStore } from '@/store';
 import FormSubmissionSkeleton from './FormSkeleton';
-import { SectionType } from '../store/designer/designer.model';
+import { SectionType } from '../components/form-designer/context/designer-context.type';
+
 type FormSubmitViewProps = {
   idForm?: string | null | undefined;
 };

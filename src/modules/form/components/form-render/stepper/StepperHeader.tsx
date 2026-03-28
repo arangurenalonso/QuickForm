@@ -2,7 +2,7 @@
 
 import { Check, AlertCircle } from 'lucide-react';
 import { cn } from '@/common/libs/utils';
-import { SectionType } from '@/modules/form/store/designer/designer.model';
+import { SectionType } from '../../form-designer/context/designer-context.type';
 
 type StepperHeaderProps = {
   sections: SectionType[];

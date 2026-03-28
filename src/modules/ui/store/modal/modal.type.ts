@@ -19,4 +19,5 @@ export enum ModalErrorType {
   PUBLISH_FORM_ERROR = 'publish-form-error-modal',
   GET_SUBMISSIONS_ERROR = 'get-submissions-error-modal',
   GET_FORMS_ERROR = 'get-forms-error-modal',
+  UPDATE_RENDER_MODE_ERROR = 'update-render-mode-error-modal',
 }

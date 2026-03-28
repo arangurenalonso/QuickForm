@@ -4,4 +4,5 @@ export const createFormInitialState = (): FormModel => ({
   formSelected: null,
   persistedStructure: [],
   draftStructure: [],
+  typeRender: [],
 });

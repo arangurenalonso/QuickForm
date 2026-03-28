@@ -11,7 +11,7 @@ import StepperHeader from './StepperHeader';
 import { hasError } from '../method/form-render.type';
 import SectionFieldsRenderer from '../SectionFieldsRenderer';
 import { DynamicFormValues } from '../type/form-rende.type';
-import { SectionType } from '@/modules/form/store/designer/designer.model';
+import { SectionType } from '../../form-designer/context/designer-context.type';
 
 type RenderStepperFormProps = {
   sections: SectionType[];

@@ -17,14 +17,10 @@ import { useBoundStore } from '@/store';
 import JsonSubmitPreviewModalContent from './JsonSubmitPreviewModalContent';
 import FormPreviewRenderer from '@/modules/form/components/form-render/FormPreviewRenderer';
 import { ModalId } from '@/modules/ui/store/modal/modal.type';
-import { FormRenderMode } from '@/modules/form/components/form-render/type/form-rende.type';
 
 const PreviewDialogBtn = () => {
   const { formSelected, draftStructure } = useFormStore();
   const openModal = useBoundStore((s) => s.openModal);
-
-  const renderMode =
-    (formSelected?.renderMode as FormRenderMode | undefined) ?? 'accordion';
 
   const onSubmit = useCallback(
     (values: unknown) => {
@@ -59,7 +55,8 @@ const PreviewDialogBtn = () => {
           </DialogTitle>
 
           <DialogDescription className="mt-1 text-sm text-muted-foreground">
-            Previewing the selected render type: {renderMode}
+            Previewing the selected render type:{' '}
+            {formSelected?.renderMode?.keyName}
           </DialogDescription>
         </div>
 
@@ -67,7 +64,7 @@ const PreviewDialogBtn = () => {
           <div className="mx-auto w-full max-w-4xl">
             <div className="qf-surface p-4 md:p-6">
               <FormPreviewRenderer
-                mode={renderMode}
+                mode={formSelected?.renderMode}
                 sections={draftStructure}
                 onSubmit={onSubmit}
               />

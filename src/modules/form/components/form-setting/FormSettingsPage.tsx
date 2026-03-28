@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Settings, LayoutTemplate } from 'lucide-react';
 import StatusBadge from '@/common/components/molecules/StatusBadge';
 import useFormStore from '@/modules/form/hooks/useFormStore';
@@ -10,15 +10,49 @@ import { FORM_ACTION } from '../../enum/form.enum';
 import PublishFormBtn from '../form-designer/component/navbar/navbar-btn/publish/PublishFormBtn';
 import PreviewDialogBtn from '../form-designer/component/navbar/navbar-btn/preview/PreviewDialogBtn';
 import FormRenderModeSelector from './FormRenderModeSelector';
-import { FormRenderMode } from '../form-render/type/form-rende.type';
+import { TypesRender } from '../../types/form.types';
+import { SHOW_ERROR_TYPE } from '@/common/components/molecules/error/auth-error.enum';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
 
 const FormSettingsPage = () => {
-  const { formSelected } = useFormStore();
+  const {
+    formSelected,
+    editFormBasicInformation,
+    handleGetTypesRender,
+    updateRenderMode,
+    error,
+  } = useFormStore();
+
+  useAuthErrorModalWatcher({
+    error,
+    id: ModalErrorType.UPDATE_RENDER_MODE_ERROR,
+    showErrorType: SHOW_ERROR_TYPE.Toast,
+  });
+
+  const [typesRender, setTypeRender] = useState<TypesRender[]>([]);
+
+  const fetchTypesRender = useCallback(async () => {
+    const types = await handleGetTypesRender();
+
+    if (!types) {
+      return;
+    }
+    setTypeRender(types);
+  }, [handleGetTypesRender]);
+
+  useEffect(() => {
+    fetchTypesRender();
+  }, [fetchTypesRender]);
 
   // replace this with your actual mutation / zustand action
-  const updateRenderMode = (mode: FormRenderMode) => {
-    console.log('save render mode', mode);
-  };
+  const handleUpdateRenderMode = useCallback(
+    async (mode: TypesRender) => {
+      if (!formSelected) return;
+      await updateRenderMode(formSelected.id, mode.id);
+    },
+    [updateRenderMode, formSelected]
+  );
 
   const formStatus = formSelected?.status;
 
@@ -28,9 +62,12 @@ const FormSettingsPage = () => {
       : false;
   }, [formSelected]);
 
-  const selectedRenderMode =
-    (formSelected?.renderMode as FormRenderMode | undefined) ?? 'default';
-
+  const submitSaveFormCallback = async (values: {
+    name: string;
+    description?: string;
+  }) => {
+    editFormBasicInformation(formSelected!.id, values.name, values.description);
+  };
   return (
     <div className="h-full overflow-auto bg-muted/30 p-6 ">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
@@ -72,6 +109,7 @@ const FormSettingsPage = () => {
           <div className="border-b px-6 py-8">
             <FormEditorForm
               canEdit={canEdit}
+              submitCallback={submitSaveFormCallback}
               initialValues={
                 formSelected
                   ? {
@@ -121,9 +159,10 @@ const FormSettingsPage = () => {
                 </div>
 
                 <FormRenderModeSelector
-                  value={selectedRenderMode}
+                  renderMode={formSelected?.renderMode || undefined}
+                  options={typesRender}
                   disabled={!canEdit}
-                  onChange={updateRenderMode}
+                  onChange={handleUpdateRenderMode}
                 />
               </div>
             </div>

@@ -10,6 +10,7 @@ import {
   FormTemplateType,
   FormType,
   SearchFormType,
+  TypesRender,
 } from '../types/form.types';
 import { generateFieldFromExisting } from '../components/controlledField/generateFieldElement';
 import {
@@ -21,7 +22,7 @@ import {
   DynamicTableRowType,
 } from '@/common/components/dynamic-table/dynamic-table.types';
 import { PaginationResultType } from '@/common/components/pagination/pagination.types';
-import { SectionType } from '../store/designer/designer.model';
+import { SectionType } from '../components/form-designer/context/designer-context.type';
 
 export const formService = {
   async createForm(
@@ -47,6 +48,16 @@ export const formService = {
     }
   },
 
+  async getTypesRender(): Promise<Result<TypesRender[], AuthError>> {
+    try {
+      const { data } = await api.protected.get<TypesRender[]>(
+        '/master/types-render'
+      );
+      return ok(data);
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
   async getFormById(idForm: string): Promise<Result<FormType, AuthError>> {
     try {
       const { data } = await api.protected.get<FormType>(`/me/form/${idForm}`);
@@ -62,6 +73,43 @@ export const formService = {
     try {
       const { data } = await api.protected.post<ResultResponse>(
         `/form/${idForm}/structure`,
+        payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async editFormBasicInformation(
+    idForm: string,
+    name: string,
+    description?: string
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const payload = {
+        name,
+        description,
+      };
+      const { data } = await api.protected.put<ResultResponse>(
+        `/form/${idForm}/basic-info`,
+        payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+  async updateRenderMode(
+    idForm: string,
+    idTypeRender: string
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const payload = {
+        idTypeRender,
+      };
+      const { data } = await api.protected.put<ResultResponse>(
+        `/form/${idForm}/render-mode`,
         payload
       );
       return ok(data); // data = token string

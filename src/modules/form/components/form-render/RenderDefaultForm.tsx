@@ -7,7 +7,7 @@ import { cn } from '@/common/libs/utils';
 import SectionFieldsRenderer from './SectionFieldsRenderer';
 import type { DynamicFormValues } from './type/form-rende.type';
 import { hasError } from './method/form-render.type';
-import { SectionType } from '../../store/designer/designer.model';
+import { SectionType } from '../form-designer/context/designer-context.type';
 
 type RenderDefaultFormProps = {
   sections: SectionType[];

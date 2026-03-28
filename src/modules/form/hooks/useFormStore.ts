@@ -15,6 +15,12 @@ export default function useFormStore() {
   const clearFormSelected = useBoundStore((state) => state.clearFormSelected);
   const persistedStructure = useBoundStore((state) => state.persistedStructure);
   const draftStructure = useBoundStore((state) => state.draftStructure);
+  const setTypeRender = useBoundStore((state) => state.setTypeRender);
+  const typeRender = useBoundStore((state) => state.typeRender);
+  const setRenderMode = useBoundStore((state) => state.setRenderMode);
+  const updateBasicInformation = useBoundStore(
+    (state) => state.updateBasicInformation
+  );
   const setPersistedStructure = useBoundStore(
     (state) => state.setPersistedStructure
   );
@@ -253,6 +259,58 @@ export default function useFormStore() {
       JSON.stringify(persistedStructure ?? [])
     );
   }, [draftStructure, persistedStructure]);
+
+  const editFormBasicInformation = useCallback(
+    async (idForm: string, name: string, description?: string) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.editFormBasicInformation(idForm, name, description),
+        'Updating form information...'
+      );
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      updateBasicInformation(name, description);
+      return result.value;
+    },
+    [clearError]
+  );
+  const handleGetTypesRender = useCallback(async () => {
+    clearError();
+    if (typeRender.length > 0) {
+      return typeRender;
+    }
+    const result = await withGlobalLoading(
+      () => formService.getTypesRender(),
+      'Loading types render...'
+    );
+    if (!isOk(result)) {
+      setError(result.error);
+      return;
+    }
+    setTypeRender(result.value);
+    return result.value;
+  }, [clearError, setTypeRender, typeRender]);
+
+  const updateRenderMode = useCallback(
+    async (idForm: string, idTypeRender: string) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.updateRenderMode(idForm, idTypeRender),
+        'Updating form render mode...'
+      );
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      setRenderMode(idTypeRender);
+
+      return result.value;
+    },
+    [clearError, setRenderMode]
+  );
+
   return useMemo(
     () => ({
       formSelected,
@@ -277,6 +335,9 @@ export default function useFormStore() {
       searchForms,
       setPersistedStructure,
       setDraftStructure,
+      editFormBasicInformation,
+      handleGetTypesRender,
+      updateRenderMode,
     }),
     [
       formSelected,
@@ -301,6 +362,9 @@ export default function useFormStore() {
       searchForms,
       setPersistedStructure,
       setDraftStructure,
+      editFormBasicInformation,
+      handleGetTypesRender,
+      updateRenderMode,
     ]
   );
 }
