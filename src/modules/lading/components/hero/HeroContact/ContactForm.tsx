@@ -4,6 +4,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@/common/libs/ui/button';
 import { Input } from '@/common/libs/ui/input';
 import * as yup from 'yup';
+import { useToast } from '@/hooks/use-toast';
+import useFormStore from '@/modules/form/hooks/useFormStore';
+import { SHOW_ERROR_TYPE } from '@/common/components/molecules/error/auth-error.enum';
+import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
+import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
 
 type HeroPreviewFormValues = {
   name: string;
@@ -36,10 +41,17 @@ const schema: yup.ObjectSchema<HeroPreviewFormValues> = yup.object({
     ),
 });
 
-const HeroPreviewForm = () => {
+type ContactFormProps = {
+  onAfterSubmit?: () => void;
+};
+
+const ContactForm = ({ onAfterSubmit }: ContactFormProps) => {
+  const { submitLead, error } = useFormStore();
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<HeroPreviewFormValues>({
     resolver: yupResolver(schema),
@@ -51,8 +63,27 @@ const HeroPreviewForm = () => {
     },
   });
 
+  useAuthErrorModalWatcher({
+    error,
+    id: ModalErrorType.SUBMIT_LEAD_ERROR,
+    showErrorType: SHOW_ERROR_TYPE.Toast,
+  });
+
   const onSubmit = async (data: HeroPreviewFormValues) => {
-    console.log('Form submitted:', data);
+    const result = await submitLead(data.name, data.email, data.phoneNumber);
+    if (!result) {
+      return;
+    }
+    toast({
+      title: 'Success',
+      description:
+        result.message?.trim() ??
+        'Successfully submitted lead information. We will contact you soon.',
+    });
+    reset();
+    if (onAfterSubmit) {
+      onAfterSubmit();
+    }
   };
 
   return (
@@ -126,4 +157,4 @@ const HeroPreviewForm = () => {
   );
 };
 
-export default HeroPreviewForm;
+export default ContactForm;

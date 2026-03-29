@@ -117,6 +117,27 @@ export const formService = {
       return err(mapAxiosToAuthError(e));
     }
   },
+
+  async submitLead(
+    name: string,
+    email: string,
+    phoneNumber: string
+  ): Promise<Result<ResultResponse, AuthError>> {
+    try {
+      const payload = {
+        name,
+        email,
+        phoneNumber,
+      };
+      const { data } = await api.public.post<ResultResponse>(
+        `/form/submit-lead`,
+        payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
   async publishForm(
     idForm: string,
     payload: SectionType[]

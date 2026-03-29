@@ -61,8 +61,6 @@ const NavbarLandingPage = () => {
           ) : (
             <LogoutButton />
           )}
-
-          <Button className="rounded-xl px-5">Start free</Button>
         </div>
 
         <div className="md:hidden">
@@ -99,8 +97,6 @@ const NavbarLandingPage = () => {
                   ) : (
                     <LogoutButton />
                   )}
-
-                  <Button className="w-full rounded-xl">Start free</Button>
                 </div>
               </div>
             </SheetContent>

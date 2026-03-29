@@ -9,4 +9,8 @@ export const api = {
     baseURL: '/api/protected',
     logoutOn401: true,
   }),
+  public: createAxios({
+    baseURL: '/api/public',
+    logoutOn401: false,
+  }),
 };

@@ -6,6 +6,7 @@ export enum ModalId {
   CREATE_FORM = 'create-form-modal',
   SUBMIT_FORM = 'submit-form-modal',
   SUBMIT_PREVIEW = 'submit-preview-modal',
+  SUBMIT_LEAD = 'submit-lead-modal',
 }
 
 export enum ModalErrorType {
@@ -17,6 +18,7 @@ export enum ModalErrorType {
   EMAIL_CONFIRMATION_ERROR = 'email-confirmation-error-modal',
   LOGIN_ERROR = 'login-error-modal',
   PUBLISH_FORM_ERROR = 'publish-form-error-modal',
+  SUBMIT_LEAD_ERROR = 'submit-lead-error-modal',
   GET_SUBMISSIONS_ERROR = 'get-submissions-error-modal',
   GET_FORMS_ERROR = 'get-forms-error-modal',
   UPDATE_RENDER_MODE_ERROR = 'update-render-mode-error-modal',

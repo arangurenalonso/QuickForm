@@ -337,6 +337,23 @@ export default function useFormStore() {
   const isPublished = useMemo(() => {
     return formSelected?.status.name === FormStatus.Published;
   }, [formSelected]);
+
+  const submitLead = useCallback(
+    async (name: string, email: string, phoneNumber: string) => {
+      clearError();
+      const result = await withGlobalLoading(
+        () => formService.submitLead(name, email, phoneNumber),
+        'Submitting lead...'
+      );
+      if (!isOk(result)) {
+        setError(result.error);
+        return;
+      }
+      return result.value;
+    },
+    [clearError]
+  );
+
   return useMemo(
     () => ({
       formSelected,
@@ -366,6 +383,7 @@ export default function useFormStore() {
       updateRenderMode,
       canEdit,
       isPublished,
+      submitLead,
     }),
     [
       formSelected,
@@ -395,6 +413,7 @@ export default function useFormStore() {
       updateRenderMode,
       canEdit,
       isPublished,
+      submitLead,
     ]
   );
 }

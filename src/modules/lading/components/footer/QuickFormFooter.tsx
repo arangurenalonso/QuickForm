@@ -10,7 +10,7 @@ const QuickFormFooter = () => {
           </div>
           <span>© 2026 QuickForm. Build forms with clarity.</span>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
+        {/* <div className="flex flex-wrap items-center gap-4">
           <a href="#" className="transition hover:text-foreground">
             Privacy
           </a>
@@ -20,7 +20,7 @@ const QuickFormFooter = () => {
           <a href="#" className="transition hover:text-foreground">
             Contact
           </a>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

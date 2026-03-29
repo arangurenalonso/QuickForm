@@ -5,10 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/common/libs/ui/card';
-import HeroPreviewForm from './HeroPreviewForm';
 import CardAlert from '../../../../../common/components/CardAlert';
+import ContactForm from './ContactForm';
 
-const HeroContactCard = () => {
+const ContactFormContainer = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +33,7 @@ const HeroContactCard = () => {
         </CardHeader>
 
         <CardContent className="space-y-5 p-6">
-          <HeroPreviewForm />
+          <ContactForm />
           <CardAlert
             title="Talk to our team"
             description="Share your contact information and we’ll reach out to show you how QuickForm can simplify form creation, automate collection, and improve your workflow."
@@ -44,4 +44,4 @@ const HeroContactCard = () => {
   );
 };
 
-export default HeroContactCard;
+export default ContactFormContainer;

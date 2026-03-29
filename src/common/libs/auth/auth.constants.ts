@@ -9,3 +9,4 @@ export const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
 export const DEFAULT_AUTH_REDIRECT = '/dashboard';
 export const LOGIN_PATH = '/auth/login';
+export const REGISTER_PATH = '/auth/register';
