@@ -1,14 +1,11 @@
 'use client';
 
-// import QuickFormAuthenticatedPreview from '@/modules/intro/intro';
-// import QuickFormLandingPage from '@/modules/intro/QuickFormLandingPage';
+import LandingPage from '@/modules/lading/LandingPage';
 
 export default function Home() {
   return (
     <div className=" mx-auto h-full  ">
-      PAGINA DE INICIO
-      {/* <QuickFormLandingPage /> */}
-      {/* <QuickFormAuthenticatedPreview /> */}
+      <LandingPage />
     </div>
   );
 }

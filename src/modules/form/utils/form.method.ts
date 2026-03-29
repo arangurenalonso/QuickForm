@@ -1,5 +1,5 @@
 import { LucideIcon, CircleDashed } from 'lucide-react';
-import { FormRenderType, FORM_ACTION } from '../enum/form.enum';
+import { FORM_ACTION } from '../enum/form.enum';
 import {
   FORM_ACTION_VALUES,
   STATUS_ICON_MAP,
@@ -54,27 +54,6 @@ export function isFormStatusDto<T>(value: unknown): value is FormStatusType<T> {
       typeof candidate.color === 'string')
   );
 }
-export const FORM_RENDER_TYPE_DATA: Record<
-  FormRenderType,
-  { id: string; name: FormRenderType }
-> = {
-  [FormRenderType.Default]: {
-    id: 'E115B787-1E69-4A93-A23B-C7C5CD9FF588',
-    name: FormRenderType.Default,
-  },
-  [FormRenderType.Tabs]: {
-    id: '9BBFA25F-7025-488C-8360-27F097590E08',
-    name: FormRenderType.Tabs,
-  },
-  [FormRenderType.Accordion]: {
-    id: '221959BF-B21F-44FF-8990-63DAB8094645',
-    name: FormRenderType.Accordion,
-  },
-  [FormRenderType.Stepper]: {
-    id: '180D167D-CEB5-4FBA-B0F5-F929396410ED',
-    name: FormRenderType.Stepper,
-  },
-};
 
 export function isFormAction(value: unknown): value is FORM_ACTION {
   return (

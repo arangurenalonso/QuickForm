@@ -6,7 +6,7 @@ import RenderAccordionForm from './RenderAccordionForm';
 import RenderStepperForm from './stepper/RenderStepperForm';
 import { SectionType } from '../form-designer/context/designer-context.type';
 import { RenderMode } from '../../types/form.types';
-import { FORM_RENDER_TYPE_DATA } from '../../utils/form.method';
+import { FORM_RENDER_TYPE_DATA } from '../../utils/form.const';
 
 type FormPreviewRendererProps = {
   mode?: RenderMode;

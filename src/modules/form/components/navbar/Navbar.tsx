@@ -2,7 +2,7 @@
 import React from 'react';
 import ThemeSwitcher from '@/modules/ui/components/ThemeSwitcher';
 import LogoutButton from '@/modules/auth/components/LogoutButton';
-import AppLogo from '@/modules/intro/AppLogo';
+import AppLogo from '@/modules/lading/AppLogo';
 import useFormStore from '../../hooks/useFormStore';
 import StatusBadge from '@/common/components/molecules/StatusBadge';
 

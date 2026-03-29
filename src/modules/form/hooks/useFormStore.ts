@@ -8,7 +8,7 @@ import { useBoundStore } from '@/store';
 import { withGlobalLoading } from '@/common/utils/withGlobalLoading';
 import { AppliedFilterType } from '@/common/components/filters/filters.types';
 import { SectionType } from '../components/form-designer/context/designer-context.type';
-import { FORM_ACTION } from '../enum/form.enum';
+import { FORM_ACTION, FormStatus } from '../enum/form.enum';
 
 export default function useFormStore() {
   const formSelected = useBoundStore((state) => state.formSelected);
@@ -335,9 +335,7 @@ export default function useFormStore() {
       : false;
   }, [formSelected]);
   const isPublished = useMemo(() => {
-    console.log('formSelected?.status.name', formSelected?.status.name);
-    console.log('FORM_ACTION.Publish', FORM_ACTION.Publish);
-    return formSelected?.status.name === FORM_ACTION.Publish;
+    return formSelected?.status.name === FormStatus.Published;
   }, [formSelected]);
   return useMemo(
     () => ({
