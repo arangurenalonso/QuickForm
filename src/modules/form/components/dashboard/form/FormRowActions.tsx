@@ -21,11 +21,6 @@ const FormRowActions = ({
 
   const hasEdit = currentActions.includes(FORM_ACTION.Edit);
 
-  const hasView = currentActions.some(
-    (action) =>
-      action !== FORM_ACTION.Edit && action !== FORM_ACTION.ViewSubmissions
-  );
-
   const hasViewSubmissions = currentActions.includes(
     FORM_ACTION.ViewSubmissions
   );
@@ -46,7 +41,7 @@ const FormRowActions = ({
         </Button>
       )}
 
-      {hasView && (
+      {!hasEdit && (
         <Button
           type="button"
           size="icon"
