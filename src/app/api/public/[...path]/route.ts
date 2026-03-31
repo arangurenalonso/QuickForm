@@ -2,7 +2,9 @@ import { backendApiFetch } from '@/common/libs/auth/backendApiFetch';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function handlePublicProxy(request: NextRequest, path: string[]) {
+  console.log(`Received ${request.method} request in public API route`);
   const backendPath = `/${path.join('/')}${request.nextUrl.search}`;
+  console.log(`Proxying request to backend path: ${backendPath}`);
 
   const backendResponse = await backendApiFetch(backendPath, request);
 

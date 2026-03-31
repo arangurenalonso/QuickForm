@@ -20,12 +20,14 @@ type RenderTabsFormProps = {
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
   showSubmitButton?: boolean;
+  showInstruction?: boolean;
 };
 
 export default function RenderTabsForm({
   sections,
   onSubmit,
   showSubmitButton = true,
+  showInstruction = true,
 }: RenderTabsFormProps) {
   const firstId = sections[0]?.id ?? '';
   const [tab, setTab] = useState(firstId);
@@ -81,15 +83,17 @@ export default function RenderTabsForm({
       onSubmit={onSubmit ? handleSubmit(onSubmit) : (e) => e.preventDefault()}
       className="space-y-5"
     >
-      <div className="space-y-2">
-        <span className="qf-badge-info">Tabbed layout</span>
-        <div>
-          <h2 className="qf-section-title text-lg">Organized navigation</h2>
-          <p className="qf-section-description">
-            Users can jump between sections quickly without losing context.
-          </p>
+      {showInstruction && (
+        <div className="space-y-2">
+          <span className="qf-badge-info">Tabbed layout</span>
+          <div>
+            <h2 className="qf-section-title text-lg">Organized navigation</h2>
+            <p className="qf-section-description">
+              Users can jump between sections quickly without losing context.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <Tabs value={tab} onValueChange={setTab} className="w-full">
         <TabsList className="h-auto w-full flex-wrap justify-start gap-2 rounded-2xl border bg-muted/40 p-2">

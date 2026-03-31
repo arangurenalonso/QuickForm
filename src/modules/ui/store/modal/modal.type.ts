@@ -7,6 +7,8 @@ export enum ModalId {
   SUBMIT_FORM = 'submit-form-modal',
   SUBMIT_PREVIEW = 'submit-preview-modal',
   SUBMIT_LEAD = 'submit-lead-modal',
+  PAUSE_FORM = 'pause-form-modal',
+  RESUME_FORM = 'resume-form-modal',
 }
 
 export enum ModalErrorType {
@@ -22,4 +24,7 @@ export enum ModalErrorType {
   GET_SUBMISSIONS_ERROR = 'get-submissions-error-modal',
   GET_FORMS_ERROR = 'get-forms-error-modal',
   UPDATE_RENDER_MODE_ERROR = 'update-render-mode-error-modal',
+  PAUSE_FORM_ERROR = 'pause-form-error-modal',
+  RESUME_FORM_ERROR = 'resume-form-error-modal',
+  SUBMIT_FORM_ERROR = 'submit-form-error-modal',
 }

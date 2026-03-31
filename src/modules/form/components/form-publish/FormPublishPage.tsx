@@ -6,20 +6,20 @@ import {
   Link as LinkIcon,
   Copy,
   ExternalLink,
-  Mail,
-  Send,
+  // Mail,
+  // Send,
   Rocket,
 } from 'lucide-react';
 
 import { Button } from '@/common/libs/ui/button';
-import { Input } from '@/common/libs/ui/input';
+// import { Input } from '@/common/libs/ui/input';
 import StatusBadge from '@/common/components/molecules/StatusBadge';
 import useFormStore from '@/modules/form/hooks/useFormStore';
 const FormPublishPage = () => {
   const { formSelected } = useFormStore();
 
   const [copied, setCopied] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState('');
+  // const [inviteEmail, setInviteEmail] = useState('');
 
   const formStatus = formSelected?.status;
 
@@ -32,7 +32,7 @@ const FormPublishPage = () => {
     }
 
     if (typeof window !== 'undefined') {
-      return `${window.location.origin}/form/${formSelected.id}`;
+      return `${window.location.origin}/fill-form/${formSelected.id}`;
     }
 
     return '';
@@ -58,14 +58,13 @@ const FormPublishPage = () => {
     window.open(publishedUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const handleInvite = () => {
-    // Replace with your real invite/share flow
-    console.log('Invite email to form', {
-      email: inviteEmail,
-      formId: formSelected?.id,
-      publishedUrl,
-    });
-  };
+  // const handleInvite = () => {
+  //   console.log('Invite email to form', {
+  //     email: inviteEmail,
+  //     formId: formSelected?.id,
+  //     publishedUrl,
+  //   });
+  // };
 
   return (
     <div className="min-h-full bg-muted/30 p-6">
@@ -146,7 +145,7 @@ const FormPublishPage = () => {
                   </Button>
                 </div>
               </div>
-
+              {/* 
               <div className="border-t" />
 
               <div className="qf-surface-muted p-5">
@@ -183,7 +182,7 @@ const FormPublishPage = () => {
                     Send Invite
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

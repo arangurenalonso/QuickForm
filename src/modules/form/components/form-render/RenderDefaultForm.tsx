@@ -13,12 +13,14 @@ type RenderDefaultFormProps = {
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
   showSubmitButton?: boolean;
+  showInstruction?: boolean;
 };
 
 export default function RenderDefaultForm({
   sections,
   onSubmit,
   showSubmitButton = true,
+  showInstruction = true,
 }: RenderDefaultFormProps) {
   const { watch, control, handleSubmit, reset } = useForm<DynamicFormValues>({
     mode: 'onTouched',
@@ -49,15 +51,17 @@ export default function RenderDefaultForm({
       onSubmit={onSubmit ? handleSubmit(onSubmit) : (e) => e.preventDefault()}
       className="space-y-5"
     >
-      <div className="space-y-2">
-        <span className="qf-badge-info">Default layout</span>
-        <div>
-          <h2 className="qf-section-title text-lg">Classic form flow</h2>
-          <p className="qf-section-description">
-            All sections are visible in one continuous experience.
-          </p>
+      {showInstruction && (
+        <div className="space-y-2">
+          <span className="qf-badge-info">Default layout</span>
+          <div>
+            <h2 className="qf-section-title text-lg">Classic form flow</h2>
+            <p className="qf-section-description">
+              All sections are visible in one continuous experience.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-4">
         {sections.map((section, index) => {

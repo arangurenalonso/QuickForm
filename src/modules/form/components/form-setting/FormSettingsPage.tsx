@@ -14,6 +14,8 @@ import { TypesRender } from '../../types/form.types';
 import { SHOW_ERROR_TYPE } from '@/common/components/molecules/error/auth-error.enum';
 import useAuthErrorModalWatcher from '@/common/components/molecules/error/useAuthErrorModalWatcher';
 import { ModalErrorType } from '@/modules/ui/store/modal/modal.type';
+import PauseFormBtn from '../form-designer/component/navbar/navbar-btn/PauseFormBtn';
+import ResumeFormBtn from '../form-designer/component/navbar/navbar-btn/ResumeFormBtn';
 
 const FormSettingsPage = () => {
   const {
@@ -90,12 +92,28 @@ const FormSettingsPage = () => {
 
           <div className="flex items-center gap-2 self-start">
             {formSelected && (
-              <ActionGuard
-                currentActions={formSelected.status.allowedActions}
-                allowedActions={[FORM_ACTION.Publish]}
-              >
-                <PublishFormBtn idForm={formSelected.id} />
-              </ActionGuard>
+              <>
+                <ActionGuard
+                  currentActions={formSelected.status.allowedActions}
+                  allowedActions={[FORM_ACTION.Publish]}
+                >
+                  <PublishFormBtn idForm={formSelected.id} />
+                </ActionGuard>
+
+                <ActionGuard
+                  currentActions={formSelected.status.allowedActions}
+                  allowedActions={[FORM_ACTION.Resume]}
+                >
+                  <ResumeFormBtn idForm={formSelected.id} />
+                </ActionGuard>
+
+                <ActionGuard
+                  currentActions={formSelected.status.allowedActions}
+                  allowedActions={[FORM_ACTION.Pause]}
+                >
+                  <PauseFormBtn idForm={formSelected.id} />
+                </ActionGuard>
+              </>
             )}
           </div>
         </header>

@@ -17,12 +17,14 @@ type RenderStepperFormProps = {
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
   showSubmitButton?: boolean;
+  showInstruction?: boolean;
 };
 
 export default function RenderStepperForm({
   sections,
   onSubmit,
   showSubmitButton = true,
+  showInstruction,
 }: RenderStepperFormProps) {
   const [stepIndex, setStepIndex] = useState(0);
 
@@ -112,15 +114,17 @@ export default function RenderStepperForm({
       }}
       className="space-y-5"
     >
-      <div className="space-y-2">
-        <span className="qf-badge-info">Stepper layout</span>
-        <div>
-          <h2 className="qf-section-title text-lg">Guided completion</h2>
-          <p className="qf-section-description">
-            Best for long forms that should feel simple and progressive.
-          </p>
+      {showInstruction && (
+        <div className="space-y-2">
+          <span className="qf-badge-info">Stepper layout</span>
+          <div>
+            <h2 className="qf-section-title text-lg">Guided completion</h2>
+            <p className="qf-section-description">
+              Best for long forms that should feel simple and progressive.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <StepperHeader
         sections={sections}

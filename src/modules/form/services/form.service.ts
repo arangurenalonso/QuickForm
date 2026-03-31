@@ -130,7 +130,7 @@ export const formService = {
         phoneNumber,
       };
       const { data } = await api.public.post<ResultResponse>(
-        `/form/submit-lead`,
+        `/submit-lead`,
         payload
       );
       return ok(data); // data = token string
@@ -146,6 +146,32 @@ export const formService = {
       const { data } = await api.protected.put<ResultTResponse<FormType>>(
         `/form/${idForm}/publish`,
         payload
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async pauseForm(
+    idForm: string
+  ): Promise<Result<ResultTResponse<FormType>, AuthError>> {
+    try {
+      const { data } = await api.protected.put<ResultTResponse<FormType>>(
+        `/form/${idForm}/pause`
+      );
+      return ok(data); // data = token string
+    } catch (e) {
+      return err(mapAxiosToAuthError(e));
+    }
+  },
+
+  async resumeForm(
+    idForm: string
+  ): Promise<Result<ResultTResponse<FormType>, AuthError>> {
+    try {
+      const { data } = await api.protected.put<ResultTResponse<FormType>>(
+        `/form/${idForm}/resume`
       );
       return ok(data); // data = token string
     } catch (e) {
@@ -217,7 +243,7 @@ export const formService = {
     payload: unknown
   ): Promise<Result<ResultResponse, AuthError>> {
     try {
-      const { data } = await api.protected.post<ResultResponse>(
+      const { data } = await api.public.post<ResultResponse>(
         `/form/${idForm}/submit`,
         payload
       );

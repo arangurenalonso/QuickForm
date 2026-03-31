@@ -33,26 +33,6 @@ export default function useFormStore() {
     setError(null);
   }, []);
 
-  const publishForm = useCallback(
-    async (idForm: string, payload: SectionType[]) => {
-      clearError();
-      const res = await withGlobalLoading(
-        () => formService.publishForm(idForm, payload),
-        'Publishing form...'
-      );
-      if (!isOk(res)) {
-        setError(res.error);
-        return;
-      }
-      const formType = res.value?.data ?? null;
-      if (formType) {
-        setFormSelected(formType);
-      }
-      return res.value;
-    },
-    [clearError, setFormSelected]
-  );
-
   const createFormProcess = useCallback(
     async (name: string, description?: string) => {
       clearError();
@@ -354,6 +334,64 @@ export default function useFormStore() {
     [clearError]
   );
 
+  const publishForm = useCallback(
+    async (idForm: string, payload: SectionType[]) => {
+      clearError();
+      const res = await withGlobalLoading(
+        () => formService.publishForm(idForm, payload),
+        'Publishing form...'
+      );
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      const formType = res.value?.data ?? null;
+      if (formType) {
+        setFormSelected(formType);
+      }
+      return res.value;
+    },
+    [clearError, setFormSelected]
+  );
+
+  const pauseForm = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const res = await withGlobalLoading(
+        () => formService.pauseForm(idForm),
+        'Pausing form...'
+      );
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      const formType = res.value?.data ?? null;
+      if (formType) {
+        setFormSelected(formType);
+      }
+      return res.value;
+    },
+    [clearError, setFormSelected]
+  );
+  const resumeForm = useCallback(
+    async (idForm: string) => {
+      clearError();
+      const res = await withGlobalLoading(
+        () => formService.resumeForm(idForm),
+        'Resuming form...'
+      );
+      if (!isOk(res)) {
+        setError(res.error);
+        return;
+      }
+      const formType = res.value?.data ?? null;
+      if (formType) {
+        setFormSelected(formType);
+      }
+      return res.value;
+    },
+    [clearError, setFormSelected]
+  );
   return useMemo(
     () => ({
       formSelected,
@@ -384,6 +422,8 @@ export default function useFormStore() {
       canEdit,
       isPublished,
       submitLead,
+      pauseForm,
+      resumeForm,
     }),
     [
       formSelected,
@@ -414,6 +454,8 @@ export default function useFormStore() {
       canEdit,
       isPublished,
       submitLead,
+      pauseForm,
+      resumeForm,
     ]
   );
 }

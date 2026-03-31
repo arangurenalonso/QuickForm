@@ -20,12 +20,14 @@ type RenderAccordionFormProps = {
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
   showSubmitButton?: boolean;
+  showInstruction?: boolean;
 };
 
 export default function RenderAccordionForm({
   sections,
   onSubmit,
   showSubmitButton = true,
+  showInstruction = true,
 }: RenderAccordionFormProps) {
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
 
@@ -85,15 +87,17 @@ export default function RenderAccordionForm({
       onSubmit={onSubmit ? handleSubmit(onSubmit) : (e) => e.preventDefault()}
       className="space-y-5"
     >
-      <div className="space-y-2">
-        <span className="qf-badge-info">Accordion layout</span>
-        <div>
-          <h2 className="qf-section-title text-lg">Compact and clean</h2>
-          <p className="qf-section-description">
-            Sections expand only when needed, which reduces visual overload.
-          </p>
+      {showInstruction && (
+        <div className="space-y-2">
+          <span className="qf-badge-info">Accordion layout</span>
+          <div>
+            <h2 className="qf-section-title text-lg">Compact and clean</h2>
+            <p className="qf-section-description">
+              Sections expand only when needed, which reduces visual overload.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <Accordion
         type="multiple"

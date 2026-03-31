@@ -1,22 +1,55 @@
 import { SERVER_ENV } from '@/common/config/env.server';
-import { NextRequest } from 'next/server';
+import { Agent } from 'undici';
+import { isDev } from './auth.constants';
 
-function buildUrl(path: string) {
+function buildUrl(path: string): string {
   return `${SERVER_ENV.AUTH_API_URL}${path}`;
 }
-export async function backendApiFetch(path: string, request: NextRequest) {
-  const url = buildUrl(path);
-  const body =
-    request.method === 'GET' || request.method === 'HEAD'
-      ? undefined
-      : await request.text();
 
-  return fetch(url, {
-    method: request.method,
-    headers: {
-      'content-type': request.headers.get('content-type') ?? 'application/json',
+type UndiciRequestInit = RequestInit & {
+  dispatcher?: Agent;
+  duplex?: 'half';
+};
+
+function getDevDispatcher(url: string): Agent | undefined {
+  const isLocalHttps = url.startsWith('https://localhost');
+
+  if (!isDev || !isLocalHttps) {
+    return undefined;
+  }
+
+  return new Agent({
+    connect: {
+      rejectUnauthorized: false,
     },
-    body,
-    cache: 'no-store',
   });
+}
+
+export async function backendApiFetch(
+  path: string,
+  request: RequestInit = {}
+): Promise<Response> {
+  const url = buildUrl(path);
+  const method = request.method?.toUpperCase() ?? 'GET';
+  const dispatcher = getDevDispatcher(url);
+
+  const headers = new Headers(request.headers);
+  headers.set('Accept', 'application/json');
+
+  const hasBody = method !== 'GET' && method !== 'HEAD' && request.body != null;
+  const isStreamBody =
+    typeof ReadableStream !== 'undefined' &&
+    request.body instanceof ReadableStream;
+
+  const requestInit: UndiciRequestInit = {
+    ...request,
+    method,
+    headers,
+    cache: 'no-store',
+    dispatcher,
+    body: hasBody ? request.body : undefined,
+    ...(isStreamBody ? { duplex: 'half' } : {}),
+  };
+
+  return fetch(url, requestInit);
 }

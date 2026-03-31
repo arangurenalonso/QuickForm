@@ -12,26 +12,52 @@ type FormPreviewRendererProps = {
   mode?: RenderMode;
   sections: SectionType[];
   onSubmit?: (values: unknown) => void;
+  showInstruction?: boolean;
 };
 
 const FormPreviewRenderer = ({
   mode,
   sections,
   onSubmit,
+  showInstruction,
 }: FormPreviewRendererProps) => {
   switch (mode?.id.toUpperCase()) {
     case FORM_RENDER_TYPE_DATA.Tabs.id:
-      return <RenderTabsForm sections={sections} onSubmit={onSubmit} />;
+      return (
+        <RenderTabsForm
+          sections={sections}
+          onSubmit={onSubmit}
+          showInstruction={showInstruction}
+        />
+      );
 
     case FORM_RENDER_TYPE_DATA.Accordion.id:
-      return <RenderAccordionForm sections={sections} onSubmit={onSubmit} />;
+      return (
+        <RenderAccordionForm
+          sections={sections}
+          onSubmit={onSubmit}
+          showInstruction={showInstruction}
+        />
+      );
 
     case FORM_RENDER_TYPE_DATA.Stepper.id:
-      return <RenderStepperForm sections={sections} onSubmit={onSubmit} />;
+      return (
+        <RenderStepperForm
+          sections={sections}
+          onSubmit={onSubmit}
+          showInstruction={showInstruction}
+        />
+      );
 
     case FORM_RENDER_TYPE_DATA.Default.id:
     default:
-      return <RenderDefaultForm sections={sections} onSubmit={onSubmit} />;
+      return (
+        <RenderDefaultForm
+          sections={sections}
+          onSubmit={onSubmit}
+          showInstruction={showInstruction}
+        />
+      );
   }
 };
 
