@@ -20,11 +20,12 @@ import useDesigner from '@/modules/form/components/form-designer/context/useDesi
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const DecimalFieldEditableAttributesForm: React.FC<
   DecimalFieldEditableAttributesFormProps
-> = ({ formFieldConfig, canEdit }) => {
+> = ({ formFieldConfig, canEdit, onChange }) => {
   const form = useForm<DecimalFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -41,7 +42,6 @@ const DecimalFieldEditableAttributesForm: React.FC<
   });
 
   const { control, handleSubmit } = form;
-  const { updateField } = useDesigner();
 
   useEffect(() => {
     if (formFieldConfig?.type === FieldTypeEnum.InputTypeDecimal) {
@@ -60,9 +60,9 @@ const DecimalFieldEditableAttributesForm: React.FC<
         ...cfgRef.current,
         properties: data,
       };
-      updateField(updated, UpdatedTypeEnum.EditableForm);
+      onChange(updated, UpdatedTypeEnum.EditableForm);
     },
-    [updateField]
+    [onChange]
   );
 
   useEffect(() => {

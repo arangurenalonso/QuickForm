@@ -43,14 +43,14 @@ const DEFAULTS: DecimalFieldRulesFormValues = {
 interface DecimalFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
   formFieldConfig,
   canEdit,
+  onChange,
 }) => {
-  const { updateField } = useDesigner();
-
   const form = useForm<DecimalFieldRulesFormValues>({
     mode: 'onBlur',
     defaultValues: DEFAULTS,
@@ -122,12 +122,12 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
             : undefined,
       };
 
-      updateField(
+      onChange(
         { ...cfgRef.current, rules: ruleUpdated },
         UpdatedTypeEnum.RuleForm
       );
     },
-    [updateField]
+    [onChange]
   );
 
   // Save on unmount

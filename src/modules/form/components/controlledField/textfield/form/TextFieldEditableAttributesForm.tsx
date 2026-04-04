@@ -19,11 +19,12 @@ import useDesigner from '@/modules/form/components/form-designer/context/useDesi
 interface TextFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const TextFieldEditableAttributesForm: React.FC<
   TextFieldEditableAttributesFormProps
-> = ({ formFieldConfig, canEdit }) => {
+> = ({ formFieldConfig, canEdit, onChange }) => {
   const form = useForm<TextFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -34,8 +35,6 @@ const TextFieldEditableAttributesForm: React.FC<
       informationText: '',
     },
   });
-
-  const { updateField } = useDesigner();
 
   useEffect(() => {
     if (formFieldConfig?.type === FieldTypeEnum.InputTypeText) {
@@ -54,9 +53,9 @@ const TextFieldEditableAttributesForm: React.FC<
         ...cfgRef.current,
         properties: data,
       };
-      updateField(updated, UpdatedTypeEnum.EditableForm);
+      onChange(updated, UpdatedTypeEnum.EditableForm);
     },
-    [updateField]
+    [onChange]
   );
 
   useEffect(() => {

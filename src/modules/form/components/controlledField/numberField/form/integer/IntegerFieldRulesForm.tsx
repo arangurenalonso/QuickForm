@@ -43,14 +43,14 @@ const DEFAULTS: IntegerFieldRulesFormValues = {
 interface IntegerFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
   formFieldConfig,
   canEdit,
+  onChange,
 }) => {
-  const { updateField } = useDesigner();
-
   const form = useForm<IntegerFieldRulesFormValues>({
     mode: 'onBlur',
     defaultValues: DEFAULTS,
@@ -122,12 +122,12 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
             : undefined,
       };
 
-      updateField(
+      onChange(
         { ...cfgRef.current, rules: ruleUpdated },
         UpdatedTypeEnum.RuleForm
       );
     },
-    [updateField]
+    [onChange]
   );
 
   // Save on unmount

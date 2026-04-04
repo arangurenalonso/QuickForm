@@ -42,14 +42,14 @@ const DEFAULTS: TextFieldRulesFormValues = {
 interface TextFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
   formFieldConfig,
   canEdit,
+  onChange,
 }) => {
-  const { updateField } = useDesigner();
-
   const form = useForm<TextFieldRulesFormValues>({
     mode: 'onBlur',
     defaultValues: DEFAULTS,
@@ -125,12 +125,12 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             : undefined,
       };
 
-      updateField(
+      onChange(
         { ...cfgRef.current, rules: ruleUpdated },
         UpdatedTypeEnum.RuleForm
       );
     },
-    [updateField]
+    [onChange]
   );
 
   // Guardar al desmontar

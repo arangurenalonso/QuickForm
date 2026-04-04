@@ -15,6 +15,7 @@ import TextFieldControlled from '../../textfield/TextFieldControlled';
 import TextFieldEditableProps from '../../textfield/type/TextFieldEditableProps';
 import { TextFieldValidationRulesWithMessage } from '../../textfield/type/TextFieldValidationRules';
 import { FieldTypeEnum } from './FieldType';
+import { FieldEditorProps } from '../type/FieldEditorProps';
 
 export type FormFieldConfigType =
   | {
@@ -27,8 +28,8 @@ export type FormFieldConfigType =
       render: {
         Component: typeof NumberFieldComponent;
         Controlled: typeof DecimalFieldControlled;
-        EditablePropsForm: typeof DecimalFieldEditableAttributesForm;
-        RulesForm: typeof DecimalFieldRulesForm;
+        EditablePropsForm: React.ComponentType<FieldEditorProps>;
+        RulesForm: React.ComponentType<FieldEditorProps>;
       };
     }
   | {
@@ -41,8 +42,8 @@ export type FormFieldConfigType =
       render: {
         Component: typeof NumberFieldComponent;
         Controlled: typeof IntegerFieldControlled;
-        EditablePropsForm: typeof IntegerFieldEditableAttributesForm;
-        RulesForm: typeof IntegerFieldRulesForm;
+        EditablePropsForm: React.ComponentType<FieldEditorProps>;
+        RulesForm: React.ComponentType<FieldEditorProps>;
       };
     }
   | {
@@ -55,7 +56,7 @@ export type FormFieldConfigType =
       render: {
         Component: typeof TextFieldComponent;
         Controlled: typeof TextFieldControlled;
-        EditablePropsForm: typeof TextFieldEditableAttributesForm;
-        RulesForm: typeof TextFieldRulesForm;
+        EditablePropsForm: React.ComponentType<FieldEditorProps>;
+        RulesForm: React.ComponentType<FieldEditorProps>;
       };
     };

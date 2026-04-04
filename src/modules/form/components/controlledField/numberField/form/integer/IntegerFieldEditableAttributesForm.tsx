@@ -19,11 +19,12 @@ import IntegerFieldEditableProps from '../../type/integer/NumberFieldEditablePro
 interface IntegerFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
+  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
 }
 
 const IntegerFieldEditableAttributesForm: React.FC<
   IntegerFieldEditableAttributesFormProps
-> = ({ formFieldConfig, canEdit }) => {
+> = ({ formFieldConfig, canEdit, onChange }) => {
   const form = useForm<IntegerFieldEditableProps>({
     mode: 'onBlur',
     defaultValues: {
@@ -39,7 +40,6 @@ const IntegerFieldEditableAttributesForm: React.FC<
   });
 
   const { control, handleSubmit } = form;
-  const { updateField } = useDesigner();
 
   useEffect(() => {
     if (formFieldConfig?.type === FieldTypeEnum.InputTypeInteger) {
@@ -58,9 +58,9 @@ const IntegerFieldEditableAttributesForm: React.FC<
         ...cfgRef.current,
         properties: data,
       };
-      updateField(updated, UpdatedTypeEnum.EditableForm);
+      onChange(updated, UpdatedTypeEnum.EditableForm);
     },
-    [updateField]
+    [onChange]
   );
 
   useEffect(() => {

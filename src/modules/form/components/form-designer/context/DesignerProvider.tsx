@@ -129,30 +129,18 @@ export default function DesignerProvider({
       return prevSel;
     });
   }, []);
+
   const updateField = useCallback(
-    (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => {
+    (updatedField: FormFieldConfigType, _type: UpdatedTypeEnum) => {
       setSections((prev) =>
         prev.map((s) => {
           if (s.id !== activeSectionId) return s;
-          const idx = s.fields.findIndex((f) => f.id === updatedField.id);
 
+          const idx = s.fields.findIndex((f) => f.id === updatedField.id);
           if (idx === -1) return s;
 
           const nextFields = [...s.fields];
-
-          if (type === UpdatedTypeEnum.EditableForm) {
-            nextFields[idx] = {
-              ...nextFields[idx],
-              properties: updatedField.properties,
-            };
-          }
-
-          if (type === UpdatedTypeEnum.RuleForm) {
-            nextFields[idx] = {
-              ...nextFields[idx],
-              rules: updatedField.rules,
-            };
-          }
+          nextFields[idx] = updatedField;
 
           return { ...s, fields: nextFields };
         })
@@ -160,7 +148,6 @@ export default function DesignerProvider({
     },
     [activeSectionId]
   );
-
   const reorderFieldInSection = useCallback(
     (sectionId: string, activeFieldId: string, overFieldId: string) => {
       if (activeFieldId === overFieldId) return;

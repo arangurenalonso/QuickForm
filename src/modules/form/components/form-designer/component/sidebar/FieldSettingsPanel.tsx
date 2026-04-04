@@ -12,7 +12,8 @@ type FieldSettingsPanelProps = {
 };
 
 const FieldSettingsPanel = ({ canEdit }: FieldSettingsPanelProps) => {
-  const { selectedField, handleSelectedField, sections } = useDesigner();
+  const { selectedField, handleSelectedField, sections, updateField } =
+    useDesigner();
 
   const field = useMemo(() => {
     if (!selectedField) return null;
@@ -28,7 +29,6 @@ const FieldSettingsPanel = ({ canEdit }: FieldSettingsPanelProps) => {
       handleSelectedField(null);
     }
   }, [selectedField, field, handleSelectedField]);
-
   if (!field) return null;
 
   const { render } = field;
@@ -44,10 +44,19 @@ const FieldSettingsPanel = ({ canEdit }: FieldSettingsPanelProps) => {
 
         <div className="min-h-0 w-full overflow-y-auto   ">
           <TabsContent value="editable">
-            <EditablePropsForm formFieldConfig={field} canEdit={canEdit} />
+            <EditablePropsForm
+              formFieldConfig={field}
+              canEdit={canEdit}
+              onChange={updateField}
+            />
           </TabsContent>
+
           <TabsContent value="rules">
-            <RulesForm formFieldConfig={field} canEdit={canEdit} />
+            <RulesForm
+              formFieldConfig={field}
+              canEdit={canEdit}
+              onChange={updateField}
+            />
           </TabsContent>
         </div>
       </div>
