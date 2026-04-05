@@ -13,10 +13,9 @@ import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import { NumberFieldValidationRulesWithMessage } from '../../type/NumberFieldValidationRules';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../../common/methods/common.methods';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 type RuleMessageTemplate = string;
 
@@ -43,7 +42,7 @@ const DEFAULTS: DecimalFieldRulesFormValues = {
 interface DecimalFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
@@ -122,10 +121,7 @@ const DecimalFieldRulesForm: React.FC<DecimalFieldRulesFormProps> = ({
             : undefined,
       };
 
-      onChange(
-        { ...cfgRef.current, rules: ruleUpdated },
-        UpdatedTypeEnum.RuleForm
-      );
+      onChange({ ...cfgRef.current, rules: ruleUpdated });
     },
     [onChange]
   );

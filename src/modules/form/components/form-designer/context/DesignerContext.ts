@@ -1,6 +1,5 @@
 import { createContext } from 'react';
 import { SectionType, SelectedFieldType } from './designer-context.type';
-import { UpdatedTypeEnum } from '../../controlledField/common/enum/FieldType';
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
 
 type DesignerContextType = {
@@ -24,10 +23,7 @@ type DesignerContextType = {
     element: FormFieldConfigType
   ) => void;
   removeField: (sectionId: string, fieldId: string) => void;
-  updateField: (
-    updatedField: FormFieldConfigType,
-    type: UpdatedTypeEnum
-  ) => void;
+  updateField: (updatedField: FormFieldConfigType) => void;
   reorderFieldInSection: (
     sectionId: string,
     activeFieldId: string,

@@ -12,9 +12,8 @@ import {
 import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { NumberFieldValidationRulesWithMessage } from '../../type/NumberFieldValidationRules';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../../common/methods/common.methods';
 
@@ -43,7 +42,7 @@ const DEFAULTS: IntegerFieldRulesFormValues = {
 interface IntegerFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
@@ -122,10 +121,7 @@ const IntegerFieldRulesForm: React.FC<IntegerFieldRulesFormProps> = ({
             : undefined,
       };
 
-      onChange(
-        { ...cfgRef.current, rules: ruleUpdated },
-        UpdatedTypeEnum.RuleForm
-      );
+      onChange({ ...cfgRef.current, rules: ruleUpdated });
     },
     [onChange]
   );

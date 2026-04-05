@@ -1,3 +1,4 @@
+import { CollectionFieldConfig } from './collectionField/CollectionFieldConfig';
 import { FieldTypeEnum } from './common/enum/FieldType';
 import { FormFieldConfigType } from './common/enum/FormFieldConfigType';
 import { DecimalFieldConfig } from './numberField/fieldConfig/DecimalFieldConfig';
@@ -18,7 +19,9 @@ export const generateFieldElement = (
     case FieldTypeEnum.InputTypeDecimal:
       newField = DecimalFieldConfig();
       break;
-
+    case FieldTypeEnum.Collection:
+      newField = CollectionFieldConfig();
+      break;
     default:
       break;
   }
@@ -38,6 +41,9 @@ export const generateFieldFromExisting = (
       break;
     case FieldTypeEnum.InputTypeDecimal:
       newField = DecimalFieldConfig(field);
+      break;
+    case FieldTypeEnum.Collection:
+      newField = CollectionFieldConfig(field);
       break;
     default:
       break;

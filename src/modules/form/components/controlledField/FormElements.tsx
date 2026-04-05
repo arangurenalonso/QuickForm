@@ -1,3 +1,4 @@
+import { CollectionFieldConfig } from './collectionField/CollectionFieldConfig';
 import { FieldTypeEnum } from './common/enum/FieldType';
 import { FormFieldConfigType } from './common/enum/FormFieldConfigType';
 import { DecimalFieldConfig } from './numberField/fieldConfig/DecimalFieldConfig';
@@ -12,4 +13,5 @@ export const FormElements: FormElementsType = {
   [FieldTypeEnum.InputTypeText]: TextFieldConfig(),
   [FieldTypeEnum.InputTypeDecimal]: DecimalFieldConfig(),
   [FieldTypeEnum.InputTypeInteger]: IntegerFieldConfig(),
+  [FieldTypeEnum.Collection]: CollectionFieldConfig(),
 };

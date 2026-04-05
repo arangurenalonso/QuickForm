@@ -1,11 +1,20 @@
 'use client';
 
 import { Active, DragOverlay, useDndMonitor } from '@dnd-kit/core';
-import React, { useMemo, useState } from 'react';
+import React, { ComponentType, useMemo, useState } from 'react';
 import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 import { FieldTypeEnum } from '../../controlledField/common/enum/FieldType';
 import { FormElements } from '../../controlledField/FormElements';
 import SidebarBtnDragOverlay from './SidebarBtnDragOverlay';
+import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
+
+function renderFieldPreview<TField extends FormFieldConfigType>(field: TField) {
+  const FieldComponent = field.render.Component as ComponentType<
+    TField['properties']
+  >;
+
+  return <FieldComponent {...field.properties} />;
+}
 
 const DragPreviewOverlay = () => {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
@@ -28,9 +37,9 @@ const DragPreviewOverlay = () => {
 
   let node = <div>No drag overlay</div>;
 
-  const isSidebarBtnElement = draggedItem?.data?.current?.isDesignerBtnElement;
+  const isSidebarBtnElement = draggedItem.data?.current?.isDesignerBtnElement;
   if (isSidebarBtnElement) {
-    const type = draggedItem?.data?.current?.type as FieldTypeEnum;
+    const type = draggedItem.data?.current?.type as FieldTypeEnum;
     const formElement = FormElements[type];
 
     node = (
@@ -41,7 +50,7 @@ const DragPreviewOverlay = () => {
     );
   }
 
-  const isDesignerField = draggedItem?.data?.current?.isDesignerField;
+  const isDesignerField = draggedItem.data?.current?.isDesignerField;
   if (isDesignerField) {
     const fieldId = String(draggedItem.id);
 
@@ -60,12 +69,9 @@ const DragPreviewOverlay = () => {
     if (!field) {
       node = <div>Field not found</div>;
     } else {
-      const { properties, render } = field;
-      const { Component } = render;
-
       node = (
-        <div className="w-[min(920px,calc(100vw-4rem))] rounded-xl border bg-background px-4 py-2 shadow-2xl opacity-95 pointer-events-none">
-          <Component {...properties} />
+        <div className="pointer-events-none w-[min(920px,calc(100vw-4rem))] rounded-xl border bg-background px-4 py-2 opacity-95 shadow-2xl">
+          {renderFieldPreview(field)}
         </div>
       );
     }

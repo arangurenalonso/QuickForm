@@ -13,10 +13,9 @@ import { Switch } from '@/common/libs/ui/switch';
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import { TextFieldValidationRulesWithMessage } from '../type/TextFieldValidationRules';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import { applyTemplate } from '../../common/methods/common.methods';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 type TextRuleMessageTemplate = string;
 
 interface TextFieldRulesFormValues {
@@ -42,7 +41,7 @@ const DEFAULTS: TextFieldRulesFormValues = {
 interface TextFieldRulesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
@@ -125,10 +124,7 @@ const TextFieldRulesForm: React.FC<TextFieldRulesFormProps> = ({
             : undefined,
       };
 
-      onChange(
-        { ...cfgRef.current, rules: ruleUpdated },
-        UpdatedTypeEnum.RuleForm
-      );
+      onChange({ ...cfgRef.current, rules: ruleUpdated });
     },
     [onChange]
   );

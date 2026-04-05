@@ -2,7 +2,6 @@
 
 import { useMemo, useState, ReactNode, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
-import { UpdatedTypeEnum } from '@/modules/form/components/controlledField/common/enum/FieldType';
 import { FormFieldConfigType } from '../../controlledField/common/enum/FormFieldConfigType';
 import { SectionType, SelectedFieldType } from './designer-context.type';
 import { DesignerContext } from './DesignerContext';
@@ -131,12 +130,13 @@ export default function DesignerProvider({
   }, []);
 
   const updateField = useCallback(
-    (updatedField: FormFieldConfigType, _type: UpdatedTypeEnum) => {
+    (updatedField: FormFieldConfigType) => {
       setSections((prev) =>
         prev.map((s) => {
           if (s.id !== activeSectionId) return s;
 
           const idx = s.fields.findIndex((f) => f.id === updatedField.id);
+
           if (idx === -1) return s;
 
           const nextFields = [...s.fields];

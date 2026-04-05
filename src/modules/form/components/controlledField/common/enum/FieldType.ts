@@ -5,6 +5,7 @@ export enum FieldTypeEnum {
   InputTypeText = 'InputTypeText',
   InputTypeInteger = 'InputTypeInteger',
   InputTypeDecimal = 'InputTypeDecimal',
+  Collection = 'Collection',
 }
 export enum UpdatedTypeEnum {
   EditableForm = 'EditableForm',
@@ -17,7 +18,8 @@ export type FieldType =
   // | FieldTypeEnum.Select
   | FieldTypeEnum.InputTypeText
   | FieldTypeEnum.InputTypeInteger
-  | FieldTypeEnum.InputTypeDecimal;
+  | FieldTypeEnum.InputTypeDecimal
+  | FieldTypeEnum.Collection;
 
 export const getFriendlyFieldTypeName = (type: FieldTypeEnum): string => {
   switch (type) {
@@ -27,6 +29,8 @@ export const getFriendlyFieldTypeName = (type: FieldTypeEnum): string => {
       return 'Integer';
     case FieldTypeEnum.InputTypeDecimal:
       return 'Decimal';
+    case FieldTypeEnum.Collection:
+      return 'Collection';
     default:
       return 'Field';
   }

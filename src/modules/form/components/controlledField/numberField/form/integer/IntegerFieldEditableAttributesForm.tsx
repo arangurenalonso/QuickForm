@@ -11,15 +11,14 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import { Switch } from '@/common/libs/ui/switch';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import IntegerFieldEditableProps from '../../type/integer/NumberFieldEditableProps';
 
 interface IntegerFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const IntegerFieldEditableAttributesForm: React.FC<
@@ -54,11 +53,26 @@ const IntegerFieldEditableAttributesForm: React.FC<
 
   const onSubmit = useCallback(
     (data: IntegerFieldEditableProps) => {
-      const updated: FormFieldConfigType = {
-        ...cfgRef.current,
-        properties: data,
+      type IntegerFormFieldConfig = Extract<
+        FormFieldConfigType,
+        { type: FieldTypeEnum.InputTypeInteger }
+      >;
+
+      const current = cfgRef.current;
+
+      if (!current || current.type !== FieldTypeEnum.InputTypeInteger) {
+        return;
+      }
+
+      const updated: IntegerFormFieldConfig = {
+        ...current,
+        properties: {
+          ...current.properties,
+          ...data,
+        },
       };
-      onChange(updated, UpdatedTypeEnum.EditableForm);
+
+      onChange(updated);
     },
     [onChange]
   );

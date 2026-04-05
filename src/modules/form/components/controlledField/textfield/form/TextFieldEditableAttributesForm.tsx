@@ -11,15 +11,13 @@ import {
 } from '@/common/libs/ui/form';
 import { Input } from '@/common/libs/ui/input';
 import TextFieldEditableProps from '../type/TextFieldEditableProps';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
-
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 interface TextFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const TextFieldEditableAttributesForm: React.FC<
@@ -49,11 +47,26 @@ const TextFieldEditableAttributesForm: React.FC<
 
   const onSubmit = useCallback(
     (data: TextFieldEditableProps) => {
-      const updated: FormFieldConfigType = {
-        ...cfgRef.current,
-        properties: data,
+      type TextFormFieldConfig = Extract<
+        FormFieldConfigType,
+        { type: FieldTypeEnum.InputTypeText }
+      >;
+
+      const current = cfgRef.current;
+
+      if (!current || current.type !== FieldTypeEnum.InputTypeText) {
+        return;
+      }
+
+      const updated: TextFormFieldConfig = {
+        ...current,
+        properties: {
+          ...current.properties,
+          ...data,
+        },
       };
-      onChange(updated, UpdatedTypeEnum.EditableForm);
+
+      onChange(updated);
     },
     [onChange]
   );

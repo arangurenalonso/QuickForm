@@ -12,15 +12,14 @@ import {
 import { Input } from '@/common/libs/ui/input';
 import { NumericFormat } from 'react-number-format';
 import { Switch } from '@/common/libs/ui/switch';
-import { FieldTypeEnum, UpdatedTypeEnum } from '../../../common/enum/FieldType';
+import { FieldTypeEnum } from '../../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../../common/enum/FormFieldConfigType';
 import DecimalFieldEditableProps from '../../type/decimal/DecimalFieldEditableProps';
-import useDesigner from '@/modules/form/components/form-designer/context/useDesigner';
 
 interface DecimalFieldEditableAttributesFormProps {
   formFieldConfig: FormFieldConfigType;
   canEdit: boolean;
-  onChange: (updatedField: FormFieldConfigType, type: UpdatedTypeEnum) => void;
+  onChange: (updatedField: FormFieldConfigType) => void;
 }
 
 const DecimalFieldEditableAttributesForm: React.FC<
@@ -50,17 +49,33 @@ const DecimalFieldEditableAttributesForm: React.FC<
   }, [formFieldConfig, form]);
 
   const cfgRef = useRef(formFieldConfig);
+
   useEffect(() => {
     cfgRef.current = formFieldConfig;
   }, [formFieldConfig]);
 
   const onSubmit = useCallback(
     (data: DecimalFieldEditableProps) => {
-      const updated: FormFieldConfigType = {
-        ...cfgRef.current,
-        properties: data,
+      type DecimalFormFieldConfig = Extract<
+        FormFieldConfigType,
+        { type: FieldTypeEnum.InputTypeDecimal }
+      >;
+
+      const current = cfgRef.current;
+
+      if (!current || current.type !== FieldTypeEnum.InputTypeDecimal) {
+        return;
+      }
+
+      const updated: DecimalFormFieldConfig = {
+        ...current,
+        properties: {
+          ...current.properties,
+          ...data,
+        },
       };
-      onChange(updated, UpdatedTypeEnum.EditableForm);
+
+      onChange(updated);
     },
     [onChange]
   );

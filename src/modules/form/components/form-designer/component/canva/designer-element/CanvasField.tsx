@@ -1,7 +1,7 @@
 'use client';
 
+import { ComponentType } from 'react';
 import { FormFieldConfigType } from '@/modules/form/components/controlledField/common/enum/FormFieldConfigType';
-
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/common/libs/utils';
@@ -9,6 +9,7 @@ import useDesigner from '@/modules/form/components/form-designer/context/useDesi
 import DropIndicator from './DropIndicator';
 import CanvasFieldHoverOverlay from './CanvasFieldHoverOverlay';
 import { getFriendlyFieldTypeName } from '@/modules/form/components/controlledField/common/enum/FieldType';
+
 type DropIndicatorPosition = 'top' | 'bottom' | null;
 
 type CanvasFieldProps = {
@@ -17,6 +18,14 @@ type CanvasFieldProps = {
   dropIndicatorPosition?: DropIndicatorPosition;
   canEdit: boolean;
 };
+
+function renderFieldPreview<TField extends FormFieldConfigType>(field: TField) {
+  const FieldComponent = field.render.Component as ComponentType<
+    TField['properties']
+  >;
+
+  return <FieldComponent {...field.properties} />;
+}
 
 const CanvasField = ({
   sectionId,
@@ -42,9 +51,6 @@ const CanvasField = ({
     transform: CSS.Transform.toString(sortable.transform),
     transition: sortable.transition,
   };
-  if (!element) return null;
-  const { properties, render } = element;
-  const { Component } = render;
 
   return (
     <div
@@ -79,15 +85,15 @@ const CanvasField = ({
             >
               <div
                 className="
-                absolute left-[-24px] top-[10px] z-10 
-                -rotate-45 
-                rounded-sm border bg-background px-5  text-[9px] font-semibold  tracking-[0.08em] text-muted-foreground shadow-sm"
+                  absolute left-[-24px] top-[10px] z-10
+                  -rotate-45
+                  rounded-sm border bg-background px-5 text-[9px] font-semibold tracking-[0.08em] text-muted-foreground shadow-sm
+                "
               >
                 {getFriendlyFieldTypeName(element.type)}
               </div>
-              <div className="pl-3">
-                <Component {...properties} />
-              </div>
+
+              <div className="pl-3">{renderFieldPreview(element)}</div>
             </div>
           </div>
         )}
