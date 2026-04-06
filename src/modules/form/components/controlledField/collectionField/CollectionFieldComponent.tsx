@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/common/libs/ui/tooltip';
+import { getCollectionVisibleColumns } from './helper/collectionField.helpers';
 
 type Props = CollectionFieldEditableProps & {
   required?: boolean;
@@ -22,7 +23,10 @@ const CollectionFieldComponent = ({
   addButtonLabel = 'Add item',
   emptyStateText = 'No items added yet.',
   itemFields,
+  tableColumns,
 }: Props) => {
+  const visibleColumns = getCollectionVisibleColumns(itemFields, tableColumns);
+
   return (
     <div className="space-y-3">
       {(label || informationText) && (
@@ -55,7 +59,7 @@ const CollectionFieldComponent = ({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                {itemFields.map((field) => (
+                {visibleColumns.map((field) => (
                   <th
                     key={field.id}
                     className="px-3 py-2 text-left font-medium text-muted-foreground"
@@ -71,7 +75,7 @@ const CollectionFieldComponent = ({
             <tbody>
               <tr>
                 <td
-                  colSpan={itemFields.length + 1}
+                  colSpan={visibleColumns.length + 1}
                   className={cn('px-3 py-6 text-center text-muted-foreground')}
                 >
                   {emptyStateText}

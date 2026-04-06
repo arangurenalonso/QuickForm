@@ -1,5 +1,10 @@
 import type { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 
+export interface CollectionTableColumnConfig {
+  fieldId: string;
+  visible: boolean;
+}
+
 export default interface CollectionFieldEditableProps {
   name: string;
   label?: string;
@@ -8,4 +13,5 @@ export default interface CollectionFieldEditableProps {
   addButtonLabel?: string;
   emptyStateText?: string;
   itemFields: FormFieldConfigType[];
+  tableColumns: CollectionTableColumnConfig[];
 }

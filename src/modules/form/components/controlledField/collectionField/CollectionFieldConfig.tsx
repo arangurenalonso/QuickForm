@@ -35,10 +35,11 @@ export const CollectionFieldConfig = (
       name: `collection-field-${id}`,
       label: 'Collection',
       helperText: 'Use this field to add multiple items.',
-      informationText: 'Each row is created from a modal subform.',
+      informationText: 'Build the subform in a full-screen experience.',
       addButtonLabel: 'Add item',
       emptyStateText: 'No items added yet.',
       itemFields: [],
+      tableColumns: [],
     },
     rules: {
       required: undefined,

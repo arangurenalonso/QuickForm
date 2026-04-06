@@ -19,6 +19,7 @@ import { cn } from '@/common/libs/utils';
 import ActionGuard from '@/common/components/atoms/guard/ActionGuard';
 import { FORM_ACTION } from '@/modules/form/enum/form.enum';
 import useFormStore from '@/modules/form/hooks/useFormStore';
+import PreviewDialogBtn from './navbar/navbar-btn/preview/PreviewDialogBtn';
 
 const SCROLL_STEP = 260;
 
@@ -212,6 +213,7 @@ const SectionsTabs = () => {
           <ChevronRight className="h-4 w-4" />
         </Button>
 
+        <PreviewDialogBtn />
         {/* Add section */}
         {formSelected && (
           <ActionGuard

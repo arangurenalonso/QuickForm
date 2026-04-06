@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { ComponentType } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/common/libs/ui/button';
 import { Input } from '@/common/libs/ui/input';
@@ -13,18 +12,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/common/libs/ui/form';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/common/libs/ui/tabs';
-import { Trash2 } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 import { FieldTypeEnum } from '../../common/enum/FieldType';
 import { FormFieldConfigType } from '../../common/enum/FormFieldConfigType';
 import { generateFieldElement } from '../../generateFieldElement';
-import CollectionFieldEditableProps from '../type/CollectionFieldEditableProps';
+import CollectionFieldEditableProps, {
+  CollectionTableColumnConfig,
+} from '../type/CollectionFieldEditableProps';
 import { FieldEditorProps } from '../../common/type/FieldEditorProps';
+import { syncCollectionTableColumns } from '../helper/collectionField.helpers';
+import CollectionSubformBuilderModal from '../component/builder/CollectionSubformBuilderModal';
 
 type CollectionFormFieldConfig = Extract<
   FormFieldConfigType,
@@ -33,9 +30,9 @@ type CollectionFormFieldConfig = Extract<
 
 /**
  * Important:
- * Do NOT include itemFields here.
+ * Do NOT include itemFields or tableColumns here.
  * React Hook Form computes deep field paths from this generic type,
- * and itemFields -> FormFieldConfigType[] becomes recursive.
+ * and recursive arrays here make TS much harder to maintain.
  */
 type CollectionFieldFormValues = {
   name: string;
@@ -68,9 +65,13 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
   });
 
   const [itemFields, setItemFields] = useState<FormFieldConfigType[]>([]);
+  const [tableColumns, setTableColumns] = useState<
+    CollectionTableColumnConfig[]
+  >([]);
   const [selectedItemFieldId, setSelectedItemFieldId] = useState<string | null>(
     null
   );
+  const [builderOpen, setBuilderOpen] = useState(false);
 
   const cfgRef = useRef<CollectionFormFieldConfig | null>(
     formFieldConfig.type === FieldTypeEnum.Collection
@@ -79,6 +80,7 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
   );
 
   const itemFieldsRef = useRef<FormFieldConfigType[]>([]);
+  const tableColumnsRef = useRef<CollectionTableColumnConfig[]>([]);
 
   useEffect(() => {
     cfgRef.current =
@@ -92,13 +94,25 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
   }, [itemFields]);
 
   useEffect(() => {
+    tableColumnsRef.current = tableColumns;
+  }, [tableColumns]);
+
+  useEffect(() => {
     if (formFieldConfig.type !== FieldTypeEnum.Collection) return;
 
     form.reset(getFormValues(formFieldConfig.properties));
 
     const incomingItemFields = formFieldConfig.properties.itemFields ?? [];
+    const incomingTableColumns = syncCollectionTableColumns(
+      incomingItemFields,
+      formFieldConfig.properties.tableColumns ?? []
+    );
+
     setItemFields(incomingItemFields);
+    setTableColumns(incomingTableColumns);
+
     itemFieldsRef.current = incomingItemFields;
+    tableColumnsRef.current = incomingTableColumns;
 
     setSelectedItemFieldId((prev) => {
       if (prev && incomingItemFields.some((field) => field.id === prev)) {
@@ -112,12 +126,17 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
   const persist = useCallback(
     (
       values?: CollectionFieldFormValues,
-      nextItemFields?: FormFieldConfigType[]
+      nextItemFields?: FormFieldConfigType[],
+      nextTableColumns?: CollectionTableColumnConfig[]
     ) => {
       const currentConfig = cfgRef.current;
       if (!currentConfig) return;
 
       const resolvedItemFields = nextItemFields ?? itemFieldsRef.current;
+      const resolvedTableColumns = syncCollectionTableColumns(
+        resolvedItemFields,
+        nextTableColumns ?? tableColumnsRef.current
+      );
       const currentValues = values ?? form.getValues();
 
       const updated: CollectionFormFieldConfig = {
@@ -126,11 +145,13 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
           ...currentConfig.properties,
           ...currentValues,
           itemFields: resolvedItemFields,
+          tableColumns: resolvedTableColumns,
         },
       };
 
       cfgRef.current = updated;
       itemFieldsRef.current = resolvedItemFields;
+      tableColumnsRef.current = resolvedTableColumns;
 
       onChange(updated);
     },
@@ -146,291 +167,285 @@ const CollectionFieldEditableAttributesForm: React.FC<FieldEditorProps> = ({
       const newField = generateFieldElement(type);
       if (!newField) return;
 
-      setItemFields((prev) => {
-        const next = [...prev, newField];
-        itemFieldsRef.current = next;
-        persist(undefined, next);
-        return next;
-      });
+      const nextItemFields = [...itemFieldsRef.current, newField];
+      const nextTableColumns = syncCollectionTableColumns(
+        nextItemFields,
+        tableColumnsRef.current
+      );
 
+      itemFieldsRef.current = nextItemFields;
+      tableColumnsRef.current = nextTableColumns;
+
+      setItemFields(nextItemFields);
+      setTableColumns(nextTableColumns);
       setSelectedItemFieldId(newField.id);
+
+      persist(undefined, nextItemFields, nextTableColumns);
     },
     [persist]
   );
 
   const handleRemoveSubField = useCallback(
     (fieldId: string) => {
-      setItemFields((prev) => {
-        const next = prev.filter((field) => field.id !== fieldId);
-        itemFieldsRef.current = next;
-        persist(undefined, next);
+      const nextItemFields = itemFieldsRef.current.filter(
+        (field) => field.id !== fieldId
+      );
+      const nextTableColumns = syncCollectionTableColumns(
+        nextItemFields,
+        tableColumnsRef.current
+      );
 
-        setSelectedItemFieldId((currentSelected) => {
-          if (currentSelected !== fieldId) return currentSelected;
-          return next[0]?.id ?? null;
-        });
+      itemFieldsRef.current = nextItemFields;
+      tableColumnsRef.current = nextTableColumns;
 
-        return next;
+      setItemFields(nextItemFields);
+      setTableColumns(nextTableColumns);
+      setSelectedItemFieldId((currentSelected) => {
+        if (currentSelected !== fieldId) return currentSelected;
+        return nextItemFields[0]?.id ?? null;
       });
+
+      persist(undefined, nextItemFields, nextTableColumns);
     },
     [persist]
   );
 
   const handleSubFieldChange = useCallback(
     (updatedField: FormFieldConfigType) => {
-      setItemFields((prev) => {
-        const next = prev.map((field) =>
-          field.id === updatedField.id ? updatedField : field
-        );
+      const nextItemFields = itemFieldsRef.current.map((field) =>
+        field.id === updatedField.id ? updatedField : field
+      );
 
-        itemFieldsRef.current = next;
-        persist(undefined, next);
-        return next;
-      });
+      itemFieldsRef.current = nextItemFields;
+      setItemFields(nextItemFields);
+
+      persist(undefined, nextItemFields, tableColumnsRef.current);
     },
     [persist]
   );
 
-  const selectedItemField = useMemo(() => {
-    return itemFields.find((field) => field.id === selectedItemFieldId) ?? null;
-  }, [itemFields, selectedItemFieldId]);
+  const handleReorderSubFields = useCallback(
+    (nextItemFields: FormFieldConfigType[]) => {
+      const nextTableColumns = syncCollectionTableColumns(
+        nextItemFields,
+        tableColumnsRef.current
+      );
+
+      itemFieldsRef.current = nextItemFields;
+      tableColumnsRef.current = nextTableColumns;
+
+      setItemFields(nextItemFields);
+      setTableColumns(nextTableColumns);
+
+      persist(undefined, nextItemFields, nextTableColumns);
+    },
+    [persist]
+  );
+
+  const handleToggleColumnVisibility = useCallback(
+    (fieldId: string) => {
+      const nextTableColumns = tableColumnsRef.current.map((column) =>
+        column.fieldId === fieldId
+          ? { ...column, visible: !column.visible }
+          : column
+      );
+
+      tableColumnsRef.current = nextTableColumns;
+      setTableColumns(nextTableColumns);
+
+      persist(undefined, itemFieldsRef.current, nextTableColumns);
+    },
+    [persist]
+  );
+
+  const handleReorderColumns = useCallback(
+    (nextTableColumns: CollectionTableColumnConfig[]) => {
+      tableColumnsRef.current = nextTableColumns;
+      setTableColumns(nextTableColumns);
+
+      persist(undefined, itemFieldsRef.current, nextTableColumns);
+    },
+    [persist]
+  );
 
   if (formFieldConfig.type !== FieldTypeEnum.Collection) return null;
 
-  const selectedEditorField = selectedItemField as FormFieldConfigType | null;
-
-  const EditablePropsForm = selectedItemField?.render.EditablePropsForm as
-    | ComponentType<FieldEditorProps>
-    | undefined;
-
-  const RulesForm = selectedItemField?.render.RulesForm as
-    | ComponentType<FieldEditorProps>
-    | undefined;
-
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="contacts"
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      <Form {...form}>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="contacts"
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="label"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Label</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Contacts"
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="label"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Label</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Contacts"
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="helperText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Helper text</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Add one or more contacts."
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="helperText"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Helper text</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Add one or more contacts."
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="informationText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Information text</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Each row is created from a modal subform."
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="informationText"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Information text</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Each row is created from a modal subform."
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="addButtonLabel"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Add button label</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Add item"
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="addButtonLabel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Add button label</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Add item"
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="emptyStateText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Empty state text</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="No items added yet."
-                  disabled={!canEdit}
-                  onBlur={() => {
-                    field.onBlur();
-                    handleCollectionInputBlur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="emptyStateText"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Empty state text</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="No items added yet."
+                    disabled={!canEdit}
+                    onBlur={() => {
+                      field.onBlur();
+                      handleCollectionInputBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className="space-y-4 rounded-md border p-4">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!canEdit}
-              onClick={() => handleAddSubField(FieldTypeEnum.InputTypeText)}
-            >
-              Add Text
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!canEdit}
-              onClick={() => handleAddSubField(FieldTypeEnum.InputTypeInteger)}
-            >
-              Add Integer
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!canEdit}
-              onClick={() => handleAddSubField(FieldTypeEnum.InputTypeDecimal)}
-            >
-              Add Decimal
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            {itemFields.map((field) => (
-              <div
-                key={field.id}
-                className="flex items-center justify-between rounded-md border px-3 py-2"
-              >
-                <button
-                  type="button"
-                  className="text-left"
-                  onClick={() => setSelectedItemFieldId(field.id)}
-                >
-                  <div className="font-medium">
-                    {field.properties.label || field.properties.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {field.type}
-                  </div>
-                </button>
-
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="ghost"
-                  disabled={!canEdit}
-                  onClick={() => handleRemoveSubField(field.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+          <div className="rounded-xl border bg-background p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-sm font-semibold">Subform builder</div>
+                <div className="text-xs text-muted-foreground">
+                  Open a full-screen experience to build the subform with drag
+                  and drop and configure the visible table columns.
+                </div>
               </div>
-            ))}
+
+              <Button
+                type="button"
+                disabled={!canEdit}
+                onClick={() => setBuilderOpen(true)}
+                className="gap-2"
+              >
+                <Settings2 className="h-4 w-4" />
+                Configure subform
+              </Button>
+            </div>
           </div>
-
-          {selectedEditorField && EditablePropsForm && RulesForm && (
-            <Tabs defaultValue="properties" className="w-full">
-              <TabsList className="w-full">
-                <TabsTrigger value="properties">Properties</TabsTrigger>
-                <TabsTrigger value="rules">Rules</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="properties">
-                <EditablePropsForm
-                  formFieldConfig={selectedEditorField}
-                  canEdit={canEdit}
-                  onChange={handleSubFieldChange}
-                />
-              </TabsContent>
-
-              <TabsContent value="rules">
-                <RulesForm
-                  formFieldConfig={selectedEditorField}
-                  canEdit={canEdit}
-                  onChange={handleSubFieldChange}
-                />
-              </TabsContent>
-            </Tabs>
-          )}
         </div>
-      </div>
-    </Form>
+      </Form>
+
+      <CollectionSubformBuilderModal
+        open={builderOpen}
+        onOpenChange={setBuilderOpen}
+        canEdit={canEdit}
+        itemFields={itemFields}
+        tableColumns={tableColumns}
+        selectedItemFieldId={selectedItemFieldId}
+        onSelectField={setSelectedItemFieldId}
+        onAddField={handleAddSubField}
+        onRemoveField={handleRemoveSubField}
+        onReorderFields={handleReorderSubFields}
+        onFieldChange={handleSubFieldChange}
+        onToggleColumnVisibility={handleToggleColumnVisibility}
+        onReorderColumns={handleReorderColumns}
+      />
+    </>
   );
 };
 

@@ -23,6 +23,7 @@ import {
 import { Pencil, Trash2 } from 'lucide-react';
 import CollectionFieldEditableProps from '../type/CollectionFieldEditableProps';
 import CollectionItemFieldsRenderer from '../component/CollectionItemFieldsRenderer';
+import { getCollectionVisibleColumns } from '../helper/collectionField.helpers';
 
 type Props<T extends FieldValues> = {
   name: ArrayPath<T>;
@@ -70,6 +71,7 @@ const CollectionFieldControlled = <T extends FieldValues>({
   addButtonLabel = 'Add item',
   emptyStateText = 'No items added yet.',
   itemFields,
+  tableColumns,
 }: Props<T> & CollectionFieldEditableProps) => {
   const [open, setOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -85,6 +87,11 @@ const CollectionFieldControlled = <T extends FieldValues>({
     control: safeControl,
     name,
   });
+
+  const visibleColumns = useMemo(
+    () => getCollectionVisibleColumns(itemFields, tableColumns),
+    [itemFields, tableColumns]
+  );
 
   const currentEditingItem = useMemo(() => {
     if (editingIndex === null) return null;
@@ -148,7 +155,7 @@ const CollectionFieldControlled = <T extends FieldValues>({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                {itemFields.map((field) => (
+                {visibleColumns.map((field) => (
                   <th
                     key={field.id}
                     className="px-3 py-2 text-left font-medium text-muted-foreground"
@@ -166,7 +173,7 @@ const CollectionFieldControlled = <T extends FieldValues>({
               {fields.length === 0 && (
                 <tr>
                   <td
-                    colSpan={itemFields.length + 1}
+                    colSpan={visibleColumns.length + 1}
                     className="px-3 py-6 text-center text-muted-foreground"
                   >
                     {emptyStateText}
@@ -176,7 +183,7 @@ const CollectionFieldControlled = <T extends FieldValues>({
 
               {fields.map((row, index) => (
                 <tr key={row.id} className="border-b last:border-b-0">
-                  {itemFields.map((field) => {
+                  {visibleColumns.map((field) => {
                     const value = (row as Record<string, unknown>)[
                       field.properties.name
                     ];
@@ -221,14 +228,14 @@ const CollectionFieldControlled = <T extends FieldValues>({
       </p>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[720px]">
+        <DialogContent className="w-[min(960px,calc(100vw-2rem))] max-w-none">
           <DialogHeader>
             <DialogTitle>
               {editingIndex === null ? 'Add item' : 'Edit item'}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-2">
+          <div className="max-h-[75vh] overflow-y-auto py-2">
             <CollectionItemFieldsRenderer
               itemFields={itemFields}
               control={itemForm.control}
